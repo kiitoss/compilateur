@@ -1,17 +1,22 @@
-projet-clean: projet simple-clean
+calculator-clean: calculator simple-clean
 
-projet: lex yacc
+calculator: calculator-lex calculator-yacc
 	cc lex.yy.c y.tab.c -o bas.exe
 
-lex-test: lex
-	cc lex.yy.c -o lex-test
-	rm -f *.yy.c
-
-lex:
+calculator-lex:
 	lex src/bas.lex
 
-yacc:
+calculator-yacc:
 	yacc -d src/bas.yacc
+
+
+
+
+compileur-yacc:
+	yacc -d src/compileur.yacc
+
+
+
 
 simple-clean:
 	rm -f *.yy.c *.tab.c *-test *.tab.h

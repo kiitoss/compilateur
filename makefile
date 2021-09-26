@@ -1,3 +1,5 @@
+projet-clean: projet simple-clean
+
 projet: lex yacc
 	cc lex.yy.c y.tab.c -o bas.exe
 
@@ -6,10 +8,13 @@ lex-test: lex
 	rm -f *.yy.c
 
 lex:
-	lex bas.lex
+	lex src/bas.lex
 
 yacc:
-	yacc -d bas.y
+	yacc -d src/bas.yacc
 
-clean:
-	-rm -f *.yy.c *.tab.c *.exe *-test
+simple-clean:
+	rm -f *.yy.c *.tab.c *-test *.tab.h
+
+clean: simple-clean
+	rm -f *.exe

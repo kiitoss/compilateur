@@ -20,7 +20,7 @@ Source code: https://sites.ualberta.ca/dept/chemeng/AIX-43/share/man/info/C/a_do
 %token TYPE IDF OPAFF
 %token PROCEDURE
 %token VARIABLE
-%token LETTER SPACE
+%token LETTER SPACE 																// MUST BE REMOVE
 /*
 %token DIGIT LETTER
 %left '|'
@@ -32,13 +32,13 @@ Source code: https://sites.ualberta.ca/dept/chemeng/AIX-43/share/man/info/C/a_do
 %%
 programme:                   		
         	| programme corps '\n'
-			| programme corps
             | programme error '\n'  { yyerrok; }
+			| programme corps														// MUST BE REMOVE
             ;
 
 corps:   	liste_declarations liste_instructions 	{}
          	| liste_instructions                  	{}
-			| LETTER								{ printf("%c\n",'a'+$1); }
+			| LETTER								{ printf("%c\n",'a'+$1); } 		// MUST BE REMOVE
          	;
 
 liste_declarations:	declaration POINT_VIRGULE                      {}

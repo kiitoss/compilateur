@@ -20,7 +20,13 @@ Source code: https://sites.ualberta.ca/dept/chemeng/AIX-43/share/man/info/C/a_do
 %token TYPE IDF OPAFF
 %token PROCEDURE
 %token VARIABLE
-%token LETTER SPACE 																// MUST BE REMOVE
+%token LETTER SPACE // MUST BE REMOVE
+
+%token NEGAL SUPOUEG INFOUEG ET OU NON
+%left NEGAL SUPOUEG INFOUEG ET OU NON
+%left '+' '-'
+%left '*' '/'
+%left '<' '>'
 /*
 %token DIGIT LETTER
 %left '|'
@@ -30,26 +36,27 @@ Source code: https://sites.ualberta.ca/dept/chemeng/AIX-43/share/man/info/C/a_do
 %left UMINUS
 */
 %%
-programme:                   		
-        	| programme corps '\n'
-            | programme error '\n'  { yyerrok; }
-			| programme corps														// MUST BE REMOVE
-            ;
+programme:                    		
+        		| programme corps '\n'
+        		| programme error '\n'  { yyerrok; }
+						| programme corps // MUST BE REMOVE
+          	;
 
 corps:   	liste_declarations liste_instructions 	{}
          	| liste_instructions                  	{}
-			| LETTER								{ printf("%c\n",'a'+$1); } 		// MUST BE REMOVE
+					| LETTER																{ printf("LETTER=%c\n",'a'+$1); } // MUST BE REMOVE
+					| expression														{ printf("RESULT=%d\n", $1); } // MUST BE REMOVE
          	;
 
 liste_declarations:	declaration POINT_VIRGULE                      {}
-                	| liste_declarations declaration POINT_VIRGULE {}
+                		| liste_declarations declaration POINT_VIRGULE {}
                     ;
 
 liste_instructions:	DEBUT suite_liste_inst FIN {}
                     ;
 
 suite_liste_inst:	instruction POINT_VIRGULE                    {}
-                  	| suite_liste_inst instruction POINT_VIRGULE {}
+                  | suite_liste_inst instruction POINT_VIRGULE {}
                   	;
 
 declaration:	declaration_type        {}
@@ -151,10 +158,36 @@ affectation:	variable OPAFF expression {}
 variable:	DIGIT {}
           	;
 
-expression:	VARIABLE OPAFF VARIABLE {}
-			;
-expression_booleenne:	VARIABLE OPAFF VARIABLE {}
-                      	;
+expression:	ENTIER '+' ENTIER 			{ $$ = $1 + $3; }
+						| ENTIER '-' ENTIER 		{ $$ = $1 - $3; }
+						| ENTIER '*' ENTIER 		{ $$ = $1 * $3; }
+						| ENTIER '/' ENTIER 		{ $$ = $1 / $3; }
+						| REEL '+' REEL 				{ $$ = $1 + $3; }
+						| REEL '-' REEL 				{ $$ = $1 - $3; }
+						| REEL '*' REEL 				{ $$ = $1 * $3; }
+						| REEL '/' REEL 				{ $$ = $1 / $3; }
+						| CHAINE '+' CHAINE			{}
+						| expression_booleenne	{}
+						;
+
+expression_booleenne:	ENTIER '=' ENTIER 				{}
+											| ENTIER NEGAL ENTIER 		{}
+											| ENTIER '<' ENTIER 			{}
+											| ENTIER INFOUEG ENTIER 	{}
+											| ENTIER SUPOUEG ENTIER 	{}
+											| ENTIER '>' ENTIER 			{}
+											| REEL '=' REEL 					{}
+											| REEL NEGAL REEL 				{}
+											| REEL '<' REEL 					{}
+											| REEL INFOUEG REEL 			{}
+											| REEL SUPOUEG REEL 			{}
+											| REEL '>' REEL 					{}
+											| CHAINE '=' CHAINE 			{}
+											| BOOLEEAN ET BOOLEEAN 		{}
+											| BOOLEEAN OU BOOLEEAN 		{}
+											| NON BOOLEEAN 						{}
+                      ;
+
 %%
 
 int main(int argc, char *argv[]) {

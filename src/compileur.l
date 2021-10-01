@@ -11,14 +11,13 @@
 
 "<="			{ return INFOUEG; }
 ">="			{ return SUPOUEG; }
-"not"			{ return NON; }
-"and"			{ return ET; }
-"ou"			{ return OU; }
-[-+*/=<>] { return yytext[0]; }
+" not "			{ return NON; }
+" and "			{ return ET; }
+" ou "			{ return OU; }
+[-+*/=<>]               { return yytext[0]; }
 
 [1-9][0-9]* {
 	yylval = atoi(yytext);
-	printf("%d\n", atoi(yytext));
 	return ENTIER;
 	}
 

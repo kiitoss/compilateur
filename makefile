@@ -4,7 +4,7 @@ compileur: compileur-lex compileur-yacc
 	cc lex.yy.c y.tab.c -o compileur.exe
 
 compileur-lex:
-	lex -d src/compileur.l
+	lex src/compileur.l
 
 compileur-yacc:
 	yacc -d src/compileur.y

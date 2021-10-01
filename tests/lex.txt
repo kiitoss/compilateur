@@ -1,2 +1,0 @@
-test de l'execution
-du fichier lex

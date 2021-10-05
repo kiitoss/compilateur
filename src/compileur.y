@@ -3,15 +3,16 @@ Source code: https://sites.ualberta.ca/dept/chemeng/AIX-43/share/man/info/C/a_do
 */
 %{
   #include <stdio.h>
+	#include <string.h>
 	void yyerror(char *s);
-	int yylex();
+	int yylex(void);
 %}
 %start programme
 %token STRUCT FSTRUCT
 %token SI ALORS SINON RETOURNE
 %token TANT_QUE FAIRE
 %token FONCTION
-%token BOOLEEAN ENTIER REEL VIDE
+%token BOOLEEN ENTIER REEL VIDE
 %token CARACTERE CHAINE
 %token CROCHET_OUVRANT CROCHET_FERMANT PARENTHESE_OUVRANTE PARENTHESE_FERMANTE
 %token CSTE_ENTIERE
@@ -37,12 +38,10 @@ Source code: https://sites.ualberta.ca/dept/chemeng/AIX-43/share/man/info/C/a_do
 programme:		
 						| programme corps '\n'
 						| programme error '\n'	{ yyerrok; }
-						| programme corps				// MUST BE REMOVE
 						;
 
 corps:		liste_declarations liste_instructions		{}
 					| liste_instructions										{}
-					| LETTER																{ printf("LETTER=%c\n",'a'+$1); } // MUST BE REMOVE
 					| expression														{ printf("RESULT=%d\n", $1); } // MUST BE REMOVE
 					;
 
@@ -93,7 +92,7 @@ nom_type:	type_simple	{}
 
 type_simple:	ENTIER																								{}
 							| REEL																								{}
-							| BOOLEEAN																						{}
+							| BOOLEEN																						{}
 							| CARACTERE																						{}
 							| CHAINE CROCHET_OUVRANT CSTE_ENTIERE CROCHET_FERMANT	{}
 							;
@@ -156,38 +155,35 @@ affectation:	variable OPAFF expression {}
 variable:	DIGIT	{}
 					;
 
-expression:	ENTIER '+' ENTIER 			{ $$ = $1 + $3; }
-						| ENTIER '-' ENTIER 		{ $$ = $1 - $3; }
-						| ENTIER '*' ENTIER 		{ $$ = $1 * $3; }
-						| ENTIER '/' ENTIER 		{ $$ = $1 / $3; }
-						| ENTIER '%' ENTIER 		{ $$ = $1 % $3; }
-						| REEL '+' REEL 				{ $$ = $1 + $3; }
-						| REEL '-' REEL 				{ $$ = $1 - $3; }
-						| REEL '*' REEL 				{ $$ = $1 * $3; }
-						| REEL '/' REEL 				{ $$ = $1 / $3; }
-						| REEL '%' REEL 				{ $$ = $1 % $3; }
-						| CHAINE '+' CHAINE			{}
-						| expression_booleenne	{}
+expression:	ENTIER													{ $$ = $1; }
+						| REEL													{ $$ = $1; }
+						| CHAINE '+' CHAINE							{}
+						| expression '+' expression 		{ $$ = $1 + $3; }
+						| expression '-' expression 		{ $$ = $1 - $3; }
+						| expression '*' expression 		{ $$ = $1 * $3; }
+						| expression '/' expression 		{ $$ = $1 / $3; }
+						| expression '%' expression 		{ $$ = $1 % $3; }
+						| expression_booleenne					{ $$ = $1; }
 						;
 
-expression_booleenne:	ENTIER '=' ENTIER 				{}
-											| ENTIER NEGAL ENTIER 		{}
-											| ENTIER '<' ENTIER 			{}
-											| ENTIER INFOUEG ENTIER 	{}
-											| ENTIER SUPOUEG ENTIER 	{}
-											| ENTIER '>' ENTIER 			{}
-											| REEL '=' REEL 					{}
-											| REEL NEGAL REEL 				{}
-											| REEL '<' REEL 					{}
-											| REEL INFOUEG REEL 			{}
-											| REEL SUPOUEG REEL 			{}
-											| REEL '>' REEL 					{}
-											| CHAINE '=' CHAINE 			{}
-											| BOOLEEAN ET BOOLEEAN 		{}
-											| BOOLEEAN OU BOOLEEAN 		{}
-											| NON BOOLEEAN 						{}
+expression_booleenne:	BOOLEEN																						{ $$ = $1; }
+											| ENTIER '=' ENTIER 															{ $$ = ($1 == $3); }
+											| ENTIER NEGAL ENTIER 														{ $$ = ($1 != $3); }
+											| ENTIER '<' ENTIER 															{ $$ = ($1 < $3); }
+											| ENTIER INFOUEG ENTIER 													{ $$ = ($1 <= $3); }
+											| ENTIER SUPOUEG ENTIER 													{ $$ = ($1 >= $3); }
+											| ENTIER '>' ENTIER 															{ $$ = ($1 > $3); }
+											| REEL '=' REEL 																	{ $$ = ($1 == $3); }
+											| REEL NEGAL REEL 																{ $$ = ($1 != $3); }
+											| REEL '<' REEL 																	{ $$ = ($1 < $3); }
+											| REEL INFOUEG REEL 															{ $$ = ($1 <= $3); }
+											| REEL SUPOUEG REEL 															{ $$ = ($1 >= $3); }
+											| REEL '>' REEL 																	{ $$ = ($1 > $3); }
+											| CHAINE '=' CHAINE 															{}
+											| expression_booleenne ET expression_booleenne 		{ $$ = ($1 && $3); }
+											| expression_booleenne OU expression_booleenne 		{ $$ = ($1 || $3); }
+											| NON expression_booleenne 												{ $$ = (!$2); }
 											;
-
 %%
 
 int main(int argc, char *argv[]) {

@@ -17,6 +17,7 @@ digit									[0-9]
 ("not"|"!")						{ return NON; }
 ("and"|"&&")					{ return ET; }
 ("or"|"||")						{ return OU; }
+"!="									{ return NEGAL; }
 
 [-+*/=<>]							{ return yytext[0]; }
 
@@ -25,7 +26,7 @@ digit									[0-9]
 	return ENTIER;
 }
 
-{digit}+(.|,)+{digit}*	{
+{digit}+[.,]+{digit}*	{
 	yylval = atof(yytext);
 	return REEL;
 }

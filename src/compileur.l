@@ -5,37 +5,37 @@
 	extern int yylval;
 %}
 
-letter								[a-zA-Z]
-digit									[0-9]			
+letter							[a-zA-Z]
+digit							[0-9]			
 
 %%
 
-" "										;
+" "								;
 
-"<="									{ return INFOUEG; }
-">="									{ return SUPOUEG; }
+"<="							{ return INFOUEG; }
+">="							{ return SUPOUEG; }
 ("not"|"!")						{ return NON; }
 ("and"|"&&")					{ return ET; }
 ("or"|"||")						{ return OU; }
 
-[-+*/=<>]							{ return yytext[0]; }
+[-+*/=<>]						{ return yytext[0]; }
 
-{digit}+{digit}*			{
+{digit}+{digit}*				{
 	yylval = atoi(yytext);
 	return ENTIER;
 }
 
-{digit}+(.|,)+{digit}*	{
+{digit}+(.|,)+{digit}*			{
 	yylval = atof(yytext);
 	return REEL;
 }
 
-{letter}							{
+{letter}						{
 	c = yytext[0];
 	yylval = c - 'a';
 	return LETTER;
 }
 
-{letter}+							{
+{letter}+						{
 	printf("%s\n", yytext);
 }

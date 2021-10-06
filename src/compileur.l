@@ -1,7 +1,7 @@
 %{
     #include "y.tab.h"
     #include <stdlib.h>
-		
+
     void yyerror(char *);
 
 		// Définition de la constante permettant de pointer la ligne de l'erreur
@@ -13,8 +13,18 @@ letter			[a-zA-Z]
 
 %%
 
-	/* On ignore les espaces */
+
+	/* Permet d'ignorer les commentaires */
+"//".*						;
+
+
+	/* Permet d'ignorer les espaces */
 [ \t]							;
+
+
+	/* Permet d'incrémenter la ligne de l'erreur */
+\n								{ line++; }
+
 
 	/* Déclaration des tokens */
 "DEBUT"						return DEBUT;
@@ -26,8 +36,6 @@ letter			[a-zA-Z]
 "PROG"						return PROG;
 "var"							return VARIABLE;
 
-	/* Permet d'incrémenter la ligne de l'emplacement de l'erreur */
-\n								{ line++; }
 
 	/* Déclaration des nombres */
 {digit}+    			{
@@ -35,14 +43,18 @@ letter			[a-zA-Z]
 											return ENTIER;
 									}
 
+
 	/* Déclaration des symboles usuels */
 [-()<>=+*/;{}.]		return *yytext;
+
 
 	/* A modifier */
 {letter}					return IDF;
 
+
 	/* Cas d'erreur */
 .           			yyerror("Caractère invalide !");
+
 
 %%
 

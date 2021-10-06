@@ -37,7 +37,6 @@ corps:	liste_declarations liste_instructions
         ;
 
 
-	/** A modifier */
 	/* Une liste de déclarations comprend une ou plusieurs déclarations séparées par le token POINT_VIRGULE */
 liste_declarations:	declaration POINT_VIRGULE
 										| liste_declarations declaration POINT_VIRGULE
@@ -72,28 +71,28 @@ type_simple:	ENTIER
 							;
 
 
-	/** A modifier */
+	/* Grammaire de déclaration d'une variable */
 declaration_variable:	VARIABLE IDF DEUX_POINTS nom_type
 											;
 
 
-	/** A modifier */
+	/* Grammaire de déclaration d'une fonction */
 declaration_fonction:	FONCTION IDF liste_parametres RETOURNE type_simple corps
 											;
 
 
-	/** A modifier */
+	/* La liste des paramètres est soit vide soit entourée de parenthèses */
 liste_parametres:
 									| PARENTHESE_OUVRANTE liste_param PARENTHESE_FERMANTE
 									;
 
 
-	/** A modifier */
+	/* La liste des paramètres comprend un ou plus paramètres séparés par le token POINT_VIRGULE */
 liste_param:	un_param
 							| liste_param POINT_VIRGULE un_param
 							;
 
-	/** A modifier */
+	/* Grammaire d'un paramètre */
 un_param:	IDF DEUX_POINTS type_simple
 					;
 

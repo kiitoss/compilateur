@@ -42,7 +42,7 @@ letter			[a-zA-Z]
 
 
 	/* Déclaration des nombres */
-{digit}+    			{
+[1-9]+{digit}*    {
 											yylval = atoi(yytext);
 											return ENTIER;
 									}

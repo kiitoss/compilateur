@@ -27,7 +27,7 @@
 
 
 	/* Le programme doit commencer par le token PROG */
-program:	PROG corps
+programme:	PROG corps
 					;
 
 

@@ -13,6 +13,8 @@
 %token DEBUT FIN
 %token POINT_VIRGULE DEUX_POINTS
 %token VARIABLE IDF
+%token FONCTION RETOURNE
+%token PARENTHESE_OUVRANTE PARENTHESE_FERMANTE
 %token ENTIER
 
 // Tokens provisoires
@@ -29,7 +31,6 @@ program:	PROG corps
 					;
 
 
-	/** A modifier */
 	/* Le corps du programme est une liste de déclarations puis d'instructions */
 corps:	liste_declarations liste_instructions
 				| liste_instructions
@@ -37,19 +38,10 @@ corps:	liste_declarations liste_instructions
 
 
 	/** A modifier */
-liste_declarations:	declaration_variable POINT_VIRGULE
-										| liste_declarations declaration_variable POINT_VIRGULE
+	/* Une liste de déclarations comprend une ou plusieurs déclarations séparées par le token POINT_VIRGULE */
+liste_declarations:	declaration POINT_VIRGULE
+										| liste_declarations declaration POINT_VIRGULE
 										;
-
-
-	/** A modifier */
-type_simple:	ENTIER
-							;
-
-
-	/** A modifier */
-declaration_variable:	VARIABLE IDF DEUX_POINTS type_simple
-											;
 
 
 	/* Une liste d'instructions commence par le token DEBUT et se termine par le token FIN */
@@ -61,6 +53,50 @@ liste_instructions:	DEBUT suite_liste_inst FIN
 suite_liste_inst:	instruction POINT_VIRGULE
 									| suite_liste_inst instruction POINT_VIRGULE
 									;
+
+
+	/** A modifier */
+/* Une déclaration peut être une déclaration de variable ou de fonction */
+declaration:	declaration_variable
+							| declaration_fonction
+							;
+
+
+	/* Le type peut être un type simple (entier, reel...) ou un identificateur (variable...) */
+nom_type:	type_simple
+					| IDF
+					;
+
+	/** A modifier */
+type_simple:	ENTIER
+							;
+
+
+	/** A modifier */
+declaration_variable:	VARIABLE IDF DEUX_POINTS nom_type
+											;
+
+
+	/** A modifier */
+declaration_fonction:	FONCTION IDF liste_parametres RETOURNE type_simple corps
+											;
+
+
+	/** A modifier */
+liste_parametres:
+									| PARENTHESE_OUVRANTE liste_param PARENTHESE_FERMANTE
+									;
+
+
+	/** A modifier */
+liste_param:	un_param
+							| liste_param POINT_VIRGULE un_param
+							;
+
+	/** A modifier */
+un_param:	IDF DEUX_POINTS type_simple
+					;
+
 
 	/** A modifier */
 instruction:	AFFICHE expression				{ printf("%d\n", $2); }

@@ -1,7 +1,16 @@
 // Ceci est un commentaire sur une ligne
 PROG
-var a:2;
-var b:5;
-DEBUT
-print 4+2+5;
-FIN
+  var a:2;
+  var b:5;
+  var c:b;
+  fonction g(a:5) retourne 4
+    DEBUT
+    print 3+6;
+    FIN;
+  fonction h retourne 5
+    DEBUT
+    print 5-2;
+    FIN;
+  DEBUT
+    print 4+2+5;
+  FIN

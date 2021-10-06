@@ -31,10 +31,14 @@ letter			[a-zA-Z]
 "FIN"							return FIN;
 ";"								return POINT_VIRGULE;
 ":"								return DEUX_POINTS;
+"("								return PARENTHESE_OUVRANTE;
+")"								return PARENTHESE_FERMANTE;
 "print"						return AFFICHE;
 "AFFICHE"					return AFFICHE;
 "PROG"						return PROG;
 "var"							return VARIABLE;
+"fonction"				return FONCTION;
+"retourne"				return RETOURNE;
 
 
 	/* Déclaration des nombres */
@@ -45,7 +49,7 @@ letter			[a-zA-Z]
 
 
 	/* Déclaration des symboles usuels */
-[-()<>=+*/;{}.]		return *yytext;
+[-+*/]						return *yytext;
 
 
 	/* A modifier */

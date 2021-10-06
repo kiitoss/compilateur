@@ -1,42 +1,51 @@
 %{
-	#include <stdio.h>
-	#include "y.tab.h"
-	int c;
-	extern int yylval;
+    #include "y.tab.h"
+    #include <stdlib.h>
+		
+    void yyerror(char *);
+
+		// Définition de la constante permettant de pointer la ligne de l'erreur
+		int line = 1;
 %}
 
-letter								[a-zA-Z]
-digit									[0-9]			
+digit				[0-9]
+letter			[a-zA-Z]
 
 %%
 
-" "										;
+	/* On ignore les espaces */
+[ \t]							;
 
-"<="									{ return INFOUEG; }
-">="									{ return SUPOUEG; }
-("not"|"!")						{ return NON; }
-("and"|"&&")					{ return ET; }
-("or"|"||")						{ return OU; }
-"!="									{ return NEGAL; }
+	/* Déclaration des tokens */
+"DEBUT"						return DEBUT;
+"FIN"							return FIN;
+";"								return POINT_VIRGULE;
+":"								return DEUX_POINTS;
+"print"						return AFFICHE;
+"AFFICHE"					return AFFICHE;
+"PROG"						return PROG;
+"var"							return VARIABLE;
 
-[-+*/=<>]							{ return yytext[0]; }
+	/* Permet d'incrémenter la ligne de l'emplacement de l'erreur */
+\n								{ line++; }
 
-{digit}+{digit}*			{
-	yylval = atoi(yytext);
-	return ENTIER;
-}
+	/* Déclaration des nombres */
+{digit}+    			{
+											yylval = atoi(yytext);
+											return ENTIER;
+									}
 
-{digit}+[.,]+{digit}*	{
-	yylval = atof(yytext);
-	return REEL;
-}
+	/* Déclaration des symboles usuels */
+[-()<>=+*/;{}.]		return *yytext;
 
-{letter}							{
-	c = yytext[0];
-	yylval = c - 'a';
-	return LETTER;
-}
+	/* A modifier */
+{letter}					return IDF;
 
-{letter}+							{
-	printf("%s\n", yytext);
+	/* Cas d'erreur */
+.           			yyerror("Caractère invalide !");
+
+%%
+
+int yywrap(void) {
+    return 1;
 }

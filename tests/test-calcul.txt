@@ -1,4 +1,6 @@
-4+2
-5*8
-6/3
-2-4
+PROG
+var a:2;
+var b:5;
+DEBUT
+print 4+2+5;
+FIN

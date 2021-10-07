@@ -10,6 +10,9 @@ PROG
   fonction h retourne 5 {
     affiche 5-2;
   };
+  fonction i(a:10; b:12) retourne 4 {
+    affiche 3+6;
+  };
   // Liste des instructions du programme
   {
     affiche 4+2+5;

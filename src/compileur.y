@@ -24,8 +24,8 @@
 %token AFFICHE
 
 // Déclaration des associativité
-%left '+' '-' '*' '/'
-%left ET OU
+%left '+' '-' '*' '/' '='
+%left ET OU NON
 
 %%
 
@@ -110,6 +110,8 @@ instruction:	AFFICHE expression				{ printf("%d\n", $2); }
 condition:	SI expression_booleenne
 						ALORS liste_instructions
 						SINON liste_instructions
+						;
+
 
 	/** A modifier */
 expression:	ENTIER                   							{ $$ = $1; }
@@ -120,6 +122,8 @@ expression:	ENTIER                   							{ $$ = $1; }
 						| expression_booleenne								{ $$ = $1; }
         		;
 
+
+	/** A modifier */
 expression_booleenne:	TRUE
 											| FALSE
 											| expression_booleenne ET expression_booleenne	{ $$ = $1 && $3; }

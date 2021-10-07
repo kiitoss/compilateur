@@ -27,8 +27,8 @@ letter			[a-zA-Z]
 
 
 	/* Déclaration des tokens */
-"{"						return DEBUT;
-"}"							return FIN;
+"{"								return DEBUT;
+"}"								return FIN;
 ";"								return POINT_VIRGULE;
 ":"								return DEUX_POINTS;
 "("								return PARENTHESE_OUVRANTE;
@@ -62,7 +62,7 @@ letter			[a-zA-Z]
 
 
 	/* Déclaration des symboles usuels */
-[-+*/]						return *yytext;
+[-+*/=]						return *yytext;
 
 
 	/* A modifier */

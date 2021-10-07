@@ -27,18 +27,31 @@ letter			[a-zA-Z]
 
 
 	/* Déclaration des tokens */
-"DEBUT"						return DEBUT;
-"FIN"							return FIN;
+"{"						return DEBUT;
+"}"							return FIN;
 ";"								return POINT_VIRGULE;
 ":"								return DEUX_POINTS;
 "("								return PARENTHESE_OUVRANTE;
 ")"								return PARENTHESE_FERMANTE;
-"print"						return AFFICHE;
-"AFFICHE"					return AFFICHE;
+"affiche"					return AFFICHE;
 "PROG"						return PROG;
 "var"							return VARIABLE;
 "fonction"				return FONCTION;
 "retourne"				return RETOURNE;
+"et"							return ET;
+"ou"							return OU;
+"!"								return NON;
+"si"							return SI;
+"alors"						return ALORS;
+"sinon"						return SINON;
+"vrai"						{
+										yylval = 1;
+										return TRUE;
+									}
+"faux"						{
+										yylval = 0;
+										return FALSE;
+									}
 
 
 	/* Déclaration des nombres */

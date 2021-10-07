@@ -16,12 +16,16 @@
 %token FONCTION RETOURNE
 %token PARENTHESE_OUVRANTE PARENTHESE_FERMANTE
 %token ENTIER
+%token TRUE FALSE
+%token ET OU NON
+%token SI ALORS SINON
 
 // Tokens provisoires
 %token AFFICHE
 
 // Déclaration des associativité
 %left '+' '-' '*' '/'
+%left ET OU
 
 %%
 
@@ -99,16 +103,29 @@ un_param:	IDF DEUX_POINTS type_simple
 
 	/** A modifier */
 instruction:	AFFICHE expression				{ printf("%d\n", $2); }
+							| condition
 							;
 
 	/** A modifier */
-expression:
-        		ENTIER                   							{ $$ = $1; }
+condition:	SI expression_booleenne
+						ALORS liste_instructions
+						SINON liste_instructions
+
+	/** A modifier */
+expression:	ENTIER                   							{ $$ = $1; }
         		| expression '+' expression           { $$ = $1 + $3; }
         		| expression '-' expression           { $$ = $1 - $3; }
 						| expression '*' expression           { $$ = $1 * $3; }
 						| expression '/' expression           { $$ = $1 / $3; }
+						| expression_booleenne								{ $$ = $1; }
         		;
+
+expression_booleenne:	TRUE
+											| FALSE
+											| expression_booleenne ET expression_booleenne	{ $$ = $1 && $3; }
+											| expression_booleenne OU expression_booleenne	{ $$ = $1 || $3; }
+											| NON expression_booleenne											{ $$ = !$2; }
+											;
 
 
 %%

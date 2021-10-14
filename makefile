@@ -13,11 +13,22 @@ compileur-yacc:
 	yacc -d src/compileur.y
 
 
+tlex.o: src/tlex.c
+	$(CC) $(CFLAGS) src/tlex.c -c
+
 fsem.o: src/fsem.c
 	$(CC) $(CFLAGS) src/fsem.c -c
 
 
-test: fsem.test.o fsem.o
+test: fsem.test tlex.test
+
+tlex.test: tlex.test.o tlex.o
+	$(CC) $(CFLAGS) tlex.test.o tlex.o -o tlex.test.exe
+
+tlex.test.o: src/tests/tlex.test.c
+	$(CC) $(CFLAGS) src/tests/tlex.test.c -c
+
+fsem.test: fsem.test.o fsem.o
 	$(CC) $(CFLAGS) fsem.test.o fsem.o -o fsem.test.exe
 
 fsem.test.o: src/tests/fsem.test.c

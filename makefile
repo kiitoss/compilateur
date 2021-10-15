@@ -16,11 +16,11 @@ compileur-yacc:
 tlex.o: src/tlex.c
 	$(CC) $(CFLAGS) src/tlex.c -c
 
-fsem.o: src/fsem.c
-	$(CC) $(CFLAGS) src/fsem.c -c
+arbre.o: src/arbre.c
+	$(CC) $(CFLAGS) src/arbre.c -c
 
 
-test: fsem.test tlex.test
+test: arbre.test tlex.test
 
 tlex.test: tlex.test.o tlex.o
 	$(CC) $(CFLAGS) tlex.test.o tlex.o -o tlex.test.exe
@@ -28,11 +28,11 @@ tlex.test: tlex.test.o tlex.o
 tlex.test.o: src/tests/tlex.test.c
 	$(CC) $(CFLAGS) src/tests/tlex.test.c -c
 
-fsem.test: fsem.test.o fsem.o
-	$(CC) $(CFLAGS) fsem.test.o fsem.o -o fsem.test.exe
+arbre.test: arbre.test.o arbre.o
+	$(CC) $(CFLAGS) arbre.test.o arbre.o -o arbre.test.exe
 
-fsem.test.o: src/tests/fsem.test.c
-	$(CC) $(CFLAGS) src/tests/fsem.test.c -c
+arbre.test.o: src/tests/arbre.test.c
+	$(CC) $(CFLAGS) src/tests/arbre.test.c -c
 
 
 simple-clean:

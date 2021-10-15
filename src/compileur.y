@@ -15,17 +15,14 @@
 %token VARIABLE IDF
 %token FONCTION RETOURNE
 %token PARENTHESE_OUVRANTE PARENTHESE_FERMANTE
-%token ENTIER
+%token ENTIER REEL BOOLEEN
+%token PLUS MOINS MULT DIV
 %token TRUE FALSE
 %token ET OU NON
 %token SI ALORS SINON
 
 // Tokens provisoires
 %token AFFICHE
-
-// Déclaration des associativité
-%left '+' '-' '*' '/' '='
-%left ET OU NON
 
 %%
 
@@ -72,6 +69,8 @@ nom_type:	type_simple
 
 	/** A modifier */
 type_simple:	ENTIER
+							| REEL
+							| BOOLEEN
 							;
 
 
@@ -100,6 +99,11 @@ liste_param:	un_param
 un_param:	IDF DEUX_POINTS type_simple
 					;
 
+	/** A modifier */
+liste_variable:	expression																{ printf("%d\n", $1); }
+              	| liste_variable POINT_VIRGULE expression	{ printf("%d\n", $3); }
+              	;
+
 
 	/** A modifier */
 instruction:	AFFICHE expression				{ printf("%d\n", $2); }
@@ -115,11 +119,11 @@ condition:	SI expression_booleenne
 
 	/** A modifier */
 expression:	ENTIER                   							{ $$ = $1; }
-        		| expression '+' expression           { $$ = $1 + $3; }
-        		| expression '-' expression           { $$ = $1 - $3; }
-						| expression '*' expression           { $$ = $1 * $3; }
-						| expression '/' expression           { $$ = $1 / $3; }
-						| expression_booleenne								{ $$ = $1; }
+        		| expression PLUS expression          { $$ = $1 + $3; }
+        		| expression MOINS expression         { $$ = $1 - $3; }
+						| expression MULT expression          { $$ = $1 * $3; }
+						| expression DIV expression           { $$ = $1 / $3; }
+						| PARENTHESE_OUVRANTE liste_variable PARENTHESE_FERMANTE 
         		;
 
 

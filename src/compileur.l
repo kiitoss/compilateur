@@ -27,13 +27,14 @@ letter			[a-zA-Z]
 
 
 	/* Déclaration des tokens */
-"{"								return DEBUT;
-"}"								return FIN;
+"DEBUT"						return DEBUT;
+"FIN"							return FIN;
 ";"								return POINT_VIRGULE;
 ":"								return DEUX_POINTS;
 "("								return PARENTHESE_OUVRANTE;
 ")"								return PARENTHESE_FERMANTE;
 "affiche"					return AFFICHE;
+"print"					return AFFICHE;
 "PROG"						return PROG;
 "var"							return VARIABLE;
 "fonction"				return FONCTION;
@@ -52,21 +53,31 @@ letter			[a-zA-Z]
 										yylval = 0;
 										return FALSE;
 									}
+"int"             return ENTIER;
+"float"           return REEL;
+"bool"            return BOOLEEN;
 
 
-	/* Déclaration des nombres */
+	/* Déclaration des opérateurs */
+\+                return(PLUS);
+\-                return(MOINS);
+\*                return(MULT);
+\/                return(DIV); 
+
+
+	/* Déclaration des nombres entiers */
 [1-9]+{digit}*    {
-											yylval = atoi(yytext);
-											return ENTIER;
+										yylval = atoi(yytext);
+										return ENTIER;
+									}
+  /* Déclaration des nombres réels */
+[0-9]+,{digit}*		{
+                    yylval = atof(yytext);
+                  	return REEL;
 									}
 
-
-	/* Déclaration des symboles usuels */
-[-+*/=]						return *yytext;
-
-
 	/* A modifier */
-{letter}					return IDF;
+{letter}+({letter}|{digit}|"_")* return IDF;
 
 
 	/* Cas d'erreur */

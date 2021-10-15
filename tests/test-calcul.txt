@@ -1,23 +1,21 @@
 // Ceci est un commentaire sur une ligne
 PROG
-  // Liste des déclarations du programme
-  var a:2;
+  var a:int;
   var b:5;
+  var k:bool;
   var c:b;
-  fonction g(a:5) retourne 4 {
-    affiche 3+6;
-  };
-  fonction h retourne 5 {
-    affiche 5-2;
-  };
-  fonction i(a:10; b:12) retourne 4 {
-    affiche 3+6;
-  };
-  // Liste des instructions du programme
-  {
-    affiche 4+2+5;
-    affiche vrai et !faux;
-    si vrai
-    alors { affiche 12+8; }
-    sinon { affiche 14-2; };
-  }
+  var o:float;
+  var maVariable:10;
+  var monFloat01:0,5;
+  var maVar1Bool:true;
+fonction g(a:5) retourne 4
+    DEBUT
+    print 3+6;
+    FIN;
+  fonction h retourne 5
+    DEBUT
+    print (100+10;5);
+    FIN;
+  DEBUT
+    print 4+2+5;
+  FIN

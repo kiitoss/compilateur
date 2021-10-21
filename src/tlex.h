@@ -3,6 +3,7 @@
 
 #define TLEX_TAILLE_MAX 500
 #define VALEUR_NULL -1
+#define THASH_MAX 32
 
 /* la structure d'une entrée dans la table lexicographique */
 struct entree
@@ -14,7 +15,7 @@ struct entree
 
 struct entree tlex[TLEX_TAILLE_MAX];
 
-int thash[TLEX_TAILLE_MAX];
+int thash[THASH_MAX];
 
 /* initialise la table de hascode */
 void initThash();

@@ -59,10 +59,10 @@ letter			[a-zA-Z]
 
 
 	/* Déclaration des opérateurs */
-\+                return(PLUS);
-\-                return(MOINS);
-\*                return(MULT);
-\/                return(DIV); 
+\+                return PLUS;
+\-                return MOINS;
+\*                return MULT;
+\/                return DIV; 
 
 
 	/* Déclaration des nombres entiers */

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "tlex.h"
 
@@ -11,45 +12,19 @@ static int hashLexeme(char *lexeme)
   {
     sommeAscii += lexeme[i];
   }
-  return sommeAscii;
+  return (sommeAscii % THASH_MAX);
 }
 
-/* Retourne 1 les les deux lexèmes sont identiques, 0 sinon */
-static int identiques(char *lexeme1, char *lexeme2)
-{
-  int i;
-  int identiques = 1;
-
-  for (i = 0; lexeme1[i] != '\0'; i++)
-  {
-    if (lexeme1[i] != lexeme2[i])
-    {
-      identiques = 0;
-      break;
-    }
-  }
-
-  return identiques;
-}
-
-/* Retourne la taille du lexème */
-static int tailleLexeme(char *lexeme)
-{
-  int taille;
-  for (taille = 0; lexeme[taille] != '\0'; taille++)
-    ;
-  return taille;
-}
+int tailleTlex = 0;
 
 /* Ecrit les informations du lexeme dans la table de hashcode et la table lexicographique */
 static void ecrit(int index, int hashVal, int taille, char *lexeme)
 {
-  thash[index] = hashVal;
+  if (thash[hashVal] == VALEUR_NULL) thash[hashVal] = index;
   tlex[index].taille = taille;
   tlex[index].lexeme = lexeme;
   tlex[index].suivant = -1;
 }
-
 
 /* initialise la table de hascode */
 void initThash()
@@ -75,7 +50,7 @@ void afficheTableLexico()
 {
   int i;
   printf("---------------------------------------------------------------------\n");
-  for (i = 0; i < TLEX_TAILLE_MAX && thash[i] != VALEUR_NULL; i++)
+  for (i = 0; i < tailleTlex; i++)
   {
     printf("%d\t|\t%d\t|\t%d\t|\t%s\n", i, tlex[i].taille, tlex[i].suivant, tlex[i].lexeme);
   }
@@ -85,33 +60,38 @@ void afficheTableLexico()
 /* Insère le lexeme dans la table de hashcode et la table lexicographique */
 int inserer(char *lexeme)
 {
-  int i, hashVal, taille, returnVal = -1, ancienDernier = -1;
+  int i, hashVal, taille, returnVal = -1;
   hashVal = hashLexeme(lexeme);
-  taille = tailleLexeme(lexeme);
+  taille = strlen(lexeme);
 
-  for (i = 0; i < TLEX_TAILLE_MAX; i++)
+  if (thash[hashVal] == VALEUR_NULL)
   {
-    if (thash[i] == VALEUR_NULL)
+    if (tailleTlex < TLEX_TAILLE_MAX)
     {
-      ecrit(i, hashVal, taille, lexeme);
-      if (ancienDernier != -1)
-        tlex[ancienDernier].suivant = i;
-      returnVal = i;
-      break;
-    }
-
-    if (thash[i] == hashVal)
-    {
-      if (identiques(lexeme, tlex[i].lexeme))
-        break;
-
-      if (tlex[i].suivant != VALEUR_NULL)
-      {
-        i = tlex[i].suivant - 1;
-      } else {
-        ancienDernier = i;
-      }
+      ecrit(tailleTlex, hashVal, taille, lexeme);
+      returnVal = tailleTlex;
+      tailleTlex++;
     }
   }
+  else
+  {
+    int identique = 0;
+    for (i = thash[hashVal]; tlex[i].suivant != VALEUR_NULL; i = tlex[i].suivant)
+    {
+      if (!strcmp(lexeme, tlex[i].lexeme))
+      {
+        identique = 1;
+        break;
+      }
+    }
+    if (!identique && strcmp(lexeme, tlex[i].lexeme) != 0)
+    {
+      tlex[i].suivant = tailleTlex;
+      ecrit(tailleTlex, hashVal, taille, lexeme);
+      returnVal = tailleTlex;
+      tailleTlex++;
+    }
+  }
+
   return returnVal;
 }

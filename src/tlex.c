@@ -20,7 +20,8 @@ int tailleTlex = 0;
 /* Ecrit les informations du lexeme dans la table de hashcode et la table lexicographique */
 static void ecrit(int index, int hashVal, int taille, char *lexeme)
 {
-  if (thash[hashVal] == VALEUR_NULL) thash[hashVal] = index;
+  if (thash[hashVal] == VALEUR_NULL)
+    thash[hashVal] = index;
   tlex[index].taille = taille;
   tlex[index].lexeme = lexeme;
   tlex[index].suivant = -1;
@@ -64,33 +65,26 @@ int inserer(char *lexeme)
   hashVal = hashLexeme(lexeme);
   taille = strlen(lexeme);
 
-  if (thash[hashVal] == VALEUR_NULL)
+  int existeDeja = 0;
+  int indexPrecedent = VALEUR_NULL;
+  for (i = thash[hashVal]; i != VALEUR_NULL; i = tlex[i].suivant)
   {
-    if (tailleTlex < TLEX_TAILLE_MAX)
+    if (!strcmp(lexeme, tlex[i].lexeme))
     {
-      ecrit(tailleTlex, hashVal, taille, lexeme);
-      returnVal = tailleTlex;
-      tailleTlex++;
+      existeDeja = 1;
+      break;
     }
+    indexPrecedent = i;
   }
-  else
+
+  if (!existeDeja)
   {
-    int identique = 0;
-    for (i = thash[hashVal]; tlex[i].suivant != VALEUR_NULL; i = tlex[i].suivant)
-    {
-      if (!strcmp(lexeme, tlex[i].lexeme))
-      {
-        identique = 1;
-        break;
-      }
+    if (indexPrecedent != VALEUR_NULL) {
+      tlex[indexPrecedent].suivant = tailleTlex;
     }
-    if (!identique && strcmp(lexeme, tlex[i].lexeme) != 0)
-    {
-      tlex[i].suivant = tailleTlex;
-      ecrit(tailleTlex, hashVal, taille, lexeme);
-      returnVal = tailleTlex;
-      tailleTlex++;
-    }
+    ecrit(tailleTlex, hashVal, taille, lexeme);
+    returnVal = tailleTlex;
+    tailleTlex++;
   }
 
   return returnVal;

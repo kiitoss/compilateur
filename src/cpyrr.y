@@ -148,6 +148,8 @@ void yyerror(char *s) {
 int main(void) {
 	initThash();
     yyparse();
+    printf("\n\nAffichage de la table de hash-code:\n");
+    thash_affiche();
     printf("\n\nAffichage de la table lexicographique:\n");
     tlex_affiche();
     return 0;

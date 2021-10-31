@@ -26,6 +26,9 @@ char *lexeme(int numLexicographique);
 /* Affiche la table lexicographique */
 void tlex_affiche();
 
+/* Affiche la table de hash-code */
+void thash_affiche();
+
 /* Insère le lexeme dans la table de hashcode et la table lexicographique */
 int tlex_insere(char *lexeme);
 

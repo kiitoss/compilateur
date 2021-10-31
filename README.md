@@ -96,5 +96,122 @@ Si le token FONCTION est reconnu mais n'est pas suivit d'un identificateur (IDF,
 
 
 ## Création du compilateur (analyses lexicale, synthaxique, sémantique et génération du texte intermédiaire)
+### Analyse Lexicale et synthaxique
+Les analyses lexicales et synthaxiques se font par l'intermédiaire des programme LEX et YACC vu précedemment.
+C'est l'analyse sémantique qui va nous intéresser maintenant.
+
+### Analyse Sémantique
+L'analyse sémantique sert à contrôler la sémantique du programme, par exemple la validité du nombre de paramètres des fonctions.
+Cette analyse va se faire grâce à l'utilisation de cinq tables:
+- La table de hash-code
+- La table lexicographique
+- La table des déclarations
+- La table de représentations des types et des entêtes de sous-programme
+- La table des régions
+
+#### La table de hash-code
+Cette table va associer à un hash-code donné, l'index de sa première occurence dans la table lexicographique.
+Prenons un exemple: le lexeme "maVariable".
+Le hash-code du lexème "maVariable" est de 20 ([ascii(m) + ascii(a) + ascii(V) + ... + ascii(e)] % 32).
+Si le lexeme "maVariable" est la première entrée de la table lexicographique, nous aurons thash[20] = 0;
+Si cela avait été la deuxième entrée, nous aurions eu thash[20] = 1.
+En somme, thash[hashVal] = index_table_lexico;
+
+Prenons maintenant le lexeme "amVariable" ("a" et "m" sont inversés). Le haschode est encore de 20, or thash[20] a déjà été définie.
+Il est donc inutile de modifier la table de hash-code.
+
+Mais alors comment retrouver les informations du lexeme "amVariable" dans la table lexicographique ?
+Nous allons voir cela plus bas.
+
+#### La table lexicographique
+Cette table stocke pour chaque lexeme ses informations:
+- La longueur
+- Le lexème
+- Un pointeur sur le lexeme suivant de même hashcode
+
+Reprenons le même exemple que plus haut:
+Le lexeme "maVariable" est déclaré, puis le lexeme "amVariable".
+Tous deux ont le même hash-code mais c'est "maVariable" qui est déclaré en premier, et donc stocké dans notre table de hashcode.
+
+Affichage de la table de hashcode:
+indice/hashcode  |  index table lexico
+0                |  -1
+1                |  -1
+2                |  -1
+...              |  -1
+19               |  -1
+20               |  0
+...              |  -1
+35               |  -1
+
+Et voici la table lexicographique:
+indice  |  longueur  |  lexeme      |  suivant
+0       |  10        |  maVariable  |  1
+1       |  10        |  amVariable  |  -1
+
+A son insertion dans la table lexicographique, un lexeme n'a pas de "suivant", on lui affecte donc une valeur NULL, ici représenté par la valeur -1.
+Si un autre lexeme de même hascode (par exemple "amariableV") venait à être créé, il faudrait modifier la valeur de suivant de "amVariable" pour qu'elle prenne l'index du nouveua lexeme.
+
+Voici la table de hash-code après plusieurs modifications:
+indice/hashcode  |  index table lexico
+0                |  -1
+1                |  2
+2                |  -1
+...              |  -1
+19               |  -1
+20               |  0
+...              |  -1
+32               |  -1
+
+Et voici la table lexicographique après plusieurs modifications:
+indice  |  longueur  |  lexeme      |  suivant
+0       |  10        |  maVariable  |  1
+1       |  10        |  amVariable  |  4
+2       |  1         |  a           |  3
+3       |  10        |  monFloat01  |  -1
+4       |  10        |  amariableV  |  -1
+
+Dans cette nouvelle table lexicographique, il y a 5 entrées, et pourtant, il n'y a que deux hash-code différents:
+hashcode(a) = hashcode(monFloat01)
+hashcode(maVariable) = hashcode(amVariable) = hashcode(amariableV)
+
+Pour obtenir l'indice du lexeme "amariableV", il suffira de faire:
+```c
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+/* Inclure ici le fichier contenant la fonction hashLexeme() et initialisant le tableau thash */
+#include "tlex.h"
+
+#define THASH_MAX 32
+
+/* Retourne l'indice d'un lexeme dans la table lexico, -1 sinon */
+int getIndice(char *lexeme) {
+  int indice = -1;
+  int hashVal = hashLexeme(lexeme);
+
+  /* On initialise i grâce à la table de hashcode */
+  /* On passe au i suivant grâce à la colonne "suivant" de la table lexico */
+  for (int i = thash[hashVal]; i != -1; i = tlex[i].suivant) {
+    if (strcmp(thash[i], lexeme == 0) {
+      indice = i;
+      break;
+    }
+  }
+  
+  return indice;
+}
+
+int main(void) {
+  int indice = getIndice("amariableV");
+  if (indice == -1) {
+    printf("Aucune entrée pour 'amariableV' dans la table.\n");
+  } else {
+    printf("'amariableV' se trouve en indice %d dans la table lexicographique.\n", indice);
+  }
+  return EXIT_SUCCESS;
+}
+```
 
 ## Conception de la machine virtuelle

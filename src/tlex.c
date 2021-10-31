@@ -70,6 +70,20 @@ void tlex_affiche() {
         "\n");
 }
 
+/* Affiche la table de hash-code */
+void thash_affiche() {
+    int i;
+    printf(
+        "---------------------------------------------------------------------"
+        "\nindice/hash\t|\tindice tlex\n");
+    for (i = 0; i < THASH_MAX; i++) {
+        printf("%d\t\t|\t%d\n", i, thash[i]);
+    }
+    printf(
+        "---------------------------------------------------------------------"
+        "\n");
+}
+
 /* Insère le lexeme dans la table de hashcode et la table lexicographique */
 int tlex_insere(char *lexeme) {
     int i;

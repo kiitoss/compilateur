@@ -3,29 +3,36 @@
 #define FSEM_H
 
 /* la structure d’arbre necessaire */
-struct arbre
-{
-  int noeud;
-  struct arbre *gauche;
-  struct arbre *droit;
-};
+typedef struct noeud {
+  int valeur;
+  int nature;
+  struct noeud *filsGauche;
+  struct noeud *filsDroit;
+} noeud;
 
-typedef struct arbre *arbre;
+typedef struct noeud *arbre;
+
+
+/* renvoie un arbre vide */
+arbre creeArbreVide();
+
+/* teste si un arbre est vide */
+int estVide(arbre a);
 
 /* cree un noeud dont le champ boeud prend la valeur val
-et le fils gauche et le frere droit la valeur NULL */
-arbre creerNoeud(int val);
+   et le fils gauche et le frere droit la valeur NULL */
+arbre creeNoeud(int valeur);
 
-/* retourne toujours la valeur NULL */
-arbre arbreVide();
+/* Creer un arbre */
+arbre creeArbre(int valeur,arbre filsGauche,arbre filsDroit);
 
-/* Concatene a2 au frere droit de a1 */
-arbre concatPereFrere(arbre a1, arbre a2);
+/* Insere un fils gauche*/
+arbre insereFilsGauche(arbre a,arbre filsGauche);
 
-/* Concatene a2 au fils gauche de a1 */
-arbre concatPereFils(arbre t1, arbre a2);
+/* Insere un fils droit */
+arbre insereFilsDroit(arbre a,arbre filsDroit);
 
-/* affiche l’arbre t */
+/* Affichage de l’arbre */
 void afficheArbre(arbre a);
 
 #endif

@@ -13,14 +13,23 @@ cpyrr-yacc:
 	yacc -d src/cpyrr.y
 
 
-tlex.o: src/tlex.c
+tdec.o: src/tdec.c src/inc/tdec.h
+	$(CC) $(CFLAGS) src/tdec.c -c
+
+tlex.o: src/tlex.c src/inc/tlex.h
 	$(CC) $(CFLAGS) src/tlex.c -c
 
-arbre.o: src/arbre.c
+arbre.o: src/arbre.c src/inc/arbre.h
 	$(CC) $(CFLAGS) src/arbre.c -c
 
 
-test: arbre.test tlex.test
+test: arbre.test tlex.test tdec.test
+
+tdec.test: tdec.test.o tdec.o
+	$(CC) $(CFLAGS) tdec.test.o tdec.o -o tdec.test.exe
+
+tdec.test.o: src/tests/tdec.test.c
+	$(CC) $(CFLAGS) src/tests/tdec.test.c -c
 
 tlex.test: tlex.test.o tlex.o
 	$(CC) $(CFLAGS) tlex.test.o tlex.o -o tlex.test.exe

@@ -4,14 +4,13 @@
 
 /* la structure d’arbre necessaire */
 typedef struct noeud {
-  int valeur;
-  int nature;
-  struct noeud *filsGauche;
-  struct noeud *filsDroit;
+    int valeur;
+    int nature;
+    struct noeud *filsGauche;
+    struct noeud *filsDroit;
 } noeud;
 
 typedef struct noeud *arbre;
-
 
 /* renvoie un arbre vide */
 arbre creeArbreVide();
@@ -24,13 +23,13 @@ int estVide(arbre a);
 arbre creeNoeud(int valeur);
 
 /* Creer un arbre */
-arbre creeArbre(int valeur,arbre filsGauche,arbre filsDroit);
+arbre creeArbre(int valeur, arbre filsGauche, arbre filsDroit);
 
 /* Insere un fils gauche*/
-arbre insereFilsGauche(arbre a,arbre filsGauche);
+arbre insereFilsGauche(arbre a, arbre filsGauche);
 
 /* Insere un fils droit */
-arbre insereFilsDroit(arbre a,arbre filsDroit);
+arbre insereFilsDroit(arbre a, arbre filsDroit);
 
 /* Affichage de l’arbre */
 void afficheArbre(arbre a);

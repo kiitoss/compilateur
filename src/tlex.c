@@ -1,4 +1,4 @@
-#include "tlex.h"
+#include "inc/tlex.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +18,7 @@ int tailleTlex = 0;
 /* Ecrit les informations du lexeme dans la table de hashcode et la table
  * lexicographique */
 static void ecrit(int index, int hashVal, int taille, char *lexeme) {
-    if (thash[hashVal] == VALEUR_NULL) thash[hashVal] = index;
+    if (thash[hashVal] == TLEX_VALEUR_NULL) thash[hashVal] = index;
     tlex[index].taille = taille;
     tlex[index].lexeme = lexeme;
     tlex[index].suivant = -1;
@@ -27,7 +27,7 @@ static void ecrit(int index, int hashVal, int taille, char *lexeme) {
 /* initialise la table de hascode */
 void initThash() {
     int i;
-    for (i = 0; i < TLEX_TAILLE_MAX; i++) thash[i] = VALEUR_NULL;
+    for (i = 0; i < TLEX_TAILLE_MAX; i++) thash[i] = TLEX_VALEUR_NULL;
 }
 
 /* Retourne le lexème correspondant au numéro lexicographique */
@@ -59,11 +59,11 @@ int inserer(char *lexeme) {
     int i;
     int returnVal = -1;
     int existeDeja = 0;
-    int indexPrecedent = VALEUR_NULL;
+    int indexPrecedent = TLEX_VALEUR_NULL;
     int hashVal = hashLexeme(lexeme);
     int taille = strlen(lexeme);
 
-    for (i = thash[hashVal]; i != VALEUR_NULL; i = tlex[i].suivant) {
+    for (i = thash[hashVal]; i != TLEX_VALEUR_NULL; i = tlex[i].suivant) {
         if (!strcmp(lexeme, tlex[i].lexeme)) {
             existeDeja = 1;
             break;
@@ -72,7 +72,7 @@ int inserer(char *lexeme) {
     }
 
     if (!existeDeja) {
-        if (indexPrecedent != VALEUR_NULL) {
+        if (indexPrecedent != TLEX_VALEUR_NULL) {
             tlex[indexPrecedent].suivant = tailleTlex;
         }
         ecrit(tailleTlex, hashVal, taille, lexeme);

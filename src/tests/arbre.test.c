@@ -1,17 +1,17 @@
-#include <stdlib.h>
+#include "../inc/arbre.h"
+
 #include <stdio.h>
-#include "../arbre.h"
+#include <stdlib.h>
 
-int main(){
-  
-  arbre d = creeArbre(1,creeArbre(2,creeNoeud(3),creeNoeud(4)),creeArbre(5,creeNoeud(6),creeNoeud(7)));
-  //afficheArbre(d);
+int main() {
+    arbre d = creeArbre(1, creeArbre(2, creeNoeud(3), creeNoeud(4)),
+                        creeArbre(5, creeNoeud(6), creeNoeud(7)));
+    // afficheArbre(d);
 
-  arbre a = creeArbre(8,creeArbreVide(),creeNoeud(9));
-  d = insereFilsGauche(d ,a);
-  
-  afficheArbre(d);
-  
-  return EXIT_SUCCESS;
+    arbre a = creeArbre(8, creeArbreVide(), creeNoeud(9));
+    d = insereFilsGauche(d, a);
 
+    afficheArbre(d);
+
+    return EXIT_SUCCESS;
 }

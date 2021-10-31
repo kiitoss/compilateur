@@ -1,16 +1,16 @@
 CC = gcc
 CFLAGS = -W -Wall
 
-compileur-clean: compileur simple-clean
+compilateur-clean: compilateur simple-clean
 
-compileur: compileur-lex compileur-yacc
-	cc lex.yy.c y.tab.c -o compileur.exe
+compilateur: cpyrr-lex cpyrr-yacc
+	cc lex.yy.c y.tab.c -o cpyrr.exe
 
-compileur-lex:
-	lex src/compileur.l
+cpyrr-lex:
+	lex src/cpyrr.l
 
-compileur-yacc:
-	yacc -d src/compileur.y
+cpyrr-yacc:
+	yacc -d src/cpyrr.y
 
 
 tlex.o: src/tlex.c

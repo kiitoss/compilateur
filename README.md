@@ -2,8 +2,19 @@
 
 Ce projet a pour but la création d'un compilateur et d'une machine virtuelle pour le langage CPYRR, un langage procédural à structure de blocs.
 
-## Conception des programmes LEX et YACC
-### Le programme LEX
+## Table des matieres
+1. [Conception des programmes LEX et YACC](#p1)
+    1. [Le programme LEX](#p11)
+    2. [Le programme YACC](#p12)
+2. [Création du compilateur (analyses lexicale, synthaxique, sémantique et génération du texte intermédiaire)](#p2)
+    1. [Analyse Lexicale et synthaxique](#p21)
+    2. [Analyse Sémantique](#p22)
+        1. [La table de hash-code](#p221)
+        2. [La table lexicographique](#p222)
+3. [Conception de la machine virtuelle](#p3)
+
+## Conception des programmes LEX et YACC <a name="p1"></a>
+### Le programme LEX <a name="p11"></a>
 Le programme LEX nous sert à faire l'analyse lexicale du fichier source.
 Chaque caractère ou chaîne de caractère est analysé puis comparé à une liste de règles.
 Lorsqu'une règle est matché, l'action correspondante est effectuée.
@@ -49,7 +60,7 @@ int yywrap(void) {
 Cela permettra à YACC d'avoir accès à la valeur de ce nombre lorsqu'il analysera le comportement synthaxique d'un token ENTIER.
 
 
-### Le programme YACC
+### Le programme YACC <a name="p12"></a>
 Le programme YACC nous sert à faire l'analyse synthaxique du fichier source.
 A ce stade, l'analyseur lexical a terminé son travail et à renvoyé au programme YACC les tokens correspondants au fichier source.
 
@@ -95,12 +106,12 @@ Si c'est un entier on affichera sur la sortie standart "Vous avez entré l'entie
 Si le token FONCTION est reconnu mais n'est pas suivit d'un identificateur (IDF, ici un caractère), un message d'erreur de synthaxe s'affichera dans la console.
 
 
-## Création du compilateur (analyses lexicale, synthaxique, sémantique et génération du texte intermédiaire)
-### Analyse Lexicale et synthaxique
+## Création du compilateur (analyses lexicale, synthaxique, sémantique et génération du texte intermédiaire) <a name="p2"></a>
+### Analyse Lexicale et synthaxique <a name="p21"></a>
 Les analyses lexicales et synthaxiques se font par l'intermédiaire des programme LEX et YACC vu précedemment.
 C'est l'analyse sémantique qui va nous intéresser maintenant.
 
-### Analyse Sémantique
+### Analyse Sémantique <a name="p22"></a>
 L'analyse sémantique sert à contrôler la sémantique du programme, par exemple la validité du nombre de paramètres des fonctions.
 Cette analyse va se faire grâce à l'utilisation de cinq tables:
 - La table de hash-code
@@ -109,7 +120,7 @@ Cette analyse va se faire grâce à l'utilisation de cinq tables:
 - La table de représentations des types et des entêtes de sous-programme
 - La table des régions
 
-#### La table de hash-code
+#### La table de hash-code <a name="p221"></a>
 Cette table va associer à un hash-code donné, l'index de sa première occurence dans la table lexicographique.  
 Prenons un exemple: le lexeme "maVariable".
 
@@ -125,7 +136,7 @@ Il est donc inutile de modifier la table de hash-code.
 Mais alors comment retrouver les informations du lexeme "amVariable" dans la table lexicographique ?  
 Nous allons voir cela plus bas.
 
-#### La table lexicographique
+#### La table lexicographique <a name="p222"></a>
 Cette table stocke pour chaque lexeme ses informations:
 - La longueur
 - Le lexème
@@ -224,4 +235,4 @@ int main(void) {
 }
 ```
 
-## Conception de la machine virtuelle
+## Conception de la machine virtuelle <a name="p3"></a>

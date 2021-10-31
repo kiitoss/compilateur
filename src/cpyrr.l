@@ -79,7 +79,7 @@ letter			[a-zA-Z]
 
 	/* A modifier */
 {letter}+({letter}|{digit}|"_")*	{
-																		tlex_insere(yytext);
+																		yylval = tlex_insere(yytext);
 																		return IDF;
 																	}
 

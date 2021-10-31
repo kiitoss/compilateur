@@ -5,41 +5,25 @@
 
 int tailleTdec = 0;
 
-/* Ecrit les informations dans la table des declarations */
-static void ecrit(int index, int nature) {
-    if (index >= TDEC_TAILLE_MAX) {
-        printf(
-            "Erreur - La taille maximale de la table des declarations est "
-            "atteinte.\n");
-        return;
-    }
-
-    tdec[index].nature = nature;
-    tdec[index].suivant = TDEC_VALEUR_NULL;
-    tdec[index].region = TDEC_VALEUR_NULL;
-    tdec[index].index_trep = TDEC_VALEUR_NULL;
-    tdec[index].exec = TDEC_VALEUR_NULL;
-}
-
 /* Affiche la nature d'une entree de la table des declarations */
 static void affiche_nature_declaration(int nature) {
     switch (nature) {
-        case 1:
+        case NATURE_STRUCTURE:
             printf("structure");
             break;
-        case 2:
+        case NATURE_TABLEAU:
             printf("tableau");
             break;
-        case 3:
+        case NATURE_VARIABLE:
             printf("variable");
             break;
-        case 4:
+        case NATURE_PARAMETRE:
             printf("parametre");
             break;
-        case 5:
+        case NATURE_PROCEDURE:
             printf("procedure");
             break;
-        case 6:
+        case NATURE_FONCTION:
             printf("fonction");
             break;
         default:
@@ -48,12 +32,23 @@ static void affiche_nature_declaration(int nature) {
     }
 }
 
+/* Ecrit les informations dans la table des declarations */
+static void ecrit(int index, int nature, int region) {
+    tdec[index].nature = nature;
+    tdec[index].suivant = TDEC_VALEUR_NULL;
+    tdec[index].region = region;
+    tdec[index].index_trep = TDEC_VALEUR_NULL;
+    tdec[index].exec = TDEC_VALEUR_NULL;
+
+    tailleTdec++;
+}
+
 /* Affiche la table des declarations */
 void tdec_affiche() {
     int i;
     printf(
         "---------------------------------------------------------------------"
-        "\nindice\t|\tnature\t|\tsuivant\t|\tregion\t|\ttrep\t|\texec\n");
+        "\nindice\t|\tnature\t\t|\tsuivant\t|\tregion\t|\ttrep\t|\texec\n");
     for (i = 0; i < tailleTdec; i++) {
         printf("%d\t|\t", i);
         affiche_nature_declaration(tdec[i].nature);
@@ -66,6 +61,20 @@ void tdec_affiche() {
 }
 
 /* Insère une nouvelle entree dans la table des declarations */
-int tdec_insere() {
-    return -1;
+int tdec_insere(int index, int nature, int region) {
+    if (index >= TDEC_TAILLE_MAX) {
+        printf(
+            "Erreur - La taille maximale de la table des declarations est "
+            "atteinte.\n");
+        return -1;
+    }
+
+    if (index < 0) {
+        printf("Erreur - index de la table lexico < 0\n");
+        return -1;
+    }
+
+    ecrit(index, nature, region);
+
+    return index;
 }

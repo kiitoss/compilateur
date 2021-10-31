@@ -110,17 +110,19 @@ Cette analyse va se faire grâce à l'utilisation de cinq tables:
 - La table des régions
 
 #### La table de hash-code
-Cette table va associer à un hash-code donné, l'index de sa première occurence dans la table lexicographique.
+Cette table va associer à un hash-code donné, l'index de sa première occurence dans la table lexicographique.  
 Prenons un exemple: le lexeme "maVariable".
-Le hash-code du lexème "maVariable" est de 20 ([ascii(m) + ascii(a) + ascii(V) + ... + ascii(e)] % 32).
-Si le lexeme "maVariable" est la première entrée de la table lexicographique, nous aurons thash[20] = 0;
+
+Le hash-code du lexème "maVariable" est de 20 ([ascii(m) + ascii(a) + ascii(V) + ... + ascii(e)] % 32).  
+Si le lexeme "maVariable" est la première entrée de la table lexicographique, nous aurons thash[20] = 0.  
 Si cela avait été la deuxième entrée, nous aurions eu thash[20] = 1.
+
 En somme, thash[hashVal] = index_table_lexico;
 
-Prenons maintenant le lexeme "amVariable" ("a" et "m" sont inversés). Le haschode est encore de 20, or thash[20] a déjà été définie.
+Prenons maintenant le lexeme "amVariable" ("a" et "m" sont inversés). Le haschode est encore de 20, or thash[20] a déjà été définie.  
 Il est donc inutile de modifier la table de hash-code.
 
-Mais alors comment retrouver les informations du lexeme "amVariable" dans la table lexicographique ?
+Mais alors comment retrouver les informations du lexeme "amVariable" dans la table lexicographique ?  
 Nous allons voir cela plus bas.
 
 #### La table lexicographique
@@ -129,11 +131,12 @@ Cette table stocke pour chaque lexeme ses informations:
 - Le lexème
 - Un pointeur sur le lexeme suivant de même hashcode
 
-Reprenons le même exemple que plus haut:
-Le lexeme "maVariable" est déclaré, puis le lexeme "amVariable".
+Reprenons le même exemple que plus haut:  
+Le lexeme "maVariable" est déclaré, puis le lexeme "amVariable".  
 Tous deux ont le même hash-code mais c'est "maVariable" qui est déclaré en premier, et donc stocké dans notre table de hashcode.
 
 Affichage de la table de hashcode:
+```
 indice/hashcode  |  index table lexico
 0                |  -1
 1                |  -1
@@ -143,16 +146,20 @@ indice/hashcode  |  index table lexico
 20               |  0
 ...              |  -1
 35               |  -1
+```
 
 Et voici la table lexicographique:
+```
 indice  |  longueur  |  lexeme      |  suivant
 0       |  10        |  maVariable  |  1
 1       |  10        |  amVariable  |  -1
+```
 
-A son insertion dans la table lexicographique, un lexeme n'a pas de "suivant", on lui affecte donc une valeur NULL, ici représenté par la valeur -1.
+A son insertion dans la table lexicographique, un lexeme n'a pas de "suivant", on lui affecte donc une valeur NULL, ici représenté par la valeur -1.  
 Si un autre lexeme de même hascode (par exemple "amariableV") venait à être créé, il faudrait modifier la valeur de suivant de "amVariable" pour qu'elle prenne l'index du nouveua lexeme.
 
 Voici la table de hash-code après plusieurs modifications:
+```
 indice/hashcode  |  index table lexico
 0                |  -1
 1                |  2
@@ -162,17 +169,20 @@ indice/hashcode  |  index table lexico
 20               |  0
 ...              |  -1
 32               |  -1
+```
 
 Et voici la table lexicographique après plusieurs modifications:
+```
 indice  |  longueur  |  lexeme      |  suivant
 0       |  10        |  maVariable  |  1
 1       |  10        |  amVariable  |  4
 2       |  1         |  a           |  3
 3       |  10        |  monFloat01  |  -1
 4       |  10        |  amariableV  |  -1
+```
 
-Dans cette nouvelle table lexicographique, il y a 5 entrées, et pourtant, il n'y a que deux hash-code différents:
-hashcode(a) = hashcode(monFloat01)
+Dans cette nouvelle table lexicographique, il y a 5 entrées, et pourtant, il n'y a que deux hash-code différents:  
+hashcode(a) = hashcode(monFloat01)  
 hashcode(maVariable) = hashcode(amVariable) = hashcode(amariableV)
 
 Pour obtenir l'indice du lexeme "amariableV", il suffira de faire:
@@ -199,7 +209,7 @@ int getIndice(char *lexeme) {
       break;
     }
   }
-  
+
   return indice;
 }
 

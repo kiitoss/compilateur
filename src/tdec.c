@@ -7,6 +7,7 @@ int tailleTdec = 0;
 
 /* Affiche la nature d'une entree de la table des declarations */
 static void affiche_nature_declaration(int nature) {
+    printf("%d ", nature);
     switch (nature) {
         case NATURE_STRUCTURE:
             printf("structure");

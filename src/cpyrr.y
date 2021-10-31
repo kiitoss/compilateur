@@ -86,7 +86,9 @@ declaration_variable:	VARIABLE IDF DEUX_POINTS nom_type   {
 
 
 	/* Grammaire de déclaration d'une fonction */
-declaration_fonction:	FONCTION IDF liste_parametres RETOURNE type_simple corps
+declaration_fonction:	FONCTION IDF liste_parametres RETOURNE type_simple corps    {
+                                                                                        if ($2 != TLEX_VALEUR_NULL) tdec_insere($2, NATURE_FONCTION, region);
+                                                                                    }
 						;
 
 

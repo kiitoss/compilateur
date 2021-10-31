@@ -1,6 +1,6 @@
-#ifndef FSEM_H
+#ifndef ARBRE_H
 
-#define FSEM_H
+#define ARBRE_H
 
 /* la structure d’arbre necessaire */
 typedef struct noeud {

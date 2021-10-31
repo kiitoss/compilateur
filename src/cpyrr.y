@@ -38,7 +38,7 @@ programme:	PROG corps
 
 	/* Le corps du programme est une liste de déclarations puis d'instructions */
 corps:	liste_declarations liste_instructions
-		| liste_instructions
+				| liste_instructions
         ;
 
 
@@ -79,16 +79,12 @@ type_simple:    ENTIER
 
 
 	/* Grammaire de déclaration d'une variable */
-declaration_variable:	VARIABLE IDF DEUX_POINTS nom_type   {
-                                                                if ($2 != TLEX_VALEUR_NULL) tdec_insere($2, NATURE_VARIABLE, region);
-                                                            }
+declaration_variable:	VARIABLE IDF DEUX_POINTS nom_type   { tdec_insere($2, NATURE_VARIABLE, region); }
 						;
 
 
 	/* Grammaire de déclaration d'une fonction */
-declaration_fonction:	FONCTION IDF liste_parametres RETOURNE type_simple corps    {
-                                                                                        if ($2 != TLEX_VALEUR_NULL) tdec_insere($2, NATURE_FONCTION, region);
-                                                                                    }
+declaration_fonction:	FONCTION IDF liste_parametres RETOURNE type_simple corps    { region++; tdec_insere($2, NATURE_FONCTION, region);}
 						;
 
 
@@ -152,7 +148,8 @@ void yyerror(char *s) {
 }
 
 int main(void) {
-	initThash();
+		initThash();
+		initTdec();
     yyparse();
     printf("\n\nAffichage de la table de hash-code:\n");
     thash_affiche();

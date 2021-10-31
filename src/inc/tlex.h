@@ -1,8 +1,8 @@
+#include "global.h"
+
 #ifndef TLEX_H
 #define TLEX_H
 
-#define TLEX_TAILLE_MAX 500
-#define TLEX_VALEUR_NULL -1
 #define THASH_MAX 32
 #define LEXEME_TAILLE_MAX 50
 

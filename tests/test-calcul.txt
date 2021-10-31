@@ -16,6 +16,10 @@ PROG
     DEBUT
     print (100+10;5);
     FIN;
+  fonction h retourne 5
+    DEBUT
+    print (100+10;5);
+    FIN;
   DEBUT
     print 4+2+5;
   FIN

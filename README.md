@@ -11,6 +11,7 @@ Ce projet a pour but la création d'un compilateur et d'une machine virtuelle po
     2. [Analyse Sémantique](#p22)
         1. [La table de hash-code](#p221)
         2. [La table lexicographique](#p222)
+        3. [La table des declarations](#p223)
 3. [Conception de la machine virtuelle](#p3)
 
 ## Conception des programmes LEX et YACC <a name="p1"></a>
@@ -234,5 +235,15 @@ int main(void) {
   return EXIT_SUCCESS;
 }
 ```
+
+
+#### La table des declarations <a name="p223"></a>
+La table des declarations sert a à stocker les informations sur un lexeme.
+Cette table enregistre les informations suivantes:
+- La nature (structure / tableau / variable / parametre / procedure / fonction)
+- Un chainage vers le lexeme suivant de même nom
+- Le numero de la région
+- L'index du lexème dans la table des représentations
+- La taille ou le déplacement à l'exécution
 
 ## Conception de la machine virtuelle <a name="p3"></a>

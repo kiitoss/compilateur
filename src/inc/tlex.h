@@ -4,11 +4,12 @@
 #define TLEX_TAILLE_MAX 500
 #define TLEX_VALEUR_NULL -1
 #define THASH_MAX 32
+#define LEXEME_TAILLE_MAX 50
 
 /* la structure d'une entrée dans la table lexicographique */
 struct tlex_entree {
     int taille;
-    char *lexeme;
+    char lexeme[LEXEME_TAILLE_MAX];
     int suivant;
 };
 
@@ -23,9 +24,9 @@ void initThash();
 char *lexeme(int numLexicographique);
 
 /* Affiche la table lexicographique */
-void afficheTableLexico();
+void tlex_affiche();
 
 /* Insère le lexeme dans la table de hashcode et la table lexicographique */
-int inserer(char *lexeme);
+int tlex_insere(char *lexeme);
 
 #endif

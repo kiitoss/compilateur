@@ -3,13 +3,13 @@ CFLAGS = -W -Wall
 
 compilateur-clean: compilateur simple-clean
 
-compilateur: cpyrr-lex cpyrr-yacc
-	cc lex.yy.c y.tab.c -o cpyrr.exe
+compilateur: cpyrr-lex cpyrr-yacc tlex.o
+	$(CC) $(CFLAGS) lex.yy.c y.tab.c tlex.o -o cpyrr.exe
 
-cpyrr-lex:
+cpyrr-lex: src/cpyrr.l
 	lex src/cpyrr.l
 
-cpyrr-yacc:
+cpyrr-yacc: src/cpyrr.y
 	yacc -d src/cpyrr.y
 
 

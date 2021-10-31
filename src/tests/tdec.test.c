@@ -5,7 +5,7 @@
 
 int main(void) {
     printf("Affichage du tableau des declarations:\n");
-    afficheTableDeclarations();
+    tdec_affiche();
     printf("\n");
 
     return EXIT_SUCCESS;

@@ -1,10 +1,11 @@
 %{
+		#include "src/inc/tlex.h"
     #include "y.tab.h"
     #include <stdlib.h>
 
     void yyerror(char *);
 
-		// Définition de la constante permettant de pointer la ligne de l'erreur
+		/* Définition de la constante permettant de pointer la ligne de l'erreur */
 		int line = 1;
 %}
 
@@ -77,7 +78,10 @@ letter			[a-zA-Z]
 									}
 
 	/* A modifier */
-{letter}+({letter}|{digit}|"_")* return IDF;
+{letter}+({letter}|{digit}|"_")*	{
+																		tlex_insere(yytext);
+																		return IDF;
+																	}
 
 
 	/* Cas d'erreur */

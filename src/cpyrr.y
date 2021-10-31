@@ -1,11 +1,13 @@
 %{
+	#include "src/inc/tlex.h"
+	
     #include <stdio.h>
 		#include <stdlib.h>
 
     int yylex(void);
     void yyerror(char *);
 
-		int line;
+	int line;
 %}
 
 // Déclaration des tokens
@@ -144,6 +146,9 @@ void yyerror(char *s) {
 }
 
 int main(void) {
+	initThash();
     yyparse();
+    printf("\n\nAffichage de la table lexicographique:\n");
+    tlex_affiche();
     return 0;
 }

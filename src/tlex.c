@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+int tailleTlex = 0;
+
 /* Retourne la valeur de hash du lexème*/
 static int hashLexeme(char *lexeme) {
     int i, sommeAscii = 0;
@@ -13,15 +15,29 @@ static int hashLexeme(char *lexeme) {
     return (sommeAscii % THASH_MAX);
 }
 
-int tailleTlex = 0;
+/* Ecrit dans la table de hashcode l'index du premier element de la table
+ * lexicographique */
+static void updateThash(int hashVal, int indexTlex) {
+    if (thash[hashVal] == TLEX_VALEUR_NULL) {
+        thash[hashVal] = indexTlex;
+    }
+}
 
 /* Ecrit les informations du lexeme dans la table de hashcode et la table
  * lexicographique */
 static void ecrit(int index, int hashVal, int taille, char *lexeme) {
-    if (thash[hashVal] == TLEX_VALEUR_NULL) thash[hashVal] = index;
+    if (index >= TLEX_TAILLE_MAX) {
+        printf(
+            "Erreur - La taille maximale de la table lexicographique est "
+            "atteinte.\n");
+        return;
+    }
+
+    updateThash(hashVal, index);
+
     tlex[index].taille = taille;
-    tlex[index].lexeme = lexeme;
-    tlex[index].suivant = -1;
+    strcpy(tlex[index].lexeme, lexeme);
+    tlex[index].suivant = TLEX_VALEUR_NULL;
 }
 
 /* initialise la table de hascode */
@@ -40,11 +56,11 @@ char *lexeme(int numLexicographique) {
 }
 
 /* Affiche la table lexicographique */
-void afficheTableLexico() {
+void tlex_affiche() {
     int i;
     printf(
         "---------------------------------------------------------------------"
-        "\n");
+        "\nindice\t|\ttaille\t|\tsuivant\t|\tlexeme\n");
     for (i = 0; i < tailleTlex; i++) {
         printf("%d\t|\t%d\t|\t%d\t|\t%s\n", i, tlex[i].taille, tlex[i].suivant,
                tlex[i].lexeme);
@@ -55,7 +71,7 @@ void afficheTableLexico() {
 }
 
 /* Insère le lexeme dans la table de hashcode et la table lexicographique */
-int inserer(char *lexeme) {
+int tlex_insere(char *lexeme) {
     int i;
     int returnVal = -1;
     int existeDeja = 0;
@@ -70,7 +86,6 @@ int inserer(char *lexeme) {
         }
         indexPrecedent = i;
     }
-
     if (!existeDeja) {
         if (indexPrecedent != TLEX_VALEUR_NULL) {
             tlex[indexPrecedent].suivant = tailleTlex;
@@ -79,6 +94,5 @@ int inserer(char *lexeme) {
         returnVal = tailleTlex;
         tailleTlex++;
     }
-
     return returnVal;
 }

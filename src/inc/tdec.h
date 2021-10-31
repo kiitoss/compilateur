@@ -8,7 +8,7 @@
 struct tdec_entree {
     int nature;
     int suivant;
-    int num_region;
+    int region;
     int index_trep;
     int exec;
 };

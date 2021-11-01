@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 /* Affiche une entree de type structure */
 static void affiche_structure(union entree e) {
@@ -50,7 +49,7 @@ static void free_parametres(int index) {
     free(trep[index].data.fonction.parametre);
 }
 
-/* Initialise une nouvelle entree dans la table des representations */
+/* Initialise une nouvelle entree dans le tebleau des representations */
 static void init_trep_entree(int index, int nature) {
     trep[index].nature = nature;
     switch (nature) {
@@ -114,12 +113,20 @@ void init_trep() {
 
 /* Affiche la table des representations */
 void trep_affiche() {
-    int i;
+    int i, affiche_marque = 1;
     printf(
         "---------------------------------------------------------------------"
         "\nindice\t|\tnature\t\t|\tdata\n");
 
     for (i = 0; i < TREP_TAILLE_MAX; i++) {
+        if (trep[i].nature == VALEUR_NULL) {
+            if (affiche_marque) {
+                affiche_marque = 0;
+                printf("............\n");
+            }
+            continue;
+        }
+        affiche_marque = 1;
         printf("%d\t|\t", i);
         affiche_nature_declaration(trep[i].nature);
         if (trep[i].nature == NATURE_TABLEAU) {

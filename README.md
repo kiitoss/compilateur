@@ -207,7 +207,7 @@ Pour obtenir l'indice du lexeme "amariableV", il suffira de faire:
 /* Inclure ici le fichier contenant la fonction hash_lexeme() et initialisant le tableau thash */
 #include "tlex.h"
 
-#define THASH_MAX 32
+#define THASH_TAILLE_MAX 32
 
 /* Retourne l'indice d'un lexeme dans la table lexico, -1 sinon */
 int get_indice(char *lexeme) {

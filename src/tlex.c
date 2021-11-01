@@ -10,7 +10,7 @@ static int hash_lexeme(char *lexeme) {
     for (i = 0; lexeme[i] != '\0'; i++) {
         sommeAscii += lexeme[i];
     }
-    return (sommeAscii % THASH_MAX);
+    return (sommeAscii % THASH_TAILLE_MAX);
 }
 
 /* Ecrit dans la table de hashcode l'index du premier element de la table
@@ -70,11 +70,19 @@ void tlex_affiche() {
 
 /* Affiche la table de hash-code */
 void thash_affiche() {
-    int i;
+    int i, affiche_marque = 1;
     printf(
         "---------------------------------------------------------------------"
         "\nindice/hash\t|\tindice tlex\n");
-    for (i = 0; i < THASH_MAX; i++) {
+    for (i = 0; i < THASH_TAILLE_MAX; i++) {
+        if (thash[i] == VALEUR_NULL) {
+            if (affiche_marque) {
+                affiche_marque = 0;
+                printf("............\n");
+            }
+            continue;
+        }
+        affiche_marque = 1;
         printf("%d\t\t|\t%d\n", i, thash[i]);
     }
     printf(

@@ -87,7 +87,7 @@ int get_index_fonction_trep() {
 }
 
 /* Remet à zero l'index de la fonction sur laquelle le travail s'effectue */
-void clear_index_fonction_trep() {
+void reinitialise_index_fonction_trep() {
     index_fonction_trep = VALEUR_NULL;
 }
 

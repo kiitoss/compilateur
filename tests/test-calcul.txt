@@ -8,7 +8,7 @@ PROG
   var maVariable:10;
   var monFloat01:0,5;
   var maVar1Bool:bool;
-  fonction g(a:int) retourne 4
+  fonction g retourne 4
     DEBUT
     print 3+6;
     FIN;

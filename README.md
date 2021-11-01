@@ -328,6 +328,8 @@ La table des représentations sert à stocker des informations supplémentaires,
     - Son numéro lexicographique
     - Un numéro correspondant à son type
 
+Pour stocker les informations pour chaque nature, plusieurs méthodes sont possibles mais nous allons choisir ici d'utiliser des listes chaînées.
+
 ##### Intégration <a name="p2242"></a>
 La table des représentations doit elle-aussi être initialisée dans la fonction main du fichier YACC.  
 Comme la sauvegarde des champs, dimensions et paramètre passe par l'utilisation d'une liste chapinée, une fois l'analyse faîte, il nous faudra libérer la mémoire utilisée par le tableau.
@@ -343,6 +345,92 @@ int main(void) {
   return 0;
 }
 ```
+
+Il se pose maintenant la question de l'insertion d'entrées dans la table des représentations.  
+Comment insérer une novuelle fonction, procédure, structure ou encore un nouveau tableau avec notre fichier YACC ?
+
+Voici un bout du fichier YACC permettant de vérifier la validité d'une fonction:
+```
+	/* Grammaire de déclaration d'une fonction */
+declaration_fonction: FONCTION IDF liste_parametres RETOURNE type_simple corps
+;
+
+
+	/* La liste des paramètres est soit vide soit entourée de parenthèses */
+liste_parametres:
+| PARENTHESE_OUVRANTE liste_param PARENTHESE_FERMANTE
+;
+
+
+	/* La liste des paramètres comprend un ou plus paramètres séparés par le token POINT_VIRGULE */
+liste_param: un_param
+| liste_param POINT_VIRGULE un_param
+;
+
+	/* Grammaire d'un paramètre */
+un_param: IDF DEUX_POINTS type_simple
+;
+```
+
+Nous serions tenté ici d'insérer un nouveau champ dans la table des représentations en faisant comme suit:
+```
+	/* Grammaire de déclaration d'une fonction */
+declaration_fonction: FONCTION IDF liste_parametres RETOURNE type_simple corps    {
+		index_fonction = trep_nouvelle_entree(NATURE_FONCTION);
+	}
+;
+```
+
+Nous pourrions ensuite ajouter les paramètre un à un en faisant de la sorte:
+```
+	/* Grammaire d'un paramètre */
+un_param: IDF DEUX_POINTS type_simple {
+		trep_ajoute_fonction_param(index_fonction, $1, 0);
+	}
+;
+```
+
+Cependant, cela ne fonctionnera pas, car l'ordre des actions YACC n'est pas descendant.  
+En effet, ce sont d'abord les paramètres qui seront analysés, donc ici insérés, mais l'index de la fonction dans la table des représentations sera alors inconnu.
+
+Pour créer une nouvelle entrée et insérer des paramètres, il faudra plutôt faire comme cela:
+```
+	/* Grammaire de déclaration d'une fonction */
+declaration_fonction: FONCTION IDF liste_parametres RETOURNE type_simple corps    {
+    /* Si l'index de la fonction est null, c'est qu'il n'y a aucun paramètre, il faudra tout de même insérer une nouvelle entrée dans la table. */
+    if (est_null_index_fonction_trep()) {
+			set_index_fonction_trep(trep_nouvelle_entree(NATURE_FONCTION));
+		}
+    /* On reinitialise l'index de la fonction */
+		reinitialise_index_fonction_trep();
+	}
+;
+
+
+	/* La liste des paramètres est soit vide soit entourée de parenthèses */
+liste_parametres:
+| PARENTHESE_OUVRANTE liste_param PARENTHESE_FERMANTE
+;
+
+
+	/* La liste des paramètres comprend un ou plus paramètres séparés par le token POINT_VIRGULE */
+liste_param: un_param
+| liste_param POINT_VIRGULE un_param
+;
+
+	/* Grammaire d'un paramètre */
+un_param: IDF DEUX_POINTS type_simple {
+		if (est_null_index_fonction_trep()) {
+			set_index_fonction_trep(trep_nouvelle_entree(NATURE_FONCTION));
+		}
+    /* On utilise pour l'instant la valeur 0 pour le champ exec */
+		trep_ajoute_fonction_param(get_index_fonction_trep(), $1, 0);
+	}
+;
+```
+
+Tout se passe dans la règle du nouveau paramètre.  
+Il faudra cependant bien penser à rajouter une entrée dans le cas où il n'y a aucun paramètre dans notre fonction.
 
 #### La table des régions <a name="p225"></a>
 ##### Explication <a name="p2251"></a>

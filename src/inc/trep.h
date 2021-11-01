@@ -69,7 +69,7 @@ void set_index_fonction_trep(int index);
 int get_index_fonction_trep();
 
 /* Remet à zero l'index de la fonction sur laquelle le travail s'effectue */
-void clear_index_fonction_trep();
+void reinitialise_index_fonction_trep();
 
 /* Retourne 1 si index_fonction_trep est null, 0 sinon */
 int est_null_index_fonction_trep();

@@ -91,7 +91,10 @@ declaration_variable: VARIABLE IDF DEUX_POINTS nom_type   {
 declaration_fonction: FONCTION IDF liste_parametres RETOURNE type_simple corps    {
 		region++;
 		tdec_insere($2, NATURE_FONCTION, region);
-		clear_index_fonction_trep();
+		if (est_null_index_fonction_trep()) {
+			set_index_fonction_trep(trep_nouvelle_entree(NATURE_FONCTION));
+		}
+		reinitialise_index_fonction_trep();
 	}
 ;
 

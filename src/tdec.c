@@ -45,7 +45,7 @@ static void ecrit(int index, int nature, int region) {
 static int est_libre(int index) { return tdec[index].nature == VALEUR_NULL; }
 
 /* initialise la table des declarations */
-void initTdec() {
+void init_tdec() {
     int i;
     for (i = 0; i < TDEC_TAILLE_MAX; i++) {
         tdec[i].nature = VALEUR_NULL;

@@ -203,15 +203,15 @@ Pour obtenir l'indice du lexeme "amariableV", il suffira de faire:
 #include <stdio.h>
 #include <string.h>
 
-/* Inclure ici le fichier contenant la fonction hashLexeme() et initialisant le tableau thash */
+/* Inclure ici le fichier contenant la fonction hash_lexeme() et initialisant le tableau thash */
 #include "tlex.h"
 
 #define THASH_MAX 32
 
 /* Retourne l'indice d'un lexeme dans la table lexico, -1 sinon */
-int getIndice(char *lexeme) {
+int get_indice(char *lexeme) {
   int indice = -1;
-  int hashVal = hashLexeme(lexeme);
+  int hashVal = hash_lexeme(lexeme);
 
   /* On initialise i grâce à la table de hashcode */
   /* On passe au i suivant grâce à la colonne "suivant" de la table lexico */
@@ -226,7 +226,7 @@ int getIndice(char *lexeme) {
 }
 
 int main(void) {
-  int indice = getIndice("amariableV");
+  int indice = get_indice("amariableV");
   if (indice == -1) {
     printf("Aucune entrée pour 'amariableV' dans la table.\n");
   } else {

@@ -24,7 +24,7 @@ struct tdec_entree {
 struct tdec_entree tdec[TDEC_TAILLE_MAX];
 
 /* initialise la table des declarations */
-void initTdec();
+void init_tdec();
 
 /* Affiche la table des declarations */
 void tdec_affiche();

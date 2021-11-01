@@ -18,7 +18,7 @@ struct tlex_entree tlex[TLEX_TAILLE_MAX];
 int thash[THASH_MAX];
 
 /* initialise la table de hascode */
-void initThash();
+void init_thash();
 
 /* Retourne le lexème correspondant au numéro lexicographique */
 char *lexeme(int numLexicographique);

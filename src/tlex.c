@@ -6,7 +6,7 @@
 
 int tailleTlex = 0;
 /* Retourne la valeur de hash du lexème*/
-static int hashLexeme(char *lexeme) {
+static int hash_lexeme(char *lexeme) {
     int i, sommeAscii = 0;
     for (i = 0; lexeme[i] != '\0'; i++) {
         sommeAscii += lexeme[i];
@@ -16,7 +16,7 @@ static int hashLexeme(char *lexeme) {
 
 /* Ecrit dans la table de hashcode l'index du premier element de la table
  * lexicographique */
-static void updateThash(int hashVal, int indexTlex) {
+static void update_thash(int hashVal, int indexTlex) {
     if (thash[hashVal] == VALEUR_NULL) {
         thash[hashVal] = indexTlex;
     }
@@ -32,7 +32,7 @@ static void ecrit(int index, int hashVal, int taille, char *lexeme) {
         return;
     }
 
-    updateThash(hashVal, index);
+    update_thash(hashVal, index);
 
     tlex[index].taille = taille;
     strcpy(tlex[index].lexeme, lexeme);
@@ -40,7 +40,7 @@ static void ecrit(int index, int hashVal, int taille, char *lexeme) {
 }
 
 /* initialise la table de hascode */
-void initThash() {
+void init_thash() {
     int i;
     for (i = 0; i < TLEX_TAILLE_MAX; i++) thash[i] = VALEUR_NULL;
 }
@@ -89,7 +89,7 @@ int tlex_insere(char *lexeme) {
     int returnVal = VALEUR_NULL;
     int existeDeja = 0;
     int indexPrecedent = VALEUR_NULL;
-    int hashVal = hashLexeme(lexeme);
+    int hashVal = hash_lexeme(lexeme);
     int taille = strlen(lexeme);
 
     for (i = thash[hashVal]; i != VALEUR_NULL; i = tlex[i].suivant) {

@@ -82,20 +82,20 @@ type_simple: ENTIER
 
 	/* Grammaire de déclaration d'une variable */
 declaration_variable: VARIABLE IDF DEUX_POINTS nom_type   {
-		tdec_insere($2, NATURE_VARIABLE, region);
-	}
+    tdec_insere($2, NATURE_VARIABLE, region);
+  }
 ;
 
 
 	/* Grammaire de déclaration d'une fonction */
 declaration_fonction: FONCTION IDF liste_parametres RETOURNE type_simple corps    {
-		region++;
-		tdec_insere($2, NATURE_FONCTION, region);
-		if (est_null_index_fonction_trep()) {
-			set_index_fonction_trep(trep_nouvelle_entree(NATURE_FONCTION));
-		}
-		reinitialise_index_fonction_trep();
-	}
+    region++;
+    tdec_insere($2, NATURE_FONCTION, region);
+    if (est_null_index_fonction_trep()) {
+      set_index_fonction_trep(trep_nouvelle_entree(NATURE_FONCTION));
+    }
+    reinitialise_index_fonction_trep();
+  }
 ;
 
 
@@ -112,27 +112,27 @@ liste_param: un_param
 
 	/* Grammaire d'un paramètre */
 un_param: IDF DEUX_POINTS type_simple {
-		if (est_null_index_fonction_trep()) {
-			set_index_fonction_trep(trep_nouvelle_entree(NATURE_FONCTION));
-		}
-		trep_ajoute_fonction_param(get_index_fonction_trep(), $1, 0);
-	}
+    if (est_null_index_fonction_trep()) {
+      set_index_fonction_trep(trep_nouvelle_entree(NATURE_FONCTION));
+    }
+      trep_ajoute_fonction_param(get_index_fonction_trep(), $1, 0);
+  }
 ;
 
 	/** A modifier */
 liste_variable: expression {
-		printf("%d\n", $1);
-	}
+    printf("%d\n", $1);
+  }
 | liste_variable POINT_VIRGULE expression {
-		printf("%d\n", $3);
-	}
+    printf("%d\n", $3);
+  }
 ;
 
 
 	/** A modifier */
 instruction: AFFICHE expression {
-		printf("%d\n", $2);
-	}
+    printf("%d\n", $2);
+  }
 | condition
 ;
 
@@ -143,20 +143,20 @@ condition: SI expression_booleenne ALORS liste_instructions SINON liste_instruct
 
 	/** A modifier */
 expression: ENTIER {
-		$$ = $1;
-	}
+    $$ = $1;
+  }
 | expression PLUS expression {
-		$$ = $1 + $3;
-	}
+    $$ = $1 + $3;
+  }
 | expression MOINS expression {
-		$$ = $1 - $3;
-	}
+    $$ = $1 - $3;
+  }
 | expression MULT expression {
-		$$ = $1 * $3;
-	}
+    $$ = $1 * $3;
+  }
 | expression DIV expression {
-		$$ = $1 / $3;
-	}
+    $$ = $1 / $3;
+  }
 | PARENTHESE_OUVRANTE liste_variable PARENTHESE_FERMANTE 
 ;
 
@@ -165,22 +165,22 @@ expression: ENTIER {
 expression_booleenne: TRUE
 | FALSE
 | expression_booleenne ET expression_booleenne {
-		$$ = $1 && $3;
-	}
+    $$ = $1 && $3;
+  }
 | expression_booleenne OU expression_booleenne {
-		$$ = $1 || $3;
-	}
+    $$ = $1 || $3;
+  }
 | NON expression_booleenne {
-		$$ = !$2;
-	}
+    $$ = !$2;
+  }
 ;
 
 
 %%
 
 void yyerror(char *s) {
-    fprintf(stderr, "ligne %d: %s\n", line, s);
-		exit(-1);
+  fprintf(stderr, "ligne %d: %s\n", line, s);
+  exit(-1);
 }
 
 int main(void) {

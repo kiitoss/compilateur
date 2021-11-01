@@ -184,24 +184,24 @@ void yyerror(char *s) {
 }
 
 int main(void) {
-	  init_thash();
-	  init_tdec();
-	  init_trep();
+  init_thash();
+  init_tdec();
+  init_trep();
 
-    yyparse();
-    
-	  printf("\n\nAffichage de la table de hash-code:\n");
-    thash_affiche();
-    printf("\n\nAffichage de la table lexicographique:\n");
-    tlex_affiche();
-    printf("\n\nAffichage de la table des déclarations:\n");
-    tdec_affiche();
-	  printf("\n\nAffichage de la table des représentations:\n");
-    trep_affiche();
-	  printf("\n\nAffichage de la table des régions:\n");
-    treg_affiche();
-    printf("\n");
+  yyparse();
 
-	  trep_free();
-    return 0;
+  printf("\n\nAffichage de la table de hash-code:\n");
+  thash_affiche();
+  printf("\n\nAffichage de la table lexicographique:\n");
+  tlex_affiche();
+  printf("\n\nAffichage de la table des déclarations:\n");
+  tdec_affiche();
+  printf("\n\nAffichage de la table des représentations:\n");
+  trep_affiche();
+  printf("\n\nAffichage de la table des régions:\n");
+  treg_affiche();
+  printf("\n");
+
+  trep_free();
+  return 0;
 }

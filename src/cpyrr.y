@@ -1,15 +1,16 @@
 %{
 	#include "src/inc/tlex.h"
 	#include "src/inc/tdec.h"
+	#include "src/inc/trep.h"
 
-    #include <stdio.h>
+  #include <stdio.h>
 	#include <stdlib.h>
 
-    int yylex(void);
-    void yyerror(char *);
+	int yylex(void);
+	void yyerror(char *);
 
 	int line;
-    int region = 0;
+  int region = 0;
 %}
 
 // Déclaration des tokens
@@ -150,6 +151,7 @@ void yyerror(char *s) {
 int main(void) {
 		init_thash();
 		init_tdec();
+		init_trep();
     yyparse();
     printf("\n\nAffichage de la table de hash-code:\n");
     thash_affiche();
@@ -157,5 +159,7 @@ int main(void) {
     tlex_affiche();
     printf("\n\nAffichage de la table des déclarations:\n");
     tdec_affiche();
+		printf("\n\nAffichage de la table des représentations:\n");
+    trep_affiche();
     return 0;
 }

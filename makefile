@@ -3,8 +3,8 @@ CFLAGS = -W -Wall
 
 compilateur-clean: compilateur simple-clean
 
-compilateur: cpyrr-lex cpyrr-yacc tlex.o tdec.o
-	$(CC) lex.yy.c y.tab.c tlex.o tdec.o -o cpyrr.exe
+compilateur: cpyrr-lex cpyrr-yacc tlex.o tdec.o trep.o global.o
+	$(CC) lex.yy.c y.tab.c tlex.o tdec.o trep.o global.o -o cpyrr.exe
 
 cpyrr-lex: src/cpyrr.l
 	lex src/cpyrr.l
@@ -12,6 +12,12 @@ cpyrr-lex: src/cpyrr.l
 cpyrr-yacc: src/cpyrr.y
 	yacc -d src/cpyrr.y
 
+
+global.o: src/global.c src/inc/global.h
+	$(CC) $(CFLAGS) src/global.c -c
+
+trep.o: src/trep.c src/inc/trep.h
+	$(CC) $(CFLAGS) src/trep.c -c
 
 tdec.o: src/tdec.c src/inc/tdec.h
 	$(CC) $(CFLAGS) src/tdec.c -c
@@ -23,7 +29,10 @@ arbre.o: src/arbre.c src/inc/arbre.h
 	$(CC) $(CFLAGS) src/arbre.c -c
 
 
-test: arbre.test tlex.test tdec.test
+test: arbre.test tlex.test tdec.test trep.test
+
+trep.test: trep.test.o trep.o
+	$(CC) $(CFLAGS) trep.test.o trep.o -o trep.test.exe
 
 tdec.test: tdec.test.o tdec.o
 	$(CC) $(CFLAGS) tdec.test.o tdec.o -o tdec.test.exe

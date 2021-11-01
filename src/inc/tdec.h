@@ -5,13 +5,6 @@
 
 #define TDEC_TAILLE_MAX TLEX_TAILLE_MAX*3
 
-#define NATURE_STRUCTURE 1
-#define NATURE_TABLEAU 2
-#define NATURE_VARIABLE 3
-#define NATURE_PARAMETRE 4
-#define NATURE_PROCEDURE 5
-#define NATURE_FONCTION 6
-
 /* la structure d'une entrée dans la table des declarations */
 struct tdec_entree {
     int nature;

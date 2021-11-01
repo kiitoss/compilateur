@@ -129,7 +129,7 @@ Le hash-code du lexème "maVariable" est de 20 ([ascii(m) + ascii(a) + ascii(V) 
 Si le lexeme "maVariable" est la première entrée de la table lexicographique, nous aurons thash[20] = 0.  
 Si cela avait été la deuxième entrée, nous aurions eu thash[20] = 1.
 
-En somme, thash[hashVal] = index_table_lexico;
+En somme, thash[hash_val] = index_table_lexico;
 
 Prenons maintenant le lexeme "amVariable" ("a" et "m" sont inversés). Le haschode est encore de 20, or thash[20] a déjà été définie.  
 Il est donc inutile de modifier la table de hash-code.
@@ -211,11 +211,11 @@ Pour obtenir l'indice du lexeme "amariableV", il suffira de faire:
 /* Retourne l'indice d'un lexeme dans la table lexico, -1 sinon */
 int get_indice(char *lexeme) {
   int indice = -1;
-  int hashVal = hash_lexeme(lexeme);
+  int hash_val = hash_lexeme(lexeme);
 
   /* On initialise i grâce à la table de hashcode */
   /* On passe au i suivant grâce à la colonne "suivant" de la table lexico */
-  for (int i = thash[hashVal]; i != -1; i = tlex[i].suivant) {
+  for (int i = thash[hash_val]; i != -1; i = tlex[i].suivant) {
     if (strcmp(thash[i], lexeme == 0) {
       indice = i;
       break;

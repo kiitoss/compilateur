@@ -3,34 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int tailleTdec = TLEX_TAILLE_MAX;
-
-/* Affiche la nature d'une entree de la table des declarations */
-static void affiche_nature_declaration(int nature) {
-    switch (nature) {
-        case NATURE_STRUCTURE:
-            printf("structure");
-            break;
-        case NATURE_TABLEAU:
-            printf("tableau");
-            break;
-        case NATURE_VARIABLE:
-            printf("variable");
-            break;
-        case NATURE_PARAMETRE:
-            printf("parametre");
-            break;
-        case NATURE_PROCEDURE:
-            printf("procedure");
-            break;
-        case NATURE_FONCTION:
-            printf("fonction");
-            break;
-        default:
-            printf("null/inconnu");
-            break;
-    }
-}
+int taille_tdec = TLEX_TAILLE_MAX;
 
 /* Ecrit les informations dans la table des declarations */
 static void ecrit(int index, int nature, int region) {
@@ -58,16 +31,16 @@ void tdec_affiche() {
     printf(
         "---------------------------------------------------------------------"
         "\nindice\t|\tnature\t\t|\tsuivant\t|\tregion\t|\ttrep\t|\texec\n");
-    for (i = 0; i < tailleTlex; i++) {
+    for (i = 0; i < taille_tlex; i++) {
         printf("%d\t|\t", i);
         affiche_nature_declaration(tdec[i].nature);
         printf("\t|\t%d\t|\t%d\t|\t%d\t|\t%d\n", tdec[i].suivant,
                tdec[i].region, tdec[i].index_trep, tdec[i].exec);
     }
-    if (tailleTlex < TLEX_TAILLE_MAX) {
+    if (taille_tlex < TLEX_TAILLE_MAX) {
         printf("............\n");
     }
-    for (i = TLEX_TAILLE_MAX; i < tailleTdec; i++) {
+    for (i = TLEX_TAILLE_MAX; i < taille_tdec; i++) {
         printf("%d\t|\t", i);
         affiche_nature_declaration(tdec[i].nature);
         printf("\t|\t%d\t|\t%d\t|\t%d\t|\t%d\n", tdec[i].suivant,
@@ -116,9 +89,9 @@ int tdec_insere(int index, int nature, int region) {
                 "région.\n");
             return -1;
         }
-        tdec[parent].suivant = tailleTdec;
-        ecrit(tailleTdec, nature, region);
-        tailleTdec++;
+        tdec[parent].suivant = taille_tdec;
+        ecrit(taille_tdec, nature, region);
+        taille_tdec++;
     }
 
     return index;

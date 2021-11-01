@@ -8,15 +8,15 @@ PROG
   var maVariable:10;
   var monFloat01:0,5;
   var maVar1Bool:bool;
-  fonction g(a:5) retourne 4
+  fonction g(a:int) retourne 4
     DEBUT
     print 3+6;
     FIN;
-  fonction h retourne 5
+  fonction h(b:int) retourne 5
     DEBUT
     print (100+10;5);
     FIN;
-  fonction h retourne 5
+  fonction h(c:int) retourne 5
     DEBUT
     print (100+10;5);
     FIN;

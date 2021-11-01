@@ -7,29 +7,19 @@
 static void ajoute_random_champ(int index) {
     int type = rand() % 4;
     int num_lex = rand() % TLEX_TAILLE_MAX;
-    structure_champ *champ = malloc(sizeof(structure_champ));
-    champ->type = type;
-    champ->num_lex = num_lex;
-    champ->exec = VALEUR_NULL;
-    trep_ajoute_structure_champ(index, champ);
+    trep_ajoute_structure_champ(index, type, num_lex, 0);
 }
 
 static void ajoute_random_dimension(int index) {
     int borne_inf = rand() % 100 - 100;
     int borne_sup = rand() % 100 + 100;
-    tableau_dimension *dimension = malloc(sizeof(tableau_dimension));
-    dimension->borne_inf = borne_inf;
-    dimension->borne_sup = borne_sup;
-    trep_ajoute_tableau_dimension(index, dimension);
+    trep_ajoute_tableau_dimension(index, borne_inf, borne_sup);
 }
 
 static void ajoute_random_parametre(int index) {
     int type = rand() % 4;
     int num_lex = rand() % TLEX_TAILLE_MAX;
-    fonction_param *parametre = malloc(sizeof(fonction_param));
-    parametre->type = type;
-    parametre->num_lex = num_lex;
-    trep_ajoute_fonction_param(index, parametre);
+    trep_ajoute_fonction_param(index, num_lex, type);
 }
 
 static void update_random_entree(int index) {

@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int index_fonction_trep = VALEUR_NULL;
+
 /* Affiche une entree de type structure */
 static void affiche_structure(union entree e) {
     structure_champ *champ = e.structure.champ;
@@ -74,22 +76,52 @@ static void init_trep_entree(int index, int nature) {
     }
 }
 
+/* Met à jour l'index de la fonction sur laquelle le travail s'effectue */
+void set_index_fonction_trep(int index) {
+    index_fonction_trep = index;
+}
+
+/* Retourne l'index de la fonction sur laquelle le travail s'effectue */
+int get_index_fonction_trep() {
+    return index_fonction_trep;
+}
+
+/* Remet à zero l'index de la fonction sur laquelle le travail s'effectue */
+void clear_index_fonction_trep() {
+    index_fonction_trep = VALEUR_NULL;
+}
+
+/* Retourne 1 si index_fonction_trep est null, 0 sinon */
+int est_null_index_fonction_trep() {
+    return index_fonction_trep == VALEUR_NULL;
+}
+
 /* Insere un nouveau champ dans la liste de champs d'une structure */
-void trep_ajoute_structure_champ(int index, structure_champ *champ) {
+void trep_ajoute_structure_champ(int index, int type, int num_lex, int exec) {
+    structure_champ *champ = malloc(sizeof(structure_champ));
+    champ->type = type;
+    champ->num_lex = num_lex;
+    champ->exec = exec;
     champ->suivant = trep[index].data.structure.champ;
     trep[index].data.structure.champ = champ;
     trep[index].data.structure.nb_champs++;
 }
 
 /* Insere une nouvelle dimension dans la liste de dimensions d'un tableau */
-void trep_ajoute_tableau_dimension(int index, tableau_dimension *dimension) {
+void trep_ajoute_tableau_dimension(int index, int borne_inf, int borne_sup) {
+    tableau_dimension *dimension = malloc(sizeof(tableau_dimension));
+    dimension->borne_inf = borne_inf;
+    dimension->borne_sup = borne_sup;
     dimension->suivant = trep[index].data.tableau.dimension;
     trep[index].data.tableau.dimension = dimension;
     trep[index].data.tableau.nb_dimensions++;
 }
 
 /* Insere un nouveau parametre dans la liste de parametres d'une fonction ou d'une procedure */
-void trep_ajoute_fonction_param(int index, fonction_param *parametre) {
+void trep_ajoute_fonction_param(int index, int num_lex, int type) {
+    fonction_param *parametre = malloc(sizeof(fonction_param));
+    parametre->num_lex = num_lex;
+    parametre->type = type;
     parametre->suivant = trep[index].data.fonction.parametre;
     trep[index].data.fonction.parametre = parametre;
     trep[index].data.fonction.nb_parametres++;

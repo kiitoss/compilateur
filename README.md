@@ -12,6 +12,7 @@ Ce projet a pour but la création d'un compilateur et d'une machine virtuelle po
         1. [La table de hash-code](#p221)
         2. [La table lexicographique](#p222)
         3. [La table des declarations](#p223)
+        4. [La table des représentations des types et des entêtes de sous-programmes](#p224)
 3. [Conception de la machine virtuelle](#p3)
 
 ## Conception des programmes LEX et YACC <a name="p1"></a>
@@ -245,5 +246,26 @@ Cette table enregistre les informations suivantes:
 - Le numero de la région
 - L'index du lexème dans la table des représentations
 - La taille ou le déplacement à l'exécution
+
+#### La table des représentations des types et des entêtes de sous-programmes <a name="p224"></a>
+La table des représentations sert à stocker des informations supplémentaires, dépendantes de la nature de l'objet.
+- Pour les structures
+  - Nombre de champs de la structure
+  - Pour chaque champ:
+    - Son type
+    - Son numéro lexicographique
+    - Le déplacement à l'exécution
+- Pour les tableau
+  - Le type des éléments
+  - Le nombre de dimensions du tableau
+  - Pour chaque dimension
+    - Sa borne inférieure
+    - Sa borne supérieure
+- Pour les fonctions et les procédures
+  - Le type de la valeur retounrnée (inutile pour les procédures)
+  - Le nombre de paramètres
+  - Pour chaque paramètre
+    - Son numéro lexicographique
+    - Un numéro correspondant à son type
 
 ## Conception de la machine virtuelle <a name="p3"></a>

@@ -1,16 +1,16 @@
 %{
-	#include "src/inc/tlex.h"
-	#include "src/inc/tdec.h"
-	#include "src/inc/trep.h"
-	#include "src/inc/treg.h"
+  #include "src/inc/tlex.h"
+  #include "src/inc/tdec.h"
+  #include "src/inc/trep.h"
+  #include "src/inc/treg.h"
 
   #include <stdio.h>
-	#include <stdlib.h>
+  #include <stdlib.h>
 
-	int yylex(void);
-	void yyerror(char *);
+  int yylex(void);
+  void yyerror(char *);
 
-	int line;
+  int line;
   int region = 0;
 %}
 
@@ -184,24 +184,24 @@ void yyerror(char *s) {
 }
 
 int main(void) {
-		init_thash();
-		init_tdec();
-		init_trep();
+	  init_thash();
+	  init_tdec();
+	  init_trep();
 
     yyparse();
     
-		printf("\n\nAffichage de la table de hash-code:\n");
+	  printf("\n\nAffichage de la table de hash-code:\n");
     thash_affiche();
     printf("\n\nAffichage de la table lexicographique:\n");
     tlex_affiche();
     printf("\n\nAffichage de la table des déclarations:\n");
     tdec_affiche();
-		printf("\n\nAffichage de la table des représentations:\n");
+	  printf("\n\nAffichage de la table des représentations:\n");
     trep_affiche();
-		printf("\n\nAffichage de la table des régions:\n");
+	  printf("\n\nAffichage de la table des régions:\n");
     treg_affiche();
     printf("\n");
 
-		trep_free();
+	  trep_free();
     return 0;
 }

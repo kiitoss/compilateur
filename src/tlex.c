@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-int taille_tlex = 0;
 /* Retourne la valeur de hash du lexème*/
 static int hash_lexeme(char *lexeme) {
     int i, sommeAscii = 0;

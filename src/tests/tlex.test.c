@@ -5,7 +5,7 @@
 #include <string.h>
 
 int main(void) {
-    initThash();
+    init_thash();
     printf("Affichage du tableau lexicograhique:\n");
     tlex_affiche();
     printf("\n");

@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int taille_tlex = 0;
+int taille_trep = 0;
+
 /* Affiche la nature d'une entree de la table des declarations ou des representations */
 void affiche_nature_declaration(int nature) {
     switch (nature) {

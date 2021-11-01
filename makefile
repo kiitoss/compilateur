@@ -31,17 +31,20 @@ arbre.o: src/arbre.c src/inc/arbre.h
 
 test: arbre.test tlex.test tdec.test trep.test
 
-trep.test: trep.test.o trep.o
-	$(CC) $(CFLAGS) trep.test.o trep.o -o trep.test.exe
+trep.test: trep.test.o trep.o global.o src/inc/trep.h
+	$(CC) $(CFLAGS) trep.test.o trep.o global.o -o trep.test.exe
 
-tdec.test: tdec.test.o tdec.o
-	$(CC) $(CFLAGS) tdec.test.o tdec.o -o tdec.test.exe
+trep.test.o: src/tests/trep.test.c
+	$(CC) $(CFLAGS) src/tests/trep.test.c -c
+
+tdec.test: tdec.test.o tdec.o global.o src/inc/tdec.h
+	$(CC) $(CFLAGS) tdec.test.o tdec.o global.o -o tdec.test.exe
 
 tdec.test.o: src/tests/tdec.test.c
 	$(CC) $(CFLAGS) src/tests/tdec.test.c -c
 
-tlex.test: tlex.test.o tlex.o
-	$(CC) $(CFLAGS) tlex.test.o tlex.o -o tlex.test.exe
+tlex.test: tlex.test.o tlex.o global.o src/inc/tlex.h
+	$(CC) $(CFLAGS) tlex.test.o tlex.o global.o -o tlex.test.exe
 
 tlex.test.o: src/tests/tlex.test.c
 	$(CC) $(CFLAGS) src/tests/tlex.test.c -c

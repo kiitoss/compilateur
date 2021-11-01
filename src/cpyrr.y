@@ -161,5 +161,6 @@ int main(void) {
     tdec_affiche();
 		printf("\n\nAffichage de la table des représentations:\n");
     trep_affiche();
+		trep_free();
     return 0;
 }

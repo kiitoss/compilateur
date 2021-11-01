@@ -12,6 +12,7 @@
 #define NATURE_FONCTION 6
 
 extern int taille_tlex;
+extern int taille_trep;
 
 /* Affiche la nature d'une entree de la table des declarations ou des representations */
 void affiche_nature_declaration(int nature);

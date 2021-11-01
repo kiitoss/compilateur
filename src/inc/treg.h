@@ -14,8 +14,17 @@ struct treg_entree {
 
 struct treg_entree treg[TREG_TAILLE_MAX];
 
+/* Augmente le nis */
+void augmente_nis();
+
+/* Réduit le nis */
+void reduit_nis();
+
+/* Retourne la region */
+int get_region();
+
 /* Cree une nouvelle entree dans la table des regions */
-int treg_nouvelle_entree(int nis);
+int treg_nouvelle_entree();
 
 /* Affiche la table des regions */
 void treg_affiche();

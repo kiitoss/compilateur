@@ -11,7 +11,6 @@
   void yyerror(char *);
 
   int line;
-  int region = 0;
 %}
 
 // Déclaration des tokens
@@ -81,16 +80,15 @@ type_simple: ENTIER
 
 
 	/* Grammaire de déclaration d'une variable */
-declaration_variable: VARIABLE IDF DEUX_POINTS nom_type   {
-    tdec_insere($2, NATURE_VARIABLE, region);
+declaration_variable: VARIABLE IDF DEUX_POINTS nom_type {
+    tdec_insere($2, NATURE_VARIABLE, get_region());
   }
 ;
 
 
 	/* Grammaire de déclaration d'une fonction */
-declaration_fonction: FONCTION IDF liste_parametres RETOURNE type_simple corps    {
-    region++;
-    tdec_insere($2, NATURE_FONCTION, region);
+declaration_fonction: FONCTION IDF liste_parametres RETOURNE type_simple corps {
+    tdec_insere($2, NATURE_FONCTION, get_region());
     if (est_null_index_fonction_trep()) {
       set_index_fonction_trep(trep_nouvelle_entree(NATURE_FONCTION));
     }
@@ -115,7 +113,7 @@ un_param: IDF DEUX_POINTS type_simple {
     if (est_null_index_fonction_trep()) {
       set_index_fonction_trep(trep_nouvelle_entree(NATURE_FONCTION));
     }
-      trep_ajoute_fonction_param(get_index_fonction_trep(), $1, 0);
+    trep_ajoute_fonction_param(get_index_fonction_trep(), $1, 0);
   }
 ;
 

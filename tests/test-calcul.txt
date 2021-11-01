@@ -12,13 +12,21 @@ PROG
     DEBUT
     print 3+6;
     FIN;
-  fonction h(b:int) retourne 5
+  fonction h(b:int) retourne int
     DEBUT
     print (100+10;5);
     FIN;
-  fonction h(c:int) retourne 5
+  fonction j(c:int) retourne int
     DEBUT
     print (100+10;5);
+    FIN;
+  fonction i(c:int) retourne int
+    fonction j(c:int; d:bool; e:int) retourne int
+      DEBUT
+      print (100+10;5);
+      FIN;
+    DEBUT
+    print (10);
     FIN;
   DEBUT
     print 4+2+5;

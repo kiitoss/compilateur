@@ -10,9 +10,20 @@ Ce projet a pour but la création d'un compilateur et d'une machine virtuelle po
     1. [Analyse Lexicale et synthaxique](#p21)
     2. [Analyse Sémantique](#p22)
         1. [La table de hash-code](#p221)
+            1. [Explication](#p2211)
+            2. [Intégration](#p2212)
         2. [La table lexicographique](#p222)
+            1. [Explication](#p2221)
+            2. [Intégration](#p2222)
         3. [La table des declarations](#p223)
+            1. [Explication](#p2231)
+            2. [Intégration](#p2232)
         4. [La table des représentations des types et des entêtes de sous-programmes](#p224)
+            1. [Explication](#p2241)
+            2. [Intégration](#p2242)
+        5. [La table des régions](#p225)
+            1. [Explication](#p2251)
+            2. [Intégration](#p2252)
 3. [Conception de la machine virtuelle](#p3)
 
 ## Conception des programmes LEX et YACC <a name="p1"></a>
@@ -123,6 +134,7 @@ Cette analyse va se faire grâce à l'utilisation de cinq tables:
 - La table des régions
 
 #### La table de hash-code <a name="p221"></a>
+##### Explication <a name="p2211"></a>
 Cette table va associer à un hash-code donné, l'index de sa première occurence dans la table lexicographique.  
 Prenons un exemple: le lexeme "maVariable".
 
@@ -138,7 +150,22 @@ Il est donc inutile de modifier la table de hash-code.
 Mais alors comment retrouver les informations du lexeme "amVariable" dans la table lexicographique ?  
 Nous allons voir cela plus bas.
 
+##### Intégration <a name="p2212"></a>
+L'intégration de la table de hashcode se fait directement dans la fonction main du fichier YACC
+```c
+int main(void) {
+  init_thash();
+
+  yyparse();
+
+  return 0;
+}
+```
+Son initialiser va intégrer une valeur nulle définie préalablement à chaque élément du tableau de hashcode.
+Une fois ce tableau initialiser, il sera possible de s'en servir avec la table lexicograpahique.
+
 #### La table lexicographique <a name="p222"></a>
+##### Explication <a name="p2221"></a>
 Cette table stocke pour chaque lexeme ses informations:
 - La longueur
 - Le lexème
@@ -237,8 +264,19 @@ int main(void) {
 }
 ```
 
+##### Intégration <a name="p2222"></a>
+La table lexicographique n'a pas besoin d'être initialisée.  
+C'est le programme LEX qui va insérer de nouvelles entrées dans la table à chaque nouveau lexeme rencontré.
+```
+{letter}+({letter}|{digit}|"_")*	{
+  yylval = tlex_insere(yytext);
+  return IDF;
+}
+```
+
 
 #### La table des declarations <a name="p223"></a>
+##### Explication <a name="p2231"></a>
 La table des declarations sert a à stocker les informations sur un lexeme.
 Cette table enregistre les informations suivantes:
 - La nature (structure / tableau / variable / parametre / procedure / fonction)
@@ -247,7 +285,29 @@ Cette table enregistre les informations suivantes:
 - L'index du lexème dans la table des représentations
 - La taille ou le déplacement à l'exécution
 
+##### Intégration <a name="p2232"></a>
+La table des déclarations doit être initialisée dans la fonction main du fichier YACC.  
+Cette initialisation va permettre de remplir les champs NATURE de la table avec une valeur définie comme null.  
+Nous aurons donc:
+```c
+int main(void) {
+  init_thash();
+  init_tdec();
+
+  yyparse();
+
+  return 0;
+}
+```
+
+Ensuite, il faudra remplir cette table, cela se fera dans les règles YACC.  
+Par exemple, à chaque nouvelle fonction, on souhaitera insérer au bon index les informations correspondant à la nature et à la région.
+```
+declaration_fonction:	FONCTION IDF liste_parametres RETOURNE type_simple corps    { tdec_insere($2, NATURE_FONCTION, region); }
+```
+
 #### La table des représentations des types et des entêtes de sous-programmes <a name="p224"></a>
+##### Explication <a name="p2241"></a>
 La table des représentations sert à stocker des informations supplémentaires, dépendantes de la nature de l'objet.
 - Pour les structures
   - Nombre de champs de la structure
@@ -267,5 +327,32 @@ La table des représentations sert à stocker des informations supplémentaires,
   - Pour chaque paramètre
     - Son numéro lexicographique
     - Un numéro correspondant à son type
+
+##### Intégration <a name="p2242"></a>
+La table des représentations doit elle-aussi être initialisée dans la fonction main du fichier YACC.  
+Comme la sauvegarde des champs, dimensions et paramètre passe par l'utilisation d'une liste chapinée, une fois l'analyse faîte, il nous faudra libérer la mémoire utilisée par le tableau.
+```c
+int main(void) {
+  init_thash();
+  init_tdec();
+  init_trep();
+
+  yyparse();
+
+  trep_free();
+  return 0;
+}
+```
+
+#### La table des régions <a name="p225"></a>
+##### Explication <a name="p2251"></a>
+La table des régions sert  à représenter les informations des différentes régions du programme.  
+Cette table comporte les champs suivants:
+- La taille de la zone de données
+- Le niveau d'imbrication (nis) (=0 pour le programme principal)
+- Le pointeur vers l'arbre abstrait des instructions de cette région
+
+##### Intégration <a name="p2252"></a>
+La table des régions n'a pas besoin d'être initialisée.
 
 ## Conception de la machine virtuelle <a name="p3"></a>

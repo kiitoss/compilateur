@@ -88,11 +88,15 @@ declaration_variable: VARIABLE IDF DEUX_POINTS nom_type {
 
 	/* Grammaire de déclaration d'une fonction */
 declaration_fonction: FONCTION IDF liste_parametres RETOURNE type_simple corps {
+    if (est_null_index_fonction_trep()) {
+      treg_nouvelle_entree();
+    }
     tdec_insere($2, NATURE_FONCTION, get_region());
     if (est_null_index_fonction_trep()) {
       set_index_fonction_trep(trep_nouvelle_entree(NATURE_FONCTION));
     }
     reinitialise_index_fonction_trep();
+    depile_region();
   }
 ;
 
@@ -111,6 +115,7 @@ liste_param: un_param
 	/* Grammaire d'un paramètre */
 un_param: IDF DEUX_POINTS type_simple {
     if (est_null_index_fonction_trep()) {
+      treg_nouvelle_entree();
       set_index_fonction_trep(trep_nouvelle_entree(NATURE_FONCTION));
     }
     trep_ajoute_fonction_param(get_index_fonction_trep(), $1, 0);
@@ -185,6 +190,7 @@ int main(void) {
   init_thash();
   init_tdec();
   init_trep();
+  init_pile_regions();
 
   yyparse();
 

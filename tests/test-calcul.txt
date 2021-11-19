@@ -1,33 +1,49 @@
 // Ceci est un commentaire sur une ligne
 PROG
   var a:int;
+  var d:char;
   var b:5;
+
+  type h: struct s:int fstruct; 
+  
+  type t:tableau[2 .. 3] de int;
+
   var k:bool;
   var c:b;
   var o:float;
   var maVariable:10;
   var monFloat01:0,5;
   var maVar1Bool:bool;
-  fonction g retourne 4
+  
+  procedure g(b:5)
     DEBUT
-    print 3+6;
+   	 print 55555;
     FIN;
-  fonction h(b:int) retourne int
+  fonction g(a:5 ; b:7) retourne 4
     DEBUT
-    print (100+10;5);
+    	print 3+6;
     FIN;
-  fonction j(c:int) retourne int
+  fonction h() retourne 5
     DEBUT
-    print (100+10;5);
+    	print (100+10);
     FIN;
-  fonction i(c:int) retourne int
-    fonction j(c:int; d:bool; e:int) retourne int
-      DEBUT
-      print (100+10;5);
-      FIN;
+  fonction h() retourne 5
     DEBUT
-    print (10);
+   	 print (100+10);
     FIN;
+  
   DEBUT
     print 4+2+5;
+    a:= 5;
+    t[5] := 6;
+    idriss.islem := 5;
+    si idriss alors DEBUT lire(islem) ; FIN sinon DEBUT lire(antoine) ; FIN ;
+    tantque idriss faire DEBUT print 1 ; FIN;
+
+    //tab[x.ch1+(y422 + f(y[3,z42].ch2b.ch1,(a==b+2*z)) - 1),42].ch3.ch1[3,a42].ch2.ch4.ch2[f(g(k(3,g(3.14)),x12))+1] := 3.14 ;
+    
+    // MANQUE A AJOUTER 	
+    // - tableau plusieurs dimension
+    // - appels de fonctions/procedure 
   FIN
+  

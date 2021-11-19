@@ -28,24 +28,42 @@ letter			[a-zA-Z]
 
 
 	/* Déclaration des tokens */
-"DEBUT"						return DEBUT;
+"DEBUT"							return DEBUT;
 "FIN"							return FIN;
 ";"								return POINT_VIRGULE;
 ":"								return DEUX_POINTS;
+","								return VIRGULE;
+".."							return POINT_POINT;
 "("								return PARENTHESE_OUVRANTE;
 ")"								return PARENTHESE_FERMANTE;
-"affiche"					return AFFICHE;
-"print"					return AFFICHE;
-"PROG"						return PROG;
+"["								return CROCHET_OUVRANT;
+"]"								return CROCHET_FERMANT;
+"affiche"						return AFFICHE;
+"print"							return AFFICHE;
+"PROG"							return PROG;
 "var"							return VARIABLE;
-"fonction"				return FONCTION;
-"retourne"				return RETOURNE;
+"fonction"						return FONCTION;
+"procedure"						return PROCEDURE;
+"retourne"						return RETOURNE;
 "et"							return ET;
 "ou"							return OU;
 "!"								return NON;
 "si"							return SI;
-"alors"						return ALORS;
-"sinon"						return SINON;
+"alors"							return ALORS;
+"sinon"							return SINON;
+"tantque"						return TANT_QUE;
+"faire"							return FAIRE;
+"type"							return TYPE;
+"struct"						return STRUCT;
+"fstruct"						return FSTRUCT;
+"tableau"						return TABLEAU;
+"de"							return DE;
+"."								return POINT;
+":="							return OPAFF;
+"[^\"]+"						return CSTE_FORMAT;
+"lire"							return LIRE;
+"ecrire"						return ECRIRE;
+"=="							return DOUBLE_EGAL;
 "vrai"						{
 										yylval = 1;
 										return TRUE;
@@ -57,7 +75,7 @@ letter			[a-zA-Z]
 "int"             return ENTIER;
 "float"           return REEL;
 "bool"            return BOOLEEN;
-
+"char"		   	  return CARACTERE;
 
 	/* Déclaration des opérateurs */
 \+                return PLUS;
@@ -86,7 +104,6 @@ letter			[a-zA-Z]
 
 	/* Cas d'erreur */
 .           			yyerror("Caractère invalide !");
-
 
 %%
 

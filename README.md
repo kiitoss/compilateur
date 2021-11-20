@@ -24,6 +24,10 @@ Ce projet a pour but la création d'un compilateur et d'une machine virtuelle po
         5. [La table des régions](#p225)
             1. [Explication](#p2251)
             2. [Intégration](#p2252)
+    3. [Création de l'arbre](#p23)
+        1. [Structure](#p231)
+        2. [Fonctions](#p232)
+        1. [Intégration](#p233)
 3. [Conception de la machine virtuelle](#p3)
 
 ## Conception des programmes LEX et YACC <a name="p1"></a>
@@ -442,5 +446,96 @@ Cette table comporte les champs suivants:
 
 ##### Intégration <a name="p2252"></a>
 La table des régions n'a pas besoin d'être initialisée.
+
+### Création de l'arbre <a name="p23"></a>
+Afin d'effectuer l'analyse sémantique et pour générer le texte intermédiaire, il est nécessaire de construire un arbre lors de l'execution du programme YACC.
+
+La création de cet arbre va nous ammener à changer un grand nombre d'elements dans notre programme actuel.
+
+#### Structure <a name="p231"></a>
+La structure de l'arbre ne ressemblera pas à la structure d'un arbre binaire classique.
+La structure sera légèrement différente afin de faciliter le travail sur les opérrations ternaires par exemple (if/then/else).
+
+```c
+/* la structure de l'arbre */
+typedef struct noeud {
+    int nature;
+    int valeur;
+    struct noeud *fils_gauche;
+    struct noeud *frere_droit;
+
+} noeud;
+
+typedef struct noeud *arbre;
+```
+
+On remarque ici le remplacement du fils droit habituel par un **frère** droit.
+
+#### Fonctions <a name="p232"></a>
+Les fonctions de l'arbre vont être différentes des fonctions classiques étant donné la structure particulière de l'arbre.
+
+On retrouvera par exemple ces deux fonctions inhabituelles :
+```c
+/* Concatene l'arbre fils et l'arbre pere */
+arbre concat_pere_fils(arbre pere, arbre fils);
+
+/* Concatene l'arbre fils et l'arbre frere */
+arbre concat_pere_frere(arbre pere, arbre frere);
+```
+#### Intégration <a name="p233"></a>
+L'intégration de l'arbre recquiert des modifications importantes des fichiers LEX et YACC.
+
+L'abre va se construire au fur et à mesure des règles YACC.
+Par exemple, l'instruction:
+```c
+fonction ma_fonction() {
+  int variable = 2;
+}
+```
+devra construire un arbre dans le style suivant:
+```c
+declaration_fonction
+|
+|------ declaration_variable
+    |
+    |------ variable
+    |
+    |------ 2
+```
+
+Cela implique de retourner des valeurs de type "arbre" au sien même des règles YACC, ce qui n'est pas possible classiquement, il est donc nécessaire de modifier le type de retour des règles YACC.
+
+Pour cela, il faudra rajouter au dessus de la déclaration des tokens la règle suivante:
+```c
+%union {
+	arbre t_arbre;
+	int t_entier;
+}
+```
+
+Puis définir pour chaque règle YACC son type de retour.
+
+```c
+%type <t_arbre> affectation expression
+%type <t_entier> variable
+```
+
+Ces deux règles permettent d'indiquer au programme YACC que la lecture d'une affectation retourner un objet de type "t_arbre" alors que la lecture d'une variable retournera un objet de type "t_entier".
+  
+Cela permettra ensuite d'écrire la règle suivante:
+```c
+affectation: variable OPAFF expression {
+		$$ = concat_pere_fils(
+			creer_noeud(A_AFFECT, -1), 
+			concat_pere_frere(
+				creer_noeud(A_IDF, $1),
+				$3
+			)
+		);
+	}
+;
+```
+
+Il est important de noter que les variables A_AFFECT et A_IDF sont ici des constantes définies préalablement et permettant ensuite, lors de la lecture de l'arbre, de retrouver quel type d'opération est stockée dans le noeud.
 
 ## Conception de la machine virtuelle <a name="p3"></a>

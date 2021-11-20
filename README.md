@@ -503,15 +503,16 @@ declaration_fonction
     |------ 2
 ```
 
-Cela implique de retourner des valeurs de type "arbre" au sien même des règles YACC, ce qui n'est pas possible classiquement, il est donc nécessaire de modifier le type de retour des règles YACC.
+Cela implique de retourner des valeurs de type "arbre" au sen même des règles YACC, ce qui n'est pas possible classiquement. Il est donc nécessaire de modifier le type de retour des règles YACC.
 
-Pour cela, il faudra rajouter au dessus de la déclaration des tokens la règle suivante:
+Pour cela, il faut rajouter au dessus de la déclaration des tokens la règle suivante:
 ```c
 %union {
 	arbre t_arbre;
 	int t_entier;
 }
 ```
+Cette règle permet d'autoriser deux valeurs de retour pour les règles YACC. Ici ce sera soit un type arbre, soit un type entier.
 
 Puis définir pour chaque règle YACC son type de retour.
 

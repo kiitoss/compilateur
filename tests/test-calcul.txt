@@ -28,7 +28,12 @@ PROG
     	print (100+10);
     FIN;
   fonction h() retourne 5
+    fonction i(a:2; b:5) retourne 5
+      DEBUT
+        print 2;
+      FIN;
     DEBUT
+    
    	 print (100+10);
     FIN;
   

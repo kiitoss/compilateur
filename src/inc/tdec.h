@@ -23,6 +23,6 @@ void init_tdec();
 void tdec_affiche();
 
 /* Insère une nouvelle entree dans la table des declarations */
-int tdec_insere(int index, int nature, int region);
+int tdec_nouvelle_entree(int index, int nature, int region);
 
 #endif

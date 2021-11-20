@@ -4,17 +4,13 @@
 #include <stdlib.h>
 
 int taille_treg = 0;
-/* -1 car a l'initialisation, on fait id_region++ avant l'insertion*/
-int id_region = -1;
+int id_region = 0;
 
 int pile_regions[TREG_TAILLE_MAX];
 int taille_pile_region = 0;
 
 /* Retourne le nis */
 static int get_nis() { return taille_pile_region; }
-
-/* Augmente l'id de la region */
-static void augmente_id_region() { id_region++; }
 
 /* Initialise une nouvelle entree dans la table des regions */
 static void init_treg_entree(int index) {
@@ -33,9 +29,8 @@ int get_region() { return pile_regions[taille_pile_region - 1]; }
 /* Cree une nouvelle entree dans la table des regions */
 void treg_nouvelle_entree() {
     int index = taille_treg;
-    augmente_id_region();
     init_treg_entree(index);
-    empile_region();
+    empile_region(id_region++);
     taille_treg++;
 }
 
@@ -55,7 +50,7 @@ void treg_affiche() {
 }
 
 /* Empile une nouvelle region dans la table des regions */
-void empile_region() {
+void empile_region(int id_region) {
     if (taille_pile_region >= TREG_TAILLE_MAX) {
         printf("Erreur - Pile des régions a atteint son max d'elements.\n");
         return;

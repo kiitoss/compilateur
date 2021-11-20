@@ -52,7 +52,7 @@ void tdec_affiche() {
 }
 
 /* Insère une nouvelle entree dans la table des declarations */
-int tdec_insere(int index, int nature, int region) {
+int tdec_nouvelle_entree(int index, int nature, int region) {
     int parent = -1;
     int existeDeja = 0;
     if (index == VALEUR_NULL) {
@@ -61,6 +61,7 @@ int tdec_insere(int index, int nature, int region) {
     }
 
     if (index >= TDEC_TAILLE_MAX) {
+        printf("tm: %d %d\n", index, TDEC_TAILLE_MAX);
         printf(
             "Erreur - La taille maximale de la table des declarations est "
             "atteinte.\n");

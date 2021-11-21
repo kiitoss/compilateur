@@ -1,5 +1,6 @@
 %{
 		#include "src/inc/tlex.h"
+		#include "src/inc/arbre.h"
     #include "y.tab.h"
     #include <stdlib.h>
 
@@ -65,11 +66,11 @@ letter			[a-zA-Z]
 "ecrire"						return ECRIRE;
 "=="							return DOUBLE_EGAL;
 "vrai"						{
-										yylval = 1;
+										yylval.t_entier = 1;
 										return TRUE;
 									}
 "faux"						{
-										yylval = 0;
+										yylval.t_entier = 0;
 										return FALSE;
 									}
 "int"             return ENTIER;
@@ -86,18 +87,18 @@ letter			[a-zA-Z]
 
 	/* Déclaration des nombres entiers */
 [1-9]+{digit}*    {
-										yylval = atoi(yytext);
+										yylval.t_entier = atoi(yytext);
 										return ENTIER;
 									}
   /* Déclaration des nombres réels */
-[0-9]+,{digit}*		{
-                    yylval = atof(yytext);
+[0-9]+,{digit}+		{
+                    yylval.t_entier = atof(yytext);
                   	return REEL;
 									}
 
 	/* A modifier */
 {letter}+({letter}|{digit}|"_")*	{
-																		yylval = tlex_insere(yytext);
+																		yylval.t_entier = tlex_insere(yytext);
 																		return IDF;
 																	}
 

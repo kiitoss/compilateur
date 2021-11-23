@@ -26,6 +26,8 @@ void treg_nouvelle_entree();
 /* Affiche la table des regions */
 void treg_affiche();
 
+void preg_affiche();
+
 /* Empile une nouvelle region dans la table des regions */
 void empile_region();
 

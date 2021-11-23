@@ -8,8 +8,8 @@
   #include <stdio.h>
   #include <stdlib.h>
 
-	#define AFFICHER_TABLES 0
-	#define AFFICHER_ARBRE 1
+	#define AFFICHER_TABLES 1
+	#define AFFICHER_ARBRE 0
 
   int yylex(void);
   void yyerror(char *);

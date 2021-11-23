@@ -24,8 +24,20 @@ static void init_treg_entree(int index) {
 void init_pile_regions() { treg_nouvelle_entree(); }
 
 /* Retourne la region */
-int get_region() { return pile_regions[taille_pile_region - 1]; }
+int get_region() { return pile_regions[taille_pile_region-1];}
 
+void preg_affiche(){
+  int i;
+  printf(
+	 "---------------------------------------------------------------------"
+	 "\nindice\t|\tregion|\n");
+  for (i = 0; i < taille_pile_region; i++) {
+    printf("%d\t|\t%d\n", i, pile_regions[i]);
+  }
+  printf(
+	         "---------------------------------------------------------------------"
+		 "\n");
+}
 /* Cree une nouvelle entree dans la table des regions */
 void treg_nouvelle_entree() {
     int index = taille_treg;
@@ -63,5 +75,6 @@ int depile_region() {
     if (taille_pile_region == 0) {
         return -1;
     }
+    id_region--;
     return pile_regions[--taille_pile_region];
 }

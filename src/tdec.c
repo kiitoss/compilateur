@@ -28,6 +28,10 @@ void init_tdec() {
 
 /* Affiche la table des declarations */
 void tdec_affiche() {
+    /*
+        TODO
+        taille réelle tdec < taille réelle tlex possible ?
+    */
     int i;
     printf(
         "---------------------------------------------------------------------"
@@ -51,8 +55,15 @@ void tdec_affiche() {
     for (i = TLEX_TAILLE_MAX; i < taille_tdec; i++) {
         printf("%d\t|\t", i);
         affiche_nature_declaration(tdec[i].nature);
-        printf("\t|\t%d\t|\t%d\t|\t%d\t\t|\t%d\n", tdec[i].suivant,
-               tdec[i].region, tdec[i].type_ou_index_trep, tdec[i].exec);
+        printf("\t|\t%d\t|\t%d\t|\t", tdec[i].suivant, tdec[i].region);
+        if (tdec[i].nature != NATURE_VARIABLE) {
+            printf("\t");
+        }
+        printf("%d", tdec[i].type_ou_index_trep);
+        if (tdec[i].nature == NATURE_VARIABLE) {
+            printf("\t");
+        }
+        printf("\t|\t%d\n", tdec[i].exec);
     }
     printf(
         "---------------------------------------------------------------------"
@@ -101,7 +112,7 @@ int tdec_nouvelle_entree(int index_tlex, int type_ou_index_trep, int nature, int
         ecrit(taille_tdec, type_ou_index_trep, nature, region);
         taille_tdec++;
     }
-
+    
     return index_tlex;
 }
 

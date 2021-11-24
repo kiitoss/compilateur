@@ -225,6 +225,11 @@ nom_type: type_simple {
 	}
 	| IDF {
 		$$ = creer_noeud(A_IDF, yylval.t_entier);
+		/*
+			TODO
+			index_tdec = get_index_tdec(yylval.t_entier) ?
+			--> var a:b ==> type a = type b ?
+		*/
 		set_global_index_type_tdec(yylval.t_entier);
 	}
 ;
@@ -549,7 +554,6 @@ void insere_types_base() {
     index_tlex_reel = tlex_insere("reel");
     index_tlex_booleen = tlex_insere("booleen");
     index_tlex_caractere = tlex_insere("caractere");
-
     tdec_nouvelle_entree(index_tlex_entier, 0, NATURE_VARIABLE, 0);
     tdec_nouvelle_entree(index_tlex_reel, 1, NATURE_VARIABLE, 0);
     tdec_nouvelle_entree(index_tlex_booleen, 2, NATURE_VARIABLE, 0);

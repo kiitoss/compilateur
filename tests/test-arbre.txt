@@ -14,8 +14,11 @@ PROG
     4..8,
     12..25
   ] de int;
-  fonction ma_fonction(a:int) retourne int
+  fonction ma_fonction(a:float) retourne int
   var b : int;
+  fonction ma_f() retourne int
+  DEBUT
+  FIN;
   DEBUT
     print 3+6;
   FIN;

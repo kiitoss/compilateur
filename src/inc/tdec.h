@@ -10,7 +10,7 @@ struct tdec_entree {
     int nature;
     int suivant;
     int region;
-    int index_trep;
+    int type_ou_index_trep;
     int exec;
 };
 
@@ -23,6 +23,12 @@ void init_tdec();
 void tdec_affiche();
 
 /* Insère une nouvelle entree dans la table des declarations */
-int tdec_nouvelle_entree(int index, int nature, int region);
+int tdec_nouvelle_entree(int index_tlex, int type_ou_index_trep, int nature, int region);
+
+/* Met à jour l'index global de la table des declarations du type */
+void set_global_index_type_tdec(int index);
+
+/* Retourne l'index global du type dans la table des declarations */
+int get_global_index_type_tdec();
 
 #endif

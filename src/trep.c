@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int index_fonction_trep = VALEUR_NULL;
+int index_global_trep = VALEUR_NULL;
 
 /* Affiche une entree de type structure */
 static void affiche_structure(union entree e) {
@@ -76,24 +76,24 @@ static void init_trep_entree(int index, int nature) {
     }
 }
 
-/* Met à jour l'index de la fonction sur laquelle le travail s'effectue */
-void set_index_fonction_trep(int index) {
-    index_fonction_trep = index;
+/* Met à jour l'index global de la table des representations sur lequelle le travail s'effectue */
+void set_index_global_trep(int index) {
+    index_global_trep = index;
 }
 
-/* Retourne l'index de la fonction sur laquelle le travail s'effectue */
-int get_index_fonction_trep() {
-    return index_fonction_trep;
+/* Retourne l'index global de la table des representations sur lequelle le travail s'effectue */
+int get_global_index_trep() {
+    return index_global_trep;
 }
 
-/* Remet à zero l'index de la fonction sur laquelle le travail s'effectue */
-void reinitialise_index_fonction_trep() {
-    index_fonction_trep = VALEUR_NULL;
+/* Remet à zero l'index global de la table des representations sur laquelle le travail s'effectue */
+void reinitialise_index_global_trep() {
+    index_global_trep = VALEUR_NULL;
 }
 
-/* Retourne 1 si index_fonction_trep est null, 0 sinon */
-int est_null_index_fonction_trep() {
-    return index_fonction_trep == VALEUR_NULL;
+/* Retourne 1 si index global de la table des representations est null, 0 sinon */
+int est_null_index_global_trep() {
+    return index_global_trep == VALEUR_NULL;
 }
 
 /* Insere un nouveau champ dans la liste de champs d'une structure */

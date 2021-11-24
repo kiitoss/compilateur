@@ -38,6 +38,7 @@ static void ecrit(int index, int hash_val, int taille, char *lexeme) {
     tlex[index].suivant = VALEUR_NULL;
 }
 
+
 /* initialise la table de hascode */
 void init_thash() {
     int i;
@@ -93,7 +94,7 @@ void thash_affiche() {
 /* Insère le lexeme dans la table de hashcode et la table lexicographique */
 int tlex_insere(char *lexeme) {
     int i;
-    int returnVal = VALEUR_NULL;
+    int return_val = VALEUR_NULL;
     int existeDeja = 0;
     int indexPrecedent = VALEUR_NULL;
     int hash_val = hash_lexeme(lexeme);
@@ -102,7 +103,7 @@ int tlex_insere(char *lexeme) {
     for (i = thash[hash_val]; i != VALEUR_NULL; i = tlex[i].suivant) {
         if (!strcmp(lexeme, tlex[i].lexeme)) {
             existeDeja = 1;
-            returnVal = i;
+            return_val = i;
             break;
         }
         indexPrecedent = i;
@@ -112,8 +113,8 @@ int tlex_insere(char *lexeme) {
             tlex[indexPrecedent].suivant = taille_tlex;
         }
         ecrit(taille_tlex, hash_val, taille, lexeme);
-        returnVal = taille_tlex;
+        return_val = taille_tlex;
         taille_tlex++;
     }
-    return returnVal;
+    return return_val;
 }

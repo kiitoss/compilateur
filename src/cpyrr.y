@@ -1,20 +1,20 @@
 %{
-  #include "src/inc/tlex.h"
-  #include "src/inc/tdec.h"
-  #include "src/inc/trep.h"
-  #include "src/inc/treg.h"
+	#include "src/inc/tlex.h"
+	#include "src/inc/tdec.h"
+	#include "src/inc/trep.h"
+	#include "src/inc/treg.h"
 	#include "src/inc/arbre.h"
-
-  #include <stdio.h>
-  #include <stdlib.h>
+	
+	#include <stdio.h>
+	#include <stdlib.h>
 
 	#define AFFICHER_TABLES 1
 	#define AFFICHER_ARBRE 0
-
-  int yylex(void);
-  void yyerror(char *);
-
-  int line;
+	
+	int yylex(void);
+	void yyerror(char *);
+	
+	int line;
 
 	void nouvelle_declaration(int index_tlex, int nature);
 	void fin_nouvelle_declaration();
@@ -75,7 +75,7 @@ programme:
 			afficher_arbre($2);
 			printf("\n");
 		} else {
-			printf("Affichage de l'arbre désacivé.\n");
+			printf("Affichage de l'arbre désactivé.\n");
 		}
 	}
 ;
@@ -101,7 +101,7 @@ corps: liste_declarations liste_instructions {
 
 
 	/* Une liste de déclarations comprend une ou plusieurs déclarations séparées par le token POINT_VIRGULE */
-liste_declarations:	declaration POINT_VIRGULE {
+liste_declarations: declaration POINT_VIRGULE {
 		$$ = $1;
 	}
 	| liste_declarations declaration POINT_VIRGULE {
@@ -133,8 +133,7 @@ suite_liste_inst: {
 ;
 
 
-	/** A modifier */
-	/* Une déclaration peut être une déclaration de variable ou de fonction */
+	/* Une déclaration peut être une déclaration de variable, de fonction, de procedure ou de type */
 declaration: declaration_variable {
 		$$ = $1;
 	}
@@ -149,8 +148,9 @@ declaration: declaration_variable {
 	}
 ;
 
-	/* declaration d'un type */
+	/* La déclaration d'un type commence par le token TYPE */
 declaration_type: TYPE IDF DEUX_POINTS suite_declaration_type {
+		tdec_nouvelle_entree($2, trep_nouvelle_entree(NATURE_STRUCTURE), NATURE_STRUCTURE, get_region());
 		$$ = concat_pere_fils(
 			creer_noeud(A_DECL_TYPE, VALEUR_NULL), 
 			concat_pere_frere(
@@ -160,7 +160,7 @@ declaration_type: TYPE IDF DEUX_POINTS suite_declaration_type {
 		);
 	}
 ;
-	/*	une suite de declaration type c une liste de champs ou un tableau a une dimention prédefini*/
+	/* La suite de déclaration d'un type est soit une structure, soit un tableau */
 suite_declaration_type: STRUCT liste_champs FSTRUCT {
 		$$ = concat_pere_fils(
 			creer_noeud(A_STRUCT, VALEUR_NULL),
@@ -178,13 +178,12 @@ suite_declaration_type: STRUCT liste_champs FSTRUCT {
 	}
 ;
 
-	/*	*/
-dimension:	CROCHET_OUVRANT liste_dimensions CROCHET_FERMANT {
+	/* Les dimensions d'un tableau sont représentées entre crochet */
+dimension: CROCHET_OUVRANT liste_dimensions CROCHET_FERMANT {
 		$$ = concat_pere_fils(creer_noeud(A_LISTE_DIM, VALEUR_NULL), $2);
 	}
 ;
 
-	/*	*/
 liste_dimensions:	une_dimension {
 		$$ = $1;
 	}
@@ -193,8 +192,7 @@ liste_dimensions:	une_dimension {
 	}
 ;
 
-	/*	*/
-une_dimension:	expression POINT_POINT expression {
+une_dimension: expression POINT_POINT expression {
 		$$ = concat_pere_fils(
 			creer_noeud(A_DIM, VALEUR_NULL),
 			concat_pere_frere($1, $3)
@@ -202,17 +200,17 @@ une_dimension:	expression POINT_POINT expression {
 	}
 ;
 
-	/*	*/
-liste_champs:	un_champ {
+
+liste_champs: un_champ {
 		$$ = $1;
 	}
 	| liste_champs POINT_VIRGULE un_champ {
-		$$ = concat_pere_frere($1, $3);	
+		$$ = concat_pere_frere($1, $3);
 	}
 ;
 
-	/*	*/
-un_champ:	IDF DEUX_POINTS nom_type {
+un_champ: IDF DEUX_POINTS nom_type {
+		tdec_nouvelle_entree($1, get_global_index_type_tdec(), NATURE_VARIABLE, get_region());
 		$$ = concat_pere_fils(
 			creer_noeud(A_CHAMP, VALEUR_NULL),
 			concat_pere_frere(creer_noeud(A_IDF, $1), $3)
@@ -223,31 +221,33 @@ un_champ:	IDF DEUX_POINTS nom_type {
 	/* Le type peut être un type simple (entier, reel...) ou un identificateur (variable...) */
 nom_type: type_simple {
 		$$ = creer_noeud(A_TYPE, $1);
+		set_global_index_type_tdec($1);
 	}
 	| IDF {
 		$$ = creer_noeud(A_IDF, yylval.t_entier);
+		set_global_index_type_tdec(yylval.t_entier);
 	}
 ;
 
 	/** A modifier */
 type_simple: ENTIER {
-		$$ = 100;
+		$$ = 0;
 	}
 	| REEL {
-		$$ = 200;
+		$$ = 1;
 	}
 	| BOOLEEN {
-		$$ = 300;
+		$$ = 2;
 	}
 	| CARACTERE {
-		$$ = 400;
+		$$ = 3;
 	}
 ;
 
 
 	/* Grammaire de déclaration d'une variable */
 declaration_variable: VARIABLE IDF DEUX_POINTS nom_type {
-    tdec_nouvelle_entree($2, NATURE_VARIABLE, get_region());
+		tdec_nouvelle_entree($2, get_global_index_type_tdec(), NATURE_VARIABLE, get_region());
 		$$ = concat_pere_fils(
 			creer_noeud(A_DECL_VAR, VALEUR_NULL),
 			concat_pere_frere(creer_noeud(A_IDF, $2), $4)
@@ -260,7 +260,7 @@ declaration_variable: VARIABLE IDF DEUX_POINTS nom_type {
 declaration_fonction: FONCTION IDF {
 		nouvelle_declaration(yylval.t_entier, NATURE_FONCTION);
 	} liste_parametres RETOURNE type_simple corps {
-  	fin_nouvelle_declaration();
+		fin_nouvelle_declaration();
 
 		$$ = concat_pere_fils(
 			creer_noeud(A_DECL_FONC, VALEUR_NULL),
@@ -276,7 +276,7 @@ declaration_fonction: FONCTION IDF {
 ;
 /* Grammaire de déclaration d'une structure */
 declaration_procedure: PROCEDURE IDF {
-	nouvelle_declaration(yylval.t_entier, NATURE_PROCEDURE);
+		nouvelle_declaration(yylval.t_entier, NATURE_PROCEDURE);
 	} liste_parametres corps {
 		fin_nouvelle_declaration();
 
@@ -311,7 +311,7 @@ liste_param: un_param {
 
 	/* Grammaire d'un paramètre */
 un_param: IDF DEUX_POINTS type_simple {
-    trep_ajoute_fonction_param(get_index_fonction_trep(), $1, 0);
+		trep_ajoute_fonction_param(get_global_index_trep(), $1, $3);
 		$$ = concat_pere_fils(
 			creer_noeud(A_PARAM, VALEUR_NULL),
 			concat_pere_frere(creer_noeud(A_IDF, $1), creer_noeud(A_TYPE, $3))
@@ -320,7 +320,7 @@ un_param: IDF DEUX_POINTS type_simple {
 ;
 
 	/** A modifier */
-liste_variable:	expression {
+liste_variable: expression {
 		$$ = $1;
 	}
 	| liste_variable POINT_VIRGULE expression {
@@ -329,7 +329,7 @@ liste_variable:	expression {
 ;
 
 	/** A modifier */
-instruction:	AFFICHE expression {
+instruction: AFFICHE expression {
 		$$ = concat_pere_fils(
 			creer_noeud(A_AFFICHE, VALEUR_NULL),
 			$2
@@ -429,8 +429,12 @@ affectation: variable OPAFF expression {
 variable: IDF {
 		$$ = creer_noeud(A_IDF, $1);
 	}
-	| tableau { $$ = $1; }
-	| IDF POINT variable { $$ = creer_noeud(A_IDF, $1); }
+	| tableau {
+		$$ = $1;
+	}
+	| IDF POINT variable {
+		$$ = creer_noeud(A_IDF, $1);
+	}
 ;
 tableau: IDF CROCHET_OUVRANT expression CROCHET_FERMANT {
 		$$ = concat_pere_fils(
@@ -503,7 +507,7 @@ ep1: ep1 ET ep2 {
 		$$ = VALEUR_NULL;
 	}
 ;
-ep2: ep2 OU ep3	{
+ep2: ep2 OU ep3 {
 		$$ = $1 || $3;
 	}
 	| ep3 {
@@ -529,29 +533,45 @@ ep4: variable {
 
 void nouvelle_declaration(int index_tlex, int nature) {
 	treg_nouvelle_entree();
-	tdec_nouvelle_entree(index_tlex, nature, get_region());
-	set_index_fonction_trep(trep_nouvelle_entree(nature));
+	set_index_global_trep(trep_nouvelle_entree(nature));
+	tdec_nouvelle_entree(index_tlex, get_global_index_trep(), nature, get_region());
 }
 
 void fin_nouvelle_declaration() {
-	reinitialise_index_fonction_trep();
-  depile_region();
+	reinitialise_index_global_trep();
+	depile_region();
+}
+
+/* Insere les types de base dans les tables */
+void insere_types_base() {
+    int index_tlex_entier, index_tlex_reel, index_tlex_booleen, index_tlex_caractere;
+    index_tlex_entier = tlex_insere("entier");
+    index_tlex_reel = tlex_insere("reel");
+    index_tlex_booleen = tlex_insere("booleen");
+    index_tlex_caractere = tlex_insere("caractere");
+
+    tdec_nouvelle_entree(index_tlex_entier, 0, NATURE_VARIABLE, 0);
+    tdec_nouvelle_entree(index_tlex_reel, 1, NATURE_VARIABLE, 0);
+    tdec_nouvelle_entree(index_tlex_booleen, 2, NATURE_VARIABLE, 0);
+    tdec_nouvelle_entree(index_tlex_caractere, 3, NATURE_VARIABLE, 0);
 }
 
 void yyerror(char *s) {
-  fprintf(stderr, "ligne %d: %s\n", line, s);
-  exit(-1);
+	fprintf(stderr, "ligne %d: %s\n", line, s);
+	exit(-1);
 }
 
+
 int main(void) {
-  init_thash();
-  init_tdec();
-  init_trep();
-  init_pile_regions();
+	init_thash();
+	init_tdec();
+	init_trep();
+	init_pile_regions();
 
 	mon_arbre = creer_arbre_vide();
 
-  yyparse();
+	insere_types_base();
+	yyparse();
 
 	if (AFFICHER_TABLES) {
 		printf("\n\nAffichage de la table de hash-code:\n");
@@ -566,9 +586,9 @@ int main(void) {
 		treg_affiche();
 		printf("\n");
 	} else {
-		printf("Affichage des tables désacivé.\n");
+		printf("Affichage des tables désactivé.\n");
 	}
 
-  trep_free();
+	trep_free();
   return 0;
 }

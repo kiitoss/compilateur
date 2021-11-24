@@ -62,17 +62,17 @@ struct trep_entree {
 
 struct trep_entree trep[TREP_TAILLE_MAX];
 
-/* Met à jour l'index de la fonction sur laquelle le travail s'effectue */
-void set_index_fonction_trep(int index);
+/* Met à jour l'index global de la table des representations sur lequelle le travail s'effectue */
+void set_index_global_trep(int index);
 
-/* Retourne l'index de la fonction sur laquelle le travail s'effectue */
-int get_index_fonction_trep();
+/* Retourne l'index global de la table des representations sur lequelle le travail s'effectue */
+int get_global_index_trep();
 
-/* Remet à zero l'index de la fonction sur laquelle le travail s'effectue */
-void reinitialise_index_fonction_trep();
+/* Remet à zero l'index global de la table des representations sur laquelle le travail s'effectue */
+void reinitialise_index_global_trep();
 
-/* Retourne 1 si index_fonction_trep est null, 0 sinon */
-int est_null_index_fonction_trep();
+/* Retourne 1 si l'index global de la table des representations est null, 0 sinon */
+int est_null_index_global_trep();
 
 /* Insere un nouveau champ dans la liste de champs d'une structure */
 void trep_ajoute_structure_champ(int index, int type, int num_lex, int exec);

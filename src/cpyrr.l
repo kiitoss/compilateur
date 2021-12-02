@@ -63,6 +63,10 @@ letter			[a-zA-Z]
 ":="							return OPAFF;
 "[^\"]+"						return CSTE_FORMAT;
 "=="							return DOUBLE_EGAL;
+"<"                             return INFERIEUR;
+">"                             return SUPERIEUR;
+">="                            return SUP_EGAL;
+"<="                            return INF_EGAL;
 "vrai"						{
 										yylval.t_entier = 1;
 										return TRUE;

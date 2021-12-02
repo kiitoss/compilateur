@@ -8,8 +8,8 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 
-	#define AFFICHER_TABLES 0
-	#define AFFICHER_ARBRE 1
+	#define AFFICHER_TABLES 1
+	#define AFFICHER_ARBRE 0
 	
 	int yylex(void);
 	void yyerror(char *);
@@ -43,7 +43,7 @@
 %token ET OU NON
 %token SI ALORS SINON
 %token TANT_QUE FAIRE 
-%token DOUBLE_EGAL
+%token DOUBLE_EGAL SUPERIEUR INFERIEUR SUP_EGAL INF_EGAL
 %token OPAFF
 
 %token <t_entier> IDF ENTIER BOOLEEN REEL CARACTERE CSTE_FORMAT
@@ -57,9 +57,9 @@
 %type <t_arbre> suite_declaration_type liste_champs nom_type dimension liste_dimensions une_dimension
 %type <t_arbre> expression un_champ liste_parametres liste_param un_param liste_arguments liste_args un_arg
 %type <t_arbre> instruction condition tant_que affectation
-%type <t_arbre> expression_booleenne tableau fonction variable 
+%type <t_arbre> expression_booleenne tableau variable appel
 
-%type <t_entier> type_simple entier booleen
+%type <t_entier> type_simple booleen expression_arithmetiques exp
 
 
 %%
@@ -338,19 +338,26 @@ instruction: AFFICHE expression {
 	| affectation {
 		$$ = $1;
 	}
+	| appel {
+		$$ = $1;
+	}
+	| test_arithmetiques {
+		$$ = 0;
+	}
 	| RETOURNE {
 		$$ = creer_noeud(A_RETOURNE, VALEUR_NULL);
 	}
 ;
-
-	/* A completer */
-resultat_retourne: {
-
-	}
+	/*  */
+test_arithmetiques: PARENTHESE_OUVRANTE expression DOUBLE_EGAL expression PARENTHESE_FERMANTE
+	| PARENTHESE_OUVRANTE expression SUPERIEUR expression PARENTHESE_FERMANTE
+	| PARENTHESE_OUVRANTE expression INFERIEUR expression PARENTHESE_FERMANTE
+	| PARENTHESE_OUVRANTE expression SUP_EGAL expression PARENTHESE_FERMANTE
+	| PARENTHESE_OUVRANTE expression INF_EGAL expression PARENTHESE_FERMANTE
 ;
 
 	/* A completer */
-appel: {
+resultat_retourne: {
 
 	}
 ;
@@ -377,6 +384,9 @@ liste_args: un_arg {
 	/* Grammaire d'un argument */
 un_arg: expression {
 		$$ = creer_arbre_vide();
+  }
+  |  {
+	  $$ = creer_arbre_vide();
   }
 ;
 
@@ -428,8 +438,8 @@ variable: IDF {
 	| tableau {
 		$$ = $1;
 	}
-	| fonction {
-		$$ = $1;
+	| variable POINT variable {
+
 	}
 	| IDF POINT variable {
 		$$ = creer_noeud(A_IDF, $1);
@@ -445,7 +455,7 @@ tableau: IDF CROCHET_OUVRANT expression CROCHET_FERMANT {
 ;
 
 	/* A completer */
-fonction: IDF liste_arguments {
+appel: IDF liste_arguments {
 		$$ = concat_pere_fils(
 			creer_noeud(A_IDF, $1),
 			$2
@@ -453,24 +463,53 @@ fonction: IDF liste_arguments {
 	}
 ;
 
-
 	/** A modifier */
-expression: entier {
+expression: expression_arithmetiques {
 		$$ = creer_noeud(A_IDF, $1);
 	}
-	| fonction {
+	| expression_booleenne {
 		$$ = $1;
-	}
-	| PARENTHESE_OUVRANTE expression PARENTHESE_FERMANTE {
-		$$ = $2;
 	}
 ;
 
-entier: ENTIER {
-		$$ = $1;
+expression_arithmetiques: expression_arithmetiques PLUS exp {
+		$$ = $1 + $3; 
 	}
-	| ENTIER PLUS entier {
-		$$ = $1 + $3;
+	| expression_arithmetiques MOINS exp {
+		$$ = $1 - $3;
+	}
+	| expression_arithmetiques MULT exp {
+		$$ = $1 * $3;
+	}
+	| expression_arithmetiques DIV exp {
+		$$ = $1 / $3;
+	}
+	| exp {
+ 		$$ = VALEUR_NULL;
+	}
+;
+
+exp: variable {
+		$$ = VALEUR_NULL;
+	}
+	| CSTE_FORMAT {
+		$$ = VALEUR_NULL;
+	}
+	| appel {
+		$$ = VALEUR_NULL;
+	}
+	| ENTIER {
+		$$ = VALEUR_NULL;
+	}
+	| REEL {
+		$$ = VALEUR_NULL;
+	}
+	| exp VIRGULE expression {
+		$$ = VALEUR_NULL;
+	}
+
+	| liste_arguments {
+		$$ = VALEUR_NULL;
 	}
 ;
 
@@ -490,12 +529,15 @@ expression_booleenne: booleen {
 	| PARENTHESE_OUVRANTE expression_booleenne PARENTHESE_FERMANTE {
 		$$ = $2;
 	}
+	| test_arithmetiques {
+		$$ = 0;
+	}
 ;
 
 booleen: variable {
 		$$ = $1->valeur;
 	}
-	| CSTE_FORMAT {
+		| CSTE_FORMAT {
 	}
 ;
 

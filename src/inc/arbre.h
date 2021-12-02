@@ -31,6 +31,7 @@
 #define A_LISTE_PARAM 26
 #define A_LISTE_CHAMPS 27
 #define A_STRUCT 28
+#define A_LISTE_ARGS 29
 
 /* la structure d'arbre necessaire */
 typedef struct noeud {

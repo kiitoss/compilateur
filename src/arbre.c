@@ -97,6 +97,9 @@ static void affiche_nature(int nature) {
         case A_STRUCT:
             printf("sructure");
             break;
+        case A_LISTE_ARGS: 
+            printf("liste arguments");
+            break;
         default:
             printf("inconnu");
     }

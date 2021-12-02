@@ -8,8 +8,8 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 
-	#define AFFICHER_TABLES 1
-	#define AFFICHER_ARBRE 0
+	#define AFFICHER_TABLES 0
+	#define AFFICHER_ARBRE 1
 	
 	int yylex(void);
 	void yyerror(char *);
@@ -43,7 +43,6 @@
 %token ET OU NON
 %token SI ALORS SINON
 %token TANT_QUE FAIRE 
-%token LIRE ECRIRE
 %token DOUBLE_EGAL
 %token OPAFF
 
@@ -56,11 +55,11 @@
 %type <t_arbre> corps liste_declarations liste_instructions suite_liste_inst declaration
 %type <t_arbre> declaration_variable declaration_fonction declaration_procedure declaration_type
 %type <t_arbre> suite_declaration_type liste_champs nom_type dimension liste_dimensions une_dimension
-%type <t_arbre> expression un_champ liste_parametres liste_param un_param
-%type <t_arbre> liste_variable instruction condition tant_que affectation lire ecrire suite_ecriture
-%type <t_arbre> expression_booleenne tableau variable 
+%type <t_arbre> expression un_champ liste_parametres liste_param un_param liste_arguments liste_args un_arg
+%type <t_arbre> instruction condition tant_que affectation
+%type <t_arbre> expression_booleenne tableau fonction variable 
 
-%type <t_entier> type_simple format e1 e2 e3 e4 ep1 ep2 ep3 ep4
+%type <t_entier> type_simple entier booleen
 
 
 %%
@@ -200,7 +199,6 @@ une_dimension: expression POINT_POINT expression {
 	}
 ;
 
-
 liste_champs: un_champ {
 		$$ = $1;
 	}
@@ -325,15 +323,6 @@ un_param: IDF DEUX_POINTS type_simple {
 ;
 
 	/** A modifier */
-liste_variable: expression {
-		$$ = $1;
-	}
-	| liste_variable POINT_VIRGULE expression {
-		$$ = concat_pere_frere($1, $3);
-	}
-;
-
-	/** A modifier */
 instruction: AFFICHE expression {
 		$$ = concat_pere_fils(
 			creer_noeud(A_AFFICHE, VALEUR_NULL),
@@ -352,41 +341,43 @@ instruction: AFFICHE expression {
 	| RETOURNE {
 		$$ = creer_noeud(A_RETOURNE, VALEUR_NULL);
 	}
-	| lire {
-		$$ = $1;
-	}
-	| ecrire {
-		$$ = $1;
-	}
 ;
-lire: LIRE PARENTHESE_OUVRANTE liste_variable PARENTHESE_FERMANTE {
-		$$ = concat_pere_fils(
-			creer_noeud(A_LIRE, VALEUR_NULL),
-			$3
-		);
-	}
-;
-ecrire: ECRIRE PARENTHESE_OUVRANTE format suite_ecriture PARENTHESE_FERMANTE {
-		$$ = concat_pere_fils(
-			creer_noeud(A_ECRIRE, VALEUR_NULL),
-			concat_pere_frere(creer_noeud(A_FORMAT, $3), $4)
-		);
+
+	/* A completer */
+resultat_retourne: {
+
 	}
 ;
 
-	/* format retourne provisoirement 0 */
-format: CSTE_FORMAT {
-		$$ = 0;
+	/* A completer */
+appel: {
+
 	}
 ;
 
-	/* suite_ecriture retourne provisoirement un arbre vide */
-suite_ecriture: {
-		$$ = creer_noeud(VALEUR_NULL, VALEUR_NULL);
+	/* A completer */
+liste_arguments: {
+		$$ = creer_noeud(A_LISTE_ARGS, VALEUR_NULL);
 	}
-	| VIRGULE variable suite_ecriture {
-		$$ = creer_noeud(VALEUR_NULL, VALEUR_NULL);
+	| PARENTHESE_OUVRANTE liste_args PARENTHESE_FERMANTE {
+		$$ = concat_pere_fils(creer_noeud(A_LISTE_ARGS, VALEUR_NULL), $2);
 	}
+;
+
+
+	/* La liste des arguments comprend un ou plus arguments séparés par le token VIRGULE */
+liste_args: un_arg {
+		$$ = $1;
+	}
+	| liste_args VIRGULE un_arg {
+		$$ = concat_pere_frere($1, $3);
+	}
+;
+
+	/* Grammaire d'un argument */
+un_arg: expression {
+		$$ = creer_arbre_vide();
+  }
 ;
 
 	/** A modifier */
@@ -437,10 +428,14 @@ variable: IDF {
 	| tableau {
 		$$ = $1;
 	}
+	| fonction {
+		$$ = $1;
+	}
 	| IDF POINT variable {
 		$$ = creer_noeud(A_IDF, $1);
 	}
 ;
+
 tableau: IDF CROCHET_OUVRANT expression CROCHET_FERMANT {
 		$$ = concat_pere_fils(
 			creer_noeud(A_IDF, $1),
@@ -449,90 +444,61 @@ tableau: IDF CROCHET_OUVRANT expression CROCHET_FERMANT {
 	}
 ;
 
+	/* A completer */
+fonction: IDF liste_arguments {
+		$$ = concat_pere_fils(
+			creer_noeud(A_IDF, $1),
+			$2
+		);
+	}
+;
 
 
 	/** A modifier */
-expression: ENTIER {
+expression: entier {
 		$$ = creer_noeud(A_IDF, $1);
 	}
-	| e1 {
-		$$ = creer_noeud(A_IDF, $1);
-	}
-;
-e1:  e1 PLUS e2 {
-		$$ = $1 + $3;
-	}                      
-	| e1 MOINS e2 {
-		$$ = $1 - $3;
-	}                       
-	| e2 {
-		$$ = VALEUR_NULL;
-	}
-;
-e2: e2 DIV e3 {
-		$$ = $1 / $3;
-	}     
-	| e2 MULT e3 {
-		$$ = $1 * $3;
-	}                           
-	| e3 {
+	| fonction {
 		$$ = $1;
 	}
-;
-e3: PARENTHESE_OUVRANTE liste_variable PARENTHESE_FERMANTE {
-		$$ = VALEUR_NULL;
-	}
-	| e4 {
-		$$ = VALEUR_NULL;
+	| PARENTHESE_OUVRANTE expression PARENTHESE_FERMANTE {
+		$$ = $2;
 	}
 ;
-e4: variable {
-		$$ = VALEUR_NULL;
+
+entier: ENTIER {
+		$$ = $1;
 	}
-	| CSTE_FORMAT {
-		$$ = VALEUR_NULL;
-	}
-	| ENTIER {
-		$$ = VALEUR_NULL;
+	| ENTIER PLUS entier {
+		$$ = $1 + $3;
 	}
 ;
 
 	/** A modifier */ 
-expression_booleenne: ep1 {
+expression_booleenne: booleen {
 		$$ = creer_noeud(A_IDF, $1);
 	}
-	| PARENTHESE_OUVRANTE ep1 PARENTHESE_FERMANTE {
-		$$ = creer_noeud(A_IDF, $2);
+	| booleen ET booleen {
+		$$ = creer_noeud(A_IDF, ($1 && $3));
+	}
+	| booleen OU booleen {
+		$$ = creer_noeud(A_IDF, ($1 || $3));
+	}
+	| NON booleen {
+		$$ = creer_noeud(A_IDF, !$2);
+	}
+	| PARENTHESE_OUVRANTE expression_booleenne PARENTHESE_FERMANTE {
+		$$ = $2;
 	}
 ;
-ep1: ep1 ET ep2 {
-		$$ = $1 && $3;
-	}
-	| ep2 {
-		$$ = VALEUR_NULL;
-	}
-;
-ep2: ep2 OU ep3 {
-		$$ = $1 || $3;
-	}
-	| ep3 {
-		$$ = VALEUR_NULL;
-	}
-;
-ep3: NON ep4 {
-		$$ = !$2;
-	}
- | ep4 {
-		$$ = VALEUR_NULL;
-	}
-;
-ep4: variable {
-		$$ = 1;
+
+booleen: variable {
+		$$ = $1->valeur;
 	}
 	| CSTE_FORMAT {
-		$$ = 1;
 	}
 ;
+
 %%
 
 

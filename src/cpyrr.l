@@ -62,8 +62,6 @@ letter			[a-zA-Z]
 "."								return POINT;
 ":="							return OPAFF;
 "[^\"]+"						return CSTE_FORMAT;
-"lire"							return LIRE;
-"ecrire"						return ECRIRE;
 "=="							return DOUBLE_EGAL;
 "vrai"						{
 										yylval.t_entier = 1;

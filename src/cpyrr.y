@@ -59,7 +59,7 @@
 %type <t_arbre> instruction condition tant_que affectation
 %type <t_arbre> expression_booleenne tableau variable appel
 
-%type <t_entier> type_simple booleen expression_arithmetiques exp
+%type <t_entier> type_simple booleen expression_arithmetiques exp 
 
 
 %%
@@ -357,12 +357,6 @@ test_arithmetiques: PARENTHESE_OUVRANTE expression DOUBLE_EGAL expression PARENT
 ;
 
 	/* A completer */
-resultat_retourne: {
-
-	}
-;
-
-	/* A completer */
 liste_arguments: {
 		$$ = creer_noeud(A_LISTE_ARGS, VALEUR_NULL);
 	}
@@ -384,9 +378,6 @@ liste_args: un_arg {
 	/* Grammaire d'un argument */
 un_arg: expression {
 		$$ = creer_arbre_vide();
-  }
-  |  {
-	  $$ = creer_arbre_vide();
   }
 ;
 
@@ -523,21 +514,25 @@ expression_booleenne: booleen {
 	| booleen OU booleen {
 		$$ = creer_noeud(A_IDF, ($1 || $3));
 	}
-	| NON booleen {
-		$$ = creer_noeud(A_IDF, !$2);
-	}
 	| PARENTHESE_OUVRANTE expression_booleenne PARENTHESE_FERMANTE {
 		$$ = $2;
 	}
-	| test_arithmetiques {
-		$$ = 0;
+	| expression_booleenne ET expression_booleenne {
+	}
+	| expression_booleenne OU expression_booleenne {
 	}
 ;
 
 booleen: variable {
 		$$ = $1->valeur;
 	}
-		| CSTE_FORMAT {
+	| CSTE_FORMAT {
+		$$ = $1;
+	}
+	| NON booleen {
+		$$ = !$2;
+	}
+	| test_arithmetiques {
 	}
 ;
 

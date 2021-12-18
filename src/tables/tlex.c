@@ -1,4 +1,4 @@
-#include "../inc/tlex.h"
+#include "../../inc/tlex.h"
 
 /* Taille de la table lexicographique */
 /* = index de la prochaine nouvelle entree */

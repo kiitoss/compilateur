@@ -1,4 +1,4 @@
-#include "../inc/thash.h"
+#include "../../inc/thash.h"
 
 /* Table de hash-code */
 int THASH[THASH_TMAX];

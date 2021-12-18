@@ -16,14 +16,14 @@ cpyrr-yacc: src/cpyrr.y
 global.o: src/global.c inc/global.h
 	$(CC) $(CFLAGS) src/global.c -c
 
-tdec.o: src/tdec.c inc/tdec.h inc/global.h
-	$(CC) $(CFLAGS) src/tdec.c -c
+tdec.o: src/tables/tdec.c inc/tdec.h inc/global.h
+	$(CC) $(CFLAGS) src/tables/tdec.c -c
 
-tlex.o: src/tlex.c inc/tlex.h inc/thash.h inc/global.h
-	$(CC) $(CFLAGS) src/tlex.c -c
+tlex.o: src/tables/tlex.c inc/tlex.h inc/thash.h inc/global.h
+	$(CC) $(CFLAGS) src/tables/tlex.c -c
 
-thash.o: src/thash.c inc/thash.h
-	$(CC) $(CFLAGS) src/thash.c -c
+thash.o: src/tables/thash.c inc/thash.h
+	$(CC) $(CFLAGS) src/tables/thash.c -c
 
 
 simple-clean:

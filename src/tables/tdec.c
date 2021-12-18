@@ -1,4 +1,4 @@
-#include "../inc/tdec.h"
+#include "../../inc/tdec.h"
 
 /* Taille de la table des declarations */
 /* = index de la prochaine nouvelle entree */

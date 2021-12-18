@@ -8,4 +8,3 @@
 			--> le bug venait de la fonction depiler, l'id_region n'etait pas décrémenté !
 		
 ========================================================
-ajout

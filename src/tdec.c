@@ -1,128 +1,114 @@
-#include "inc/tdec.h"
+#include "../inc/tdec.h"
 
-#include <stdio.h>
-#include <stdlib.h>
+/* Taille de la table des declarations */
+/* = index de la prochaine nouvelle entree */
+int tdec_taille = TLEX_TMAX;
 
-int taille_tdec = TLEX_TAILLE_MAX;
-int index_global_type_tdec = VALEUR_NULL;
+/* Table des declarations */
+tdec_entree TDEC[TDEC_TMAX];
 
-/* Ecrit les informations dans la table des declarations */
-static void ecrit(int index, int type_ou_index_trep, int nature, int region) {
-    tdec[index].nature = nature;
-    tdec[index].suivant = VALEUR_NULL;
-    tdec[index].region = region;
-    tdec[index].type_ou_index_trep = type_ou_index_trep;
-    tdec[index].exec = VALEUR_NULL;
-}
-
-/* Retourne 1 si l'index de la table des declarations est libre */
-static int est_libre(int index) { return tdec[index].nature == VALEUR_NULL; }
-
-/* initialise la table des declarations */
-void init_tdec() {
-    int i;
-    for (i = 0; i < TDEC_TAILLE_MAX; i++) {
-        tdec[i].nature = VALEUR_NULL;
+/* Retourne sous forme de chaine de caractere la nature d'une declaration */
+static char *tdec_recupere_nature_str(int nature) {
+    switch (nature) {
+        case -1:
+            return "-1";
+        case TYPE_B:
+            return "TYPE_B";
+        case TYPE_S:
+            return "TYPE_S";
+        case TYPE_T:
+            return "TYPE_T";
+        case VAR:
+            return "VAR";
+        case PROC:
+            return "PROC";
+        case FONC:
+            return "FONC";
+        default:
+            return "inconnu";
     }
 }
 
-/* Affiche la table des declarations */
-void tdec_affiche() {
+/* Ecriture d'une nouvelle entree dans la table des declarations */
+static void tdec_ecrit(int index, int nature, int region, int description, int execution) {
+    TDEC[index].nature      = nature;
+    TDEC[index].suivant     = VALEUR_NULL;
+    TDEC[index].region      = region;
+    TDEC[index].description = description;
+    TDEC[index].execution   = execution;
+}
+
+/* Initialisation de la table des declarations avec des valeurs nulles */
+void tdec_init() {
+    for (int i = 0; i < TDEC_TMAX; i++) {
+        tdec_ecrit(i, VALEUR_NULL, VALEUR_NULL, VALEUR_NULL, VALEUR_NULL);
+    }
+}
+
+/* Insertion d'une nouvelle entree dans la table des declarations a partir d'un index lexicographique */
+void tdec_nouvelle_entree(int tlex_index, int nature, int region, int description, int execution) {
     /*
-        TODO
-        taille réelle tdec < taille réelle tlex possible ?
-    */
-    int i;
-    printf(
-        "---------------------------------------------------------------------"
-        "\nindice\t|\tnature\t\t|\tsuivant\t|\tregion\t|\ttype|trep\t|\texec\n");
-    for (i = 0; i < taille_tlex; i++) {
-        printf("%d\t|\t", i);
-        affiche_nature_declaration(tdec[i].nature);
-        printf("\t|\t%d\t|\t%d\t|\t", tdec[i].suivant, tdec[i].region);
-        if (tdec[i].nature != NATURE_VARIABLE) {
-            printf("\t");
-        }
-        printf("%d", tdec[i].type_ou_index_trep);
-        if (tdec[i].nature == NATURE_VARIABLE) {
-            printf("\t");
-        }
-        printf("\t|\t%d\n", tdec[i].exec);
+     * index du champ precedent :
+     * utile si l'insertion se fait dans la zone de debordement
+     */
+    int precedent;
+
+    /*
+     * si aucun champ n'existe a l'index tlex_index :
+     * insertion et quitte la fonction
+     */
+    if (TDEC[tlex_index].nature == VALEUR_NULL) {
+        tdec_ecrit(tlex_index, nature, region, description, execution);
+        return;
     }
-    if (taille_tlex < TLEX_TAILLE_MAX) {
-        printf("............\n");
+
+    /*
+     * si la taille max est deja atteinte :
+     * affichage de l'erreur et quitte le programme
+     */
+    if (tdec_taille >= TDEC_TMAX) {
+        fprintf(stderr, "Erreur - La taille maximale de la table des declarations est atteinte.\n");
+        exit(EXIT_FAILURE);
     }
-    for (i = TLEX_TAILLE_MAX; i < taille_tdec; i++) {
-        printf("%d\t|\t", i);
-        affiche_nature_declaration(tdec[i].nature);
-        printf("\t|\t%d\t|\t%d\t|\t", tdec[i].suivant, tdec[i].region);
-        if (tdec[i].nature != NATURE_VARIABLE) {
-            printf("\t");
-        }
-        printf("%d", tdec[i].type_ou_index_trep);
-        if (tdec[i].nature == NATURE_VARIABLE) {
-            printf("\t");
-        }
-        printf("\t|\t%d\n", tdec[i].exec);
+
+    /*
+     * ecriture de la nouvelle entree dans la zone de debordement
+     */
+    tdec_ecrit(tdec_taille, nature, region, description, execution);
+
+    /*
+     * mise a jour du champ "suivant" de l'entree precedente de meme lexeme
+     */
+    precedent = tlex_index;
+    while (TDEC[precedent].suivant != VALEUR_NULL) {
+        precedent = TDEC[precedent].suivant;
     }
-    printf(
-        "---------------------------------------------------------------------"
-        "\n");
+    TDEC[precedent].suivant = tdec_taille;
+
+    /*
+     * maj de la taille de la table des declarations
+     */
+    tdec_taille++;
 }
 
-/* Insère une nouvelle entree dans la table des declarations */
-int tdec_nouvelle_entree(int index_tlex, int type_ou_index_trep, int nature, int region) {
-    int parent = -1;
-    int existeDeja = 0;
-    if (index_tlex == VALEUR_NULL) {
-        printf("Erreur - index_tlex NULL \n");
-        return -1;
+/* Affichage de la table des declarations */
+void tdec_affiche() {
+    /* permet l'affichage d'une ligne vide en cas de saut dans le tableau */
+    int affiche_ligne_vide = 1;
+
+    printf("-------------------------------------------------------------------\n");
+    printf("index\t|nature\t|suivant|region\t\t|description\t|execution\n");
+    printf("-------------------------------------------------------------------\n");
+
+    for (int i = 0; i < tdec_taille; i++) {
+        /* ignore les valeurs nulles */
+        if (TDEC[i].nature == VALEUR_NULL && !affiche_ligne_vide) continue;
+
+        printf("%d\t|%s\t|%d\t|%d\t\t|%d\t\t|%d\n", i, tdec_recupere_nature_str(TDEC[i].nature), TDEC[i].suivant,
+               TDEC[i].region, TDEC[i].description, TDEC[i].execution);
+
+        affiche_ligne_vide = (TDEC[i].nature != VALEUR_NULL);
     }
 
-    if (index_tlex >= TDEC_TAILLE_MAX) {
-        printf(
-            "Erreur - La taille maximale de la table des declarations est "
-            "atteinte.\n");
-        return -1;
-    }
-
-    if (index_tlex < 0) {
-        printf("Erreur - index de la table lexico < 0\n");
-        return -1;
-    }
-
-    if (est_libre(index_tlex)) {
-        ecrit(index_tlex, type_ou_index_trep, nature, region);
-    } else {
-        parent = index_tlex;
-        while (tdec[parent].suivant != VALEUR_NULL && !existeDeja) {
-            if (tdec[parent].region == region) {
-                existeDeja = 1;
-                break;
-            }
-            parent = tdec[parent].suivant;
-        }
-        if (existeDeja || tdec[parent].region == region) {
-            printf(
-                "Erreur - une declaration de même type existe deja dans cette "
-                "région.\n");
-            return -1;
-        }
-        tdec[parent].suivant = taille_tdec;
-        ecrit(taille_tdec, type_ou_index_trep, nature, region);
-        taille_tdec++;
-    }
-    
-    return index_tlex;
-}
-
-
-/* Met à jour l'index global de la table des declarations du type */
-void set_global_index_type_tdec(int index) {
-    index_global_type_tdec = index;
-}
-
-/* Retourne l'index global du type dans la table des declarations */
-int get_global_index_type_tdec() {
-    return index_global_type_tdec;
+    printf("-------------------------------------------------------------------\n");
 }

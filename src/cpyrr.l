@@ -1,8 +1,6 @@
 %{
-		#include "src/inc/tlex.h"
-		#include "src/inc/arbre.h"
+	#include "inc/tlex.h"
     #include "y.tab.h"
-    #include <stdlib.h>
 
     void yyerror(char *);
 

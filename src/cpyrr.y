@@ -1,12 +1,6 @@
 %{
-	#include "src/inc/tlex.h"
-	#include "src/inc/tdec.h"
-	#include "src/inc/trep.h"
-	#include "src/inc/treg.h"
-	#include "src/inc/arbre.h"
-	
-	#include <stdio.h>
-	#include <stdlib.h>
+	#include "inc/tlex.h"
+	#include "inc/tdec.h"	
 
 	#define AFFICHER_TABLES 1
 	#define AFFICHER_ARBRE 0
@@ -16,14 +10,29 @@
 	
 	int line;
 
-	void nouvelle_declaration(int index_tlex, int nature);
-	void fin_nouvelle_declaration();
+    int global_index_tlex = 0;
+    int global_nb_champs = 0;
+    int global_tab_taille = 0;
+    int global_index_tdec = 0;
+    int global_num_region = 0;
 
-	arbre mon_arbre;
+    void maj_index_tlex(int index_tlex);
+    int recupere_index_tlex();
+    int recupere_num_region();
+    int recupere_nb_champs();
+    void init_nb_champs();
+    void incr_nb_champs();
+    int recupere_index_trep();
+    void init_tab_taille();
+    int recupere_taille_tab();
+    void maj_index_tdec();
+    int recupere_index_tdec();
+    int preg_nouvelle_region();
+    void maj_num_region(int num_region);
 %}
 
 %union {
-	arbre t_arbre;
+	// arbre t_arbre;
 	int t_entier;
 }
 
@@ -52,12 +61,12 @@
 %token AFFICHE
 
 
-%type <t_arbre> corps liste_declarations liste_instructions suite_liste_inst declaration
+/* %type <t_arbre> corps liste_declarations liste_instructions suite_liste_inst declaration
 %type <t_arbre> declaration_variable declaration_fonction declaration_procedure declaration_type
 %type <t_arbre> suite_declaration_type liste_champs nom_type dimension liste_dimensions une_dimension
 %type <t_arbre> expression un_champ liste_parametres liste_param un_param liste_arguments liste_args un_arg
 %type <t_arbre> instruction condition tant_que affectation
-%type <t_arbre> expression_booleenne tableau variable appel
+%type <t_arbre> expression_booleenne tableau variable appel */
 
 %type <t_entier> type_simple booleen expression_arithmetiques exp 
 
@@ -70,11 +79,7 @@
 programme: 
 	| PROG corps {
 		if (AFFICHER_ARBRE) {
-			printf("Affichage d'un corps de programme :\n");
-			afficher_arbre($2);
-			printf("\n");
 		} else {
-			printf("Affichage de l'arbre désactivé.\n");
 		}
 	}
 ;
@@ -82,270 +87,159 @@ programme:
 
 	/* Le corps du programme est une liste de déclarations puis d'instructions */
 corps: liste_declarations liste_instructions {
-		$$ = concat_pere_fils(
-			creer_noeud(A_CORPS, VALEUR_NULL), 
-			concat_pere_frere(
-				concat_pere_fils(creer_noeud(A_LISTE_DECL, VALEUR_NULL), $1),
-				concat_pere_fils(creer_noeud(A_LISTE_INSTR, VALEUR_NULL), $2)
-			)
-		);
 	}
 	| liste_instructions {
-		$$ = concat_pere_fils(
-			creer_noeud(A_CORPS, VALEUR_NULL),
-			concat_pere_fils(creer_noeud(A_LISTE_INSTR, VALEUR_NULL), $1)
-		);
 	}
 ;
 
 
 	/* Une liste de déclarations comprend une ou plusieurs déclarations séparées par le token POINT_VIRGULE */
 liste_declarations: declaration POINT_VIRGULE {
-		$$ = $1;
 	}
 	| liste_declarations declaration POINT_VIRGULE {
-		$$ = concat_pere_frere($1, $2);
 	}
 ;
 
 
 	/* Une liste d'instructions commence par le token DEBUT et se termine par le token FIN */
 liste_instructions: {
-		$$ = creer_arbre_vide();
 	}
 	| DEBUT suite_liste_inst FIN {
-		$$ = $2;
 	}
 ;
 
 
 	/* La liste d'instructions est composée d'une ou plusieurs instructions terminé par le token POINT_VIRGULE */
 suite_liste_inst: {
-		$$ = creer_arbre_vide();
 	}
 	| instruction POINT_VIRGULE {
-		$$ = $1;
 	}
 	| suite_liste_inst instruction POINT_VIRGULE {
-		$$ = concat_pere_frere($1, $2);
 	}
 ;
 
 
 	/* Une déclaration peut être une déclaration de variable, de fonction, de procedure ou de type */
 declaration: declaration_variable {
-		$$ = $1;
 	}
 	| declaration_fonction {
-		$$ = $1;
 	}
 	| declaration_procedure {
-		$$ = $1;
 	}
 	| declaration_type {
-		$$ = $1;
 	}
 ;
 
 	/* La déclaration d'un type commence par le token TYPE */
-declaration_type: TYPE IDF DEUX_POINTS suite_declaration_type {
-		tdec_nouvelle_entree($2, trep_nouvelle_entree(NATURE_STRUCTURE), NATURE_STRUCTURE, get_region());
-		$$ = concat_pere_fils(
-			creer_noeud(A_DECL_TYPE, VALEUR_NULL), 
-			concat_pere_frere(
-				creer_noeud(A_IDF, $2),
-				$4
-			)
-		);
+declaration_type: TYPE IDF { maj_index_tlex($2); } DEUX_POINTS suite_declaration_type {
+        
 	}
 ;
 	/* La suite de déclaration d'un type est soit une structure, soit un tableau */
-suite_declaration_type: STRUCT liste_champs FSTRUCT {
-		$$ = concat_pere_fils(
-			creer_noeud(A_STRUCT, VALEUR_NULL),
-			concat_pere_fils(
-				creer_noeud(A_LISTE_CHAMPS, VALEUR_NULL),
-				$2
-			)
-		);
+suite_declaration_type: STRUCT { init_nb_champs(); } liste_champs FSTRUCT {
+        tdec_nouvelle_entree(recupere_index_tlex(), TYPE_S, recupere_num_region(), recupere_index_trep(), recupere_nb_champs());
 	}
-	| TABLEAU dimension DE nom_type {
-		$$ = concat_pere_fils(
-			creer_noeud(A_TAB, VALEUR_NULL),
-			concat_pere_frere($2, $4)
-		);
+	| TABLEAU { init_tab_taille(); } dimension DE nom_type {
+        tdec_nouvelle_entree(recupere_index_tlex(), TYPE_T, recupere_num_region(), recupere_index_trep(), recupere_taille_tab());
 	}
 ;
 
 	/* Les dimensions d'un tableau sont représentées entre crochet */
 dimension: CROCHET_OUVRANT liste_dimensions CROCHET_FERMANT {
-		$$ = concat_pere_fils(creer_noeud(A_LISTE_DIM, VALEUR_NULL), $2);
 	}
 ;
 
-liste_dimensions:	une_dimension {
-		$$ = $1;
+liste_dimensions: une_dimension {
 	}
 	| liste_dimensions VIRGULE une_dimension {
-		$$ = concat_pere_frere($1, $3);
 	}
 ;
 
 une_dimension: expression POINT_POINT expression {
-		$$ = concat_pere_fils(
-			creer_noeud(A_DIM, VALEUR_NULL),
-			concat_pere_frere($1, $3)
-		);
 	}
 ;
 
 liste_champs: un_champ {
-		$$ = $1;
+        incr_nb_champs();
 	}
 	| liste_champs POINT_VIRGULE un_champ {
-		$$ = concat_pere_frere($1, $3);
 	}
 ;
 
 un_champ: IDF DEUX_POINTS nom_type {
-		tdec_nouvelle_entree($1, get_global_index_type_tdec(), NATURE_VARIABLE, get_region());
-		$$ = concat_pere_fils(
-			creer_noeud(A_CHAMP, VALEUR_NULL),
-			concat_pere_frere(creer_noeud(A_IDF, $1), $3)
-		);
 	}
 ;
 
 	/* Le type peut être un type simple (entier, reel...) ou un identificateur (variable...) */
 nom_type: type_simple {
-		$$ = creer_noeud(A_TYPE, $1);
-		set_global_index_type_tdec($1);
 	}
-	| IDF {
-		$$ = creer_noeud(A_IDF, yylval.t_entier);
-		/*
-			TODO
-			index_tdec = get_index_tdec(yylval.t_entier) ?
-			--> var a:b ==> type a = type b ?
-		*/
-		set_global_index_type_tdec(yylval.t_entier);
-	}
+	| IDF { maj_index_tdec($1); }
 ;
 
 	/** A modifier */
-type_simple: ENTIER {
-		$$ = 0;
-	}
-	| REEL {
-		$$ = 1;
-	}
-	| BOOLEEN {
-		$$ = 2;
-	}
-	| CARACTERE {
-		$$ = 3;
-	}
+type_simple: ENTIER { maj_index_tdec(0); }
+	| REEL { maj_index_tdec(1); }
+	| BOOLEEN { maj_index_tdec(2); }
+	| CARACTERE { maj_index_tdec(3); }
 ;
 
 
 	/* Grammaire de déclaration d'une variable */
 declaration_variable: VARIABLE IDF DEUX_POINTS nom_type {
-		tdec_nouvelle_entree($2, get_global_index_type_tdec(), NATURE_VARIABLE, get_region());
-		$$ = concat_pere_fils(
-			creer_noeud(A_DECL_VAR, VALEUR_NULL),
-			concat_pere_frere(creer_noeud(A_IDF, $2), $4)
-		);
-  }
+        tdec_nouvelle_entree($2, VAR, recupere_num_region(), recupere_index_tdec(), 0);
+    }
 ;
 
 
 	/* Grammaire de déclaration d'une fonction */
 declaration_fonction: FONCTION IDF {
-		nouvelle_declaration(yylval.t_entier, NATURE_FONCTION);
+        int num_region_parente = recupere_num_region();
+        int num_region = preg_nouvelle_region();
+        maj_num_region(num_region);
+        tdec_nouvelle_entree($2, FONC, num_region_parente, recupere_index_trep(), num_region);
 	} liste_parametres RETOURNE type_simple corps {
-		fin_nouvelle_declaration();
-
-		$$ = concat_pere_fils(
-			creer_noeud(A_DECL_FONC, VALEUR_NULL),
-			concat_pere_frere(
-				$4,
-				concat_pere_frere(
-					creer_noeud(A_TYPE, $6),
-					$7
-				)
-			)
-		);
 	}
 ;
-/* Grammaire de déclaration d'une structure */
+/* Grammaire de déclaration d'une procedure */
 declaration_procedure: PROCEDURE IDF {
-		nouvelle_declaration(yylval.t_entier, NATURE_PROCEDURE);
 	} liste_parametres corps {
-		fin_nouvelle_declaration();
-
-		$$ = concat_pere_fils(
-			creer_noeud(A_DECL_PROC, VALEUR_NULL),
-			concat_pere_frere(
-				$4,
-				$5
-			)
-		);
 	}
 ;
 
 	/* La liste des paramètres est soit vide soit entourée de parenthèses */
 liste_parametres: PARENTHESE_OUVRANTE PARENTHESE_FERMANTE {
-		$$ = creer_noeud(A_LISTE_PARAM, VALEUR_NULL);
 	}
 	| PARENTHESE_OUVRANTE liste_param PARENTHESE_FERMANTE {
-		$$ = concat_pere_fils(creer_noeud(A_LISTE_PARAM, VALEUR_NULL), $2);
 	}
 ;
 
 
 	/* La liste des paramètres comprend un ou plus paramètres séparés par le token POINT_VIRGULE */
 liste_param: un_param {
-		$$ = $1;
 	}
 	| liste_param POINT_VIRGULE un_param {
-		$$ = concat_pere_frere($1, $3);
 	}
 ;
 
 	/* Grammaire d'un paramètre */
 un_param: IDF DEUX_POINTS type_simple {
-		trep_ajoute_fonction_param(get_global_index_trep(), $1, $3);
-		$$ = concat_pere_fils(
-			creer_noeud(A_PARAM, VALEUR_NULL),
-			concat_pere_frere(creer_noeud(A_IDF, $1), creer_noeud(A_TYPE, $3))
-		);
-  }
+    }
 ;
 
 	/** A modifier */
 instruction: AFFICHE expression {
-		$$ = concat_pere_fils(
-			creer_noeud(A_AFFICHE, VALEUR_NULL),
-			$2
-		);
 	}
 	| condition {
-		$$ = $1;
 	}
 	| tant_que {
-		$$ = $1;
 	}
 	| affectation {
-		$$ = $1;
 	}
 	| appel {
-		$$ = $1;
 	}
 	| test_arithmetiques {
-		$$ = 0;
 	}
 	| RETOURNE {
-		$$ = creer_noeud(A_RETOURNE, VALEUR_NULL);
 	}
 ;
 	/*  */
@@ -358,26 +252,21 @@ test_arithmetiques: PARENTHESE_OUVRANTE expression DOUBLE_EGAL expression PARENT
 
 	/* A completer */
 liste_arguments: {
-		$$ = creer_noeud(A_LISTE_ARGS, VALEUR_NULL);
 	}
 	| PARENTHESE_OUVRANTE liste_args PARENTHESE_FERMANTE {
-		$$ = concat_pere_fils(creer_noeud(A_LISTE_ARGS, VALEUR_NULL), $2);
 	}
 ;
 
 
 	/* La liste des arguments comprend un ou plus arguments séparés par le token VIRGULE */
 liste_args: un_arg {
-		$$ = $1;
 	}
 	| liste_args VIRGULE un_arg {
-		$$ = concat_pere_frere($1, $3);
 	}
 ;
 
 	/* Grammaire d'un argument */
 un_arg: expression {
-		$$ = creer_arbre_vide();
   }
 ;
 
@@ -385,137 +274,78 @@ un_arg: expression {
 condition: SI expression_booleenne
 	ALORS liste_instructions
 	SINON liste_instructions {
-		$$ = concat_pere_fils(
-			creer_noeud(A_CONDITION, VALEUR_NULL),
-			concat_pere_frere(
-				concat_pere_fils(
-					creer_noeud(A_SI, VALEUR_NULL),
-					$2
-				),
-				concat_pere_frere(
-					concat_pere_fils(
-						creer_noeud(A_ALORS, VALEUR_NULL),
-						$4
-					),
-					concat_pere_fils(
-						creer_noeud(A_SINON, VALEUR_NULL),
-						$6
-					)
-				)
-			)
-		);
 	}
 ;
 tant_que: TANT_QUE expression_booleenne FAIRE liste_instructions {
-		$$ = concat_pere_fils(
-			creer_noeud(A_TANT_QUE, VALEUR_NULL),
-			concat_pere_fils($2, $4)
-		);
 	}
 ;
 affectation: variable OPAFF expression {
-		$$ = concat_pere_fils(
-			creer_noeud(A_AFFECT, VALEUR_NULL), 
-			concat_pere_frere(
-				$1,
-				$3
-			)
-		);
 	}
 ;
 variable: IDF {
-		$$ = creer_noeud(A_IDF, $1);
 	}
 	| tableau {
-		$$ = $1;
 	}
 	| variable POINT variable {
 
 	}
 	| IDF POINT variable {
-		$$ = creer_noeud(A_IDF, $1);
 	}
 ;
 
 tableau: IDF CROCHET_OUVRANT expression CROCHET_FERMANT {
-		$$ = concat_pere_fils(
-			creer_noeud(A_IDF, $1),
-			$3
-		);
 	}
 ;
 
 	/* A completer */
 appel: IDF liste_arguments {
-		$$ = concat_pere_fils(
-			creer_noeud(A_IDF, $1),
-			$2
-		);
 	}
 ;
 
 	/** A modifier */
 expression: expression_arithmetiques {
-		$$ = creer_noeud(A_IDF, $1);
 	}
 	| expression_booleenne {
-		$$ = $1;
 	}
 ;
 
 expression_arithmetiques: expression_arithmetiques PLUS exp {
-		$$ = $1 + $3; 
 	}
 	| expression_arithmetiques MOINS exp {
-		$$ = $1 - $3;
 	}
 	| expression_arithmetiques MULT exp {
-		$$ = $1 * $3;
 	}
 	| expression_arithmetiques DIV exp {
-		$$ = $1 / $3;
 	}
 	| exp {
- 		$$ = VALEUR_NULL;
 	}
 ;
 
 exp: variable {
-		$$ = VALEUR_NULL;
 	}
 	| CSTE_FORMAT {
-		$$ = VALEUR_NULL;
 	}
 	| appel {
-		$$ = VALEUR_NULL;
 	}
 	| ENTIER {
-		$$ = VALEUR_NULL;
 	}
 	| REEL {
-		$$ = VALEUR_NULL;
 	}
 	| exp VIRGULE expression {
-		$$ = VALEUR_NULL;
 	}
 
 	| liste_arguments {
-		$$ = VALEUR_NULL;
 	}
 ;
 
 	/** A modifier */ 
 expression_booleenne: booleen {
-		$$ = creer_noeud(A_IDF, $1);
 	}
 	| booleen ET booleen {
-		$$ = creer_noeud(A_IDF, ($1 && $3));
 	}
 	| booleen OU booleen {
-		$$ = creer_noeud(A_IDF, ($1 || $3));
 	}
 	| PARENTHESE_OUVRANTE expression_booleenne PARENTHESE_FERMANTE {
-		$$ = $2;
 	}
 	| expression_booleenne ET expression_booleenne {
 	}
@@ -524,13 +354,10 @@ expression_booleenne: booleen {
 ;
 
 booleen: variable {
-		$$ = $1->valeur;
 	}
 	| CSTE_FORMAT {
-		$$ = $1;
 	}
 	| NON booleen {
-		$$ = !$2;
 	}
 	| test_arithmetiques {
 	}
@@ -538,30 +365,43 @@ booleen: variable {
 
 %%
 
-
-void nouvelle_declaration(int index_tlex, int nature) {
-	treg_nouvelle_entree();
-	set_index_global_trep(trep_nouvelle_entree(nature));
-	tdec_nouvelle_entree(index_tlex, get_global_index_trep(), nature, get_region());
-}
-
-void fin_nouvelle_declaration() {
-	reinitialise_index_global_trep();
-	depile_region();
-}
-
 /* Insere les types de base dans les tables */
 void insere_types_base() {
-    int index_tlex_entier, index_tlex_reel, index_tlex_booleen, index_tlex_caractere;
-    index_tlex_entier = tlex_insere("entier");
-    index_tlex_reel = tlex_insere("reel");
-    index_tlex_booleen = tlex_insere("booleen");
-    index_tlex_caractere = tlex_insere("caractere");
-    tdec_nouvelle_entree(index_tlex_entier, 0, NATURE_VARIABLE, 0);
-    tdec_nouvelle_entree(index_tlex_reel, 1, NATURE_VARIABLE, 0);
-    tdec_nouvelle_entree(index_tlex_booleen, 2, NATURE_VARIABLE, 0);
-    tdec_nouvelle_entree(index_tlex_caractere, 3, NATURE_VARIABLE, 0);
+    int index_tlex_entier = tlex_insere("entier");
+    int index_tlex_reel = tlex_insere("reel");
+    int index_tlex_booleen = tlex_insere("booleen");
+    int index_tlex_caractere = tlex_insere("caractere");
+    tdec_nouvelle_entree(index_tlex_entier, 0, 0, VALEUR_NULL, 1);
+    tdec_nouvelle_entree(index_tlex_reel, 0, 0, VALEUR_NULL, 1);
+    tdec_nouvelle_entree(index_tlex_booleen, 0, 0, VALEUR_NULL, 1);
+    tdec_nouvelle_entree(index_tlex_caractere, 0, 0, VALEUR_NULL, 1);
 }
+
+void maj_index_tlex(int index_tlex) { global_index_tlex = index_tlex; }
+
+int recupere_index_tlex() { return global_index_tlex; }
+
+int recupere_num_region() { return 0; }
+
+void init_nb_champs() { global_nb_champs = 0; }
+
+void incr_nb_champs() { global_nb_champs++; }
+
+int recupere_nb_champs() { return global_nb_champs; }
+
+int recupere_index_trep() { return 0; }
+
+void init_tab_taille() { global_tab_taille = 0; }
+
+int recupere_taille_tab() { return global_tab_taille; }
+
+void maj_index_tdec(int index_tdec) { global_index_tdec = index_tdec; }
+
+int recupere_index_tdec() { return global_index_tdec; }
+
+void maj_num_region(int num_region) { global_num_region = num_region; }
+
+int preg_nouvelle_region() { return 0; }
 
 void yyerror(char *s) {
 	fprintf(stderr, "ligne %d: %s\n", line, s);
@@ -570,32 +410,23 @@ void yyerror(char *s) {
 
 
 int main(void) {
-	init_thash();
-	init_tdec();
-	init_trep();
-	init_pile_regions();
+    init_thash();
+    tdec_init();
 
-	mon_arbre = creer_arbre_vide();
+    insere_types_base();
 
-	insere_types_base();
 	yyparse();
 
 	if (AFFICHER_TABLES) {
-		printf("\n\nAffichage de la table de hash-code:\n");
+		/* printf("\n\nAffichage de la table de hash-code:\n");
 		thash_affiche();
 		printf("\n\nAffichage de la table lexicographique:\n");
-		tlex_affiche();
+		tlex_affiche(); */
 		printf("\n\nAffichage de la table des déclarations:\n");
 		tdec_affiche();
-		printf("\n\nAffichage de la table des représentations:\n");
-		trep_affiche();
-		printf("\n\nAffichage de la table des régions:\n");
-		treg_affiche();
 		printf("\n");
 	} else {
 		printf("Affichage des tables désactivé.\n");
 	}
-
-	trep_free();
-  return 0;
+	return 0;
 }

@@ -1,7 +1,9 @@
-#include "global.h"
-
 #ifndef TLEX_H
 #define TLEX_H
+
+#include <string.h>
+
+#include "global.h"
 
 #define LEXEME_TAILLE_MAX 50
 
@@ -12,9 +14,9 @@ struct tlex_entree {
     int suivant;
 };
 
-struct tlex_entree tlex[TLEX_TAILLE_MAX];
+struct tlex_entree tlex[TLEX_TMAX];
 
-int thash[THASH_TAILLE_MAX];
+int thash[THASH_TMAX];
 
 /* initialise la table de hascode */
 void init_thash();

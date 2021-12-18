@@ -1,57 +1,53 @@
-#include "inc/tlex.h"
+#include "../inc/tlex.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+int taille_tlex = 0;
 
 /* Retourne la valeur de hash du lexème*/
 static int hash_lexeme(char *lexeme) {
-    int i, sommeAscii = 0;
+    int i, somme_ascii = 0;
     for (i = 0; lexeme[i] != '\0'; i++) {
-        sommeAscii += lexeme[i];
+        somme_ascii += lexeme[i];
     }
-    return (sommeAscii % THASH_TAILLE_MAX);
+    return (somme_ascii % THASH_TMAX);
 }
 
 /* Ecrit dans la table de hashcode l'index du premier element de la table
  * lexicographique */
-static void update_thash(int hash_val, int indexTlex) {
+static void maj_thash(int hash_val, int index_tlex) {
     if (thash[hash_val] == VALEUR_NULL) {
-        thash[hash_val] = indexTlex;
+        thash[hash_val] = index_tlex;
     }
 }
 
 /* Ecrit les informations du lexeme dans la table de hashcode et la table
  * lexicographique */
 static void ecrit(int index, int hash_val, int taille, char *lexeme) {
-    if (index >= TLEX_TAILLE_MAX) {
+    if (index >= TLEX_TMAX) {
         printf(
             "Erreur - La taille maximale de la table lexicographique est "
             "atteinte.\n");
         return;
     }
 
-    update_thash(hash_val, index);
+    maj_thash(hash_val, index);
 
     tlex[index].taille = taille;
     strcpy(tlex[index].lexeme, lexeme);
     tlex[index].suivant = VALEUR_NULL;
 }
 
-
 /* initialise la table de hascode */
 void init_thash() {
     int i;
-    for (i = 0; i < TLEX_TAILLE_MAX; i++) thash[i] = VALEUR_NULL;
+    for (i = 0; i < TLEX_TMAX; i++) thash[i] = VALEUR_NULL;
 }
 
 /* Retourne le lexème correspondant au numéro lexicographique */
-char *lexeme(int numLexicographique) {
-    if (numLexicographique < 0 || numLexicographique > TLEX_TAILLE_MAX)
-        return NULL;
-    if (tlex[numLexicographique].taille == 0) return NULL;
+char *lexeme(int num_lexicographique) {
+    if (num_lexicographique < 0 || num_lexicographique > TLEX_TMAX) return NULL;
+    if (tlex[num_lexicographique].taille == 0) return NULL;
 
-    return tlex[numLexicographique].lexeme;
+    return tlex[num_lexicographique].lexeme;
 }
 
 /* Affiche la table lexicographique */
@@ -61,8 +57,7 @@ void tlex_affiche() {
         "---------------------------------------------------------------------"
         "\nindice\t|\ttaille\t|\tsuivant\t|\tlexeme\n");
     for (i = 0; i < taille_tlex; i++) {
-        printf("%d\t|\t%d\t|\t%d\t|\t%s\n", i, tlex[i].taille, tlex[i].suivant,
-               tlex[i].lexeme);
+        printf("%d\t|\t%d\t|\t%d\t|\t%s\n", i, tlex[i].taille, tlex[i].suivant, tlex[i].lexeme);
     }
     printf(
         "---------------------------------------------------------------------"
@@ -75,7 +70,7 @@ void thash_affiche() {
     printf(
         "---------------------------------------------------------------------"
         "\nindice/hash\t|\tindice tlex\n");
-    for (i = 0; i < THASH_TAILLE_MAX; i++) {
+    for (i = 0; i < THASH_TMAX; i++) {
         if (thash[i] == VALEUR_NULL) {
             if (affiche_marque) {
                 affiche_marque = 0;
@@ -94,23 +89,23 @@ void thash_affiche() {
 /* Insère le lexeme dans la table de hashcode et la table lexicographique */
 int tlex_insere(char *lexeme) {
     int i;
-    int return_val = VALEUR_NULL;
-    int existeDeja = 0;
-    int indexPrecedent = VALEUR_NULL;
-    int hash_val = hash_lexeme(lexeme);
-    int taille = strlen(lexeme);
+    int return_val      = VALEUR_NULL;
+    int existe_deja     = 0;
+    int index_precedent = VALEUR_NULL;
+    int hash_val        = hash_lexeme(lexeme);
+    int taille          = strlen(lexeme);
 
     for (i = thash[hash_val]; i != VALEUR_NULL; i = tlex[i].suivant) {
         if (!strcmp(lexeme, tlex[i].lexeme)) {
-            existeDeja = 1;
-            return_val = i;
+            existe_deja = 1;
+            return_val  = i;
             break;
         }
-        indexPrecedent = i;
+        index_precedent = i;
     }
-    if (!existeDeja) {
-        if (indexPrecedent != VALEUR_NULL) {
-            tlex[indexPrecedent].suivant = taille_tlex;
+    if (!existe_deja) {
+        if (index_precedent != VALEUR_NULL) {
+            tlex[index_precedent].suivant = taille_tlex;
         }
         ecrit(taille_tlex, hash_val, taille, lexeme);
         return_val = taille_tlex;

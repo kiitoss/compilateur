@@ -367,10 +367,10 @@ booleen: variable {
 
 /* Insere les types de base dans les tables */
 void insere_types_base() {
-    int index_tlex_entier = tlex_insere("entier");
-    int index_tlex_reel = tlex_insere("reel");
-    int index_tlex_booleen = tlex_insere("booleen");
-    int index_tlex_caractere = tlex_insere("caractere");
+    int index_tlex_entier = tlex_nouvelle_entree("entier");
+    int index_tlex_reel = tlex_nouvelle_entree("reel");
+    int index_tlex_booleen = tlex_nouvelle_entree("booleen");
+    int index_tlex_caractere = tlex_nouvelle_entree("caractere");
     tdec_nouvelle_entree(index_tlex_entier, 0, 0, VALEUR_NULL, 1);
     tdec_nouvelle_entree(index_tlex_reel, 0, 0, VALEUR_NULL, 1);
     tdec_nouvelle_entree(index_tlex_booleen, 0, 0, VALEUR_NULL, 1);
@@ -410,7 +410,8 @@ void yyerror(char *s) {
 
 
 int main(void) {
-    init_thash();
+    thash_init();
+    tlex_init();
     tdec_init();
 
     insere_types_base();
@@ -418,15 +419,16 @@ int main(void) {
 	yyparse();
 
 	if (AFFICHER_TABLES) {
-		/* printf("\n\nAffichage de la table de hash-code:\n");
+		printf("\n\nAffichage de la table de hash-code:\n");
 		thash_affiche();
 		printf("\n\nAffichage de la table lexicographique:\n");
-		tlex_affiche(); */
+		tlex_affiche();
 		printf("\n\nAffichage de la table des déclarations:\n");
 		tdec_affiche();
 		printf("\n");
 	} else {
 		printf("Affichage des tables désactivé.\n");
 	}
-	return 0;
+
+	return EXIT_SUCCESS;
 }

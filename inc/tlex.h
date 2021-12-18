@@ -4,33 +4,30 @@
 #include <string.h>
 
 #include "global.h"
+#include "thash.h"
 
 #define LEXEME_TAILLE_MAX 50
 
-/* la structure d'une entrée dans la table lexicographique */
-struct tlex_entree {
-    int taille;
-    char lexeme[LEXEME_TAILLE_MAX];
-    int suivant;
-};
+/* Structure d'une ligne de la table lexicographique */
+typedef struct {
+    int taille;                      // taille du lexeme
+    char lexeme[LEXEME_TAILLE_MAX];  // lexeme sous forme de string
+    int suivant;                     // chainage sur le lexeme de meme hash-code
+} tlex_entree;
 
-struct tlex_entree tlex[TLEX_TMAX];
+/* Initialisation de la table lexicographique avec des valeurs nulles */
+void tlex_init();
 
-int thash[THASH_TMAX];
+/* Recuperation du lexeme correspondant a un numero lexicographique */
+char *recupere_lexeme(int num_lexicographique);
 
-/* initialise la table de hascode */
-void init_thash();
-
-/* Retourne le lexème correspondant au numéro lexicographique */
-char *lexeme(int numLexicographique);
-
-/* Affiche la table lexicographique */
+/* Affichage de la table lexicographique */
 void tlex_affiche();
 
-/* Affiche la table de hash-code */
-void thash_affiche();
-
-/* Insère le lexeme dans la table de hashcode et la table lexicographique */
-int tlex_insere(char *lexeme);
+/*
+ * Insertion d'une nouvelle entree et recuperation de son index ou recuperation de l'index du lexeme dans la table
+ * lexicographique
+ */
+int tlex_nouvelle_entree(char *lexeme);
 
 #endif

@@ -6,6 +6,7 @@
 /* Taille maximale de la table des declarations */
 /* = TLEX_TMAX + zone de debordement */
 #define TDEC_TMAX 5000
+#define t         5
 
 /* Liste des natures */
 #define TYPE_B 0

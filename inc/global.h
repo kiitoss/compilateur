@@ -4,9 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Taille maximale de la table de hash-code */
-#define THASH_TMAX 32
-
 /* Taille maximale de la table lexicographique */
 #define TLEX_TMAX 500
 

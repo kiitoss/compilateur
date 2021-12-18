@@ -7,7 +7,9 @@ int tdec_taille = TLEX_TMAX;
 /* Table des declarations */
 tdec_entree TDEC[TDEC_TMAX];
 
-/* Retourne sous forme de chaine de caractere la nature d'une declaration */
+/*
+ * Retourne sous forme de chaine de caractere la nature d'une declaration
+ */
 static char *tdec_recupere_nature_str(int nature) {
     switch (nature) {
         case -1:
@@ -29,8 +31,16 @@ static char *tdec_recupere_nature_str(int nature) {
     }
 }
 
-/* Ecriture d'une nouvelle entree dans la table des declarations */
+/*
+ * Ecriture d'une nouvelle entree dans la table des declarations
+ */
 static void tdec_ecrit(int index, int nature, int region, int description, int execution) {
+    /* cas d'erreur */
+    if (index >= TDEC_TMAX) {
+        fprintf(stderr, "Erreur - La taille maximale de la table des declarations est atteinte.\n");
+        return;
+    }
+
     TDEC[index].nature      = nature;
     TDEC[index].suivant     = VALEUR_NULL;
     TDEC[index].region      = region;
@@ -38,14 +48,18 @@ static void tdec_ecrit(int index, int nature, int region, int description, int e
     TDEC[index].execution   = execution;
 }
 
-/* Initialisation de la table des declarations avec des valeurs nulles */
+/*
+ * Initialisation de la table des declarations avec des valeurs nulles
+ */
 void tdec_init() {
     for (int i = 0; i < TDEC_TMAX; i++) {
         tdec_ecrit(i, VALEUR_NULL, VALEUR_NULL, VALEUR_NULL, VALEUR_NULL);
     }
 }
 
-/* Insertion d'une nouvelle entree dans la table des declarations a partir d'un index lexicographique */
+/*
+ * Insertion d'une nouvelle entree dans la table des declarations a partir d'un index lexicographique
+ */
 void tdec_nouvelle_entree(int tlex_index, int nature, int region, int description, int execution) {
     /*
      * index du champ precedent :
@@ -53,45 +67,29 @@ void tdec_nouvelle_entree(int tlex_index, int nature, int region, int descriptio
      */
     int precedent;
 
-    /*
-     * si aucun champ n'existe a l'index tlex_index :
-     * insertion et quitte la fonction
-     */
+    /* si aucun champ n'existe a l'index tlex_index : insertion et quitte la fonction */
     if (TDEC[tlex_index].nature == VALEUR_NULL) {
         tdec_ecrit(tlex_index, nature, region, description, execution);
         return;
     }
 
-    /*
-     * si la taille max est deja atteinte :
-     * affichage de l'erreur et quitte le programme
-     */
-    if (tdec_taille >= TDEC_TMAX) {
-        fprintf(stderr, "Erreur - La taille maximale de la table des declarations est atteinte.\n");
-        exit(EXIT_FAILURE);
-    }
-
-    /*
-     * ecriture de la nouvelle entree dans la zone de debordement
-     */
+    /* ecriture de la nouvelle entree dans la zone de debordement */
     tdec_ecrit(tdec_taille, nature, region, description, execution);
 
-    /*
-     * mise a jour du champ "suivant" de l'entree precedente de meme lexeme
-     */
+    /* mise a jour du champ "suivant" de l'entree precedente de meme lexeme */
     precedent = tlex_index;
     while (TDEC[precedent].suivant != VALEUR_NULL) {
         precedent = TDEC[precedent].suivant;
     }
     TDEC[precedent].suivant = tdec_taille;
 
-    /*
-     * maj de la taille de la table des declarations
-     */
+    /* maj de la taille de la table des declarations */
     tdec_taille++;
 }
 
-/* Affichage de la table des declarations */
+/*
+ * Affichage de la table des declarations
+ */
 void tdec_affiche() {
     /* permet l'affichage d'une ligne vide en cas de saut dans le tableau */
     int affiche_ligne_vide = 1;

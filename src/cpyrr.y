@@ -29,6 +29,7 @@
 %token DOUBLE_EGAL SUPERIEUR INFERIEUR SUP_EGAL INF_EGAL
 %token OPAFF
 %token IDF ENTIER BOOLEEN REEL CARACTERE CSTE_FORMAT
+%token TYPE_ENTIER TYPE_REEL TYPE_BOOLEEN TYPE_CARACTERE
 %%
 
 
@@ -89,13 +90,13 @@ declaration: declaration_variable {
 ;
 
 	/* La déclaration d'un type commence par le token TYPE */
-declaration_type: TYPE IDF { } DEUX_POINTS suite_declaration_type {
+declaration_type: TYPE IDF { maj_tlex_index($2); } DEUX_POINTS suite_declaration_type {
         
 	}
 ;
 	/* La suite de déclaration d'un type est soit une structure, soit un tableau */
-suite_declaration_type: STRUCT {  } liste_champs FSTRUCT { }
-	| TABLEAU { } dimension DE nom_type { }
+suite_declaration_type: STRUCT { } liste_champs FSTRUCT { }
+	| TABLEAU { debut_nouveau_tableau(TYPE_T); } dimension DE nom_type { fin_nouveau_tableau($5); }
 ;
 
 	/* Les dimensions d'un tableau sont représentées entre crochet */
@@ -103,19 +104,15 @@ dimension: CROCHET_OUVRANT liste_dimensions CROCHET_FERMANT {
 	}
 ;
 
-liste_dimensions: une_dimension {
-	}
-	| liste_dimensions VIRGULE une_dimension {
-	}
+liste_dimensions: une_dimension | liste_dimensions VIRGULE une_dimension
 ;
 
-une_dimension: expression POINT_POINT expression {
-	}
+une_dimension: expression POINT_POINT expression { nouvelle_dimension($1, $3); }
 ;
 
 liste_champs: un_champ | liste_champs POINT_VIRGULE un_champ;
 
-un_champ: IDF DEUX_POINTS nom_type { };
+un_champ: IDF DEUX_POINTS nom_type {  };
 
 	/* Le type peut être un type simple (entier, reel...) ou un identificateur (variable...) */
 nom_type: type_simple { $$ = $1; }
@@ -123,10 +120,10 @@ nom_type: type_simple { $$ = $1; }
 ;
 
 	/** A modifier */
-type_simple: ENTIER { $$ = 0; }
-	| REEL { $$ = 1; }
-	| BOOLEEN { $$ = 2; }
-	| CARACTERE { $$ = 3; }
+type_simple: TYPE_ENTIER { $$ = 0; }
+	| TYPE_REEL { $$ = 1; }
+	| TYPE_BOOLEEN { $$ = 2; }
+	| TYPE_CARACTERE { $$ = 3; }
 ;
 
 
@@ -267,8 +264,10 @@ exp: variable {
 	| appel {
 	}
 	| ENTIER {
+        $$ = $1;
 	}
 	| REEL {
+        $$ = $1;
 	}
 	| exp VIRGULE expression {
 	}

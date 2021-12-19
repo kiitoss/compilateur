@@ -2,7 +2,7 @@
 
 /* Taille de la table des representations */
 /* = index de la prochaine nouvelle entree */
-int trep_taille = TLEX_TMAX;
+int trep_taille = 0;
 
 /* Table des representations */
 int TREP[TREP_TMAX];
@@ -23,8 +23,8 @@ int trep_nouvelle_entree(int valeur) {
     int index = trep_taille;
 
     /* cas d'erreur */
-    if (trep_taille >= TREP_TMAX - 1) {
-        fprintf(stderr, "Erreur - La taille maximale de la table des representations est atteinte.\n");
+    if (index >= TREP_TMAX) {
+        fprintf(stderr, "Erreur TMAX - La taille maximale de la table des representations est atteinte.\n");
         return VALEUR_NULL;
     }
 
@@ -34,6 +34,32 @@ int trep_nouvelle_entree(int valeur) {
     trep_taille++;
 
     return index;
+}
+
+/*
+ * Mise a jour d'une valeur de la table des representations
+ */
+void trep_maj_valeur(int index, int valeur) {
+    /* cas d'erreur */
+    if (index > TREP_TMAX) {
+        fprintf(stderr, "Erreur - MaJ a l'index %d de la table des representations impossible.\n", index);
+        return;
+    }
+
+    TREP[index] = valeur;
+}
+
+/*
+ * Recuperation d'une valeur de la table des representations
+ */
+int trep_recupere_valeur(int index) {
+    /* cas d'erreur */
+    if (index > TREP_TMAX) {
+        fprintf(stderr, "Erreur - Recuperation a l'index %d de la table des representations impossible.\n", index);
+        return VALEUR_NULL;
+    }
+
+    return TREP[index];
 }
 
 /*

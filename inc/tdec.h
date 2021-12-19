@@ -22,6 +22,12 @@ void tdec_init();
 /* Insertion d'une nouvelle entree dans la table des declarations a partir d'un index lexicographique */
 int tdec_nouvelle_entree(int tlex_index, int nature, int region, int description, int execution);
 
+/* Mise a jour de la taille a l'execution d'une entree de la table des declarations */
+void tdec_maj_taille_exec(int index, int taille);
+
+/* Recuperation de la taille a l'execution d'une entree de la table des declarations */
+int tdec_recupere_taille_exec(int index);
+
 /* Affichage de la table des declarations */
 void tdec_affiche();
 

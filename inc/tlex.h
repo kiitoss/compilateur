@@ -18,9 +18,6 @@ typedef struct {
 /* Initialisation de la table lexicographique avec des valeurs nulles */
 void tlex_init();
 
-/* Recuperation du lexeme correspondant a un numero lexicographique */
-char *recupere_lexeme(int num_lexicographique);
-
 /* Affichage de la table lexicographique */
 void tlex_affiche();
 

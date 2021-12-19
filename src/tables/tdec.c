@@ -91,6 +91,32 @@ int tdec_nouvelle_entree(int tlex_index, int nature, int region, int description
 }
 
 /*
+ * Mise a jour de la taille a l'execution d'une entree de la table des declarations
+ */
+void tdec_maj_taille_exec(int index, int taille) {
+    /* cas d'erreur */
+    if (index > TDEC_TMAX) {
+        fprintf(stderr, "Erreur - La taille maximale de la table des declarations est atteinte.\n");
+        return;
+    }
+
+    TDEC[index].execution = taille;
+}
+
+/*
+ * Recuperation de la taille a l'execution d'une entree de la table des declarations
+ */
+int tdec_recupere_taille_exec(int index) {
+    /* cas d'erreur */
+    if (index > TDEC_TMAX) {
+        fprintf(stderr, "Erreur - La taille maximale de la table des declarations est atteinte.\n");
+        return VALEUR_NULL;
+    }
+
+    return TDEC[index].execution;
+}
+
+/*
  * Affichage de la table des declarations
  */
 void tdec_affiche() {

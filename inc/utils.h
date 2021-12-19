@@ -8,6 +8,9 @@
 
 typedef struct {
     int taille;
+    int trep_index_type;
+    int trep_index_nb_dimensions;
+    int tdec_index;
 } global_tableau;
 
 /* Inisitalisation des differentes tables */

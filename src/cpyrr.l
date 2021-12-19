@@ -67,10 +67,10 @@ letter			[a-zA-Z]
 "<="                            return INF_EGAL;
 "vrai"						{ yylval = 1; return VRAI; }
 "faux"						{ yylval = 0; return FAUX; }
-"int"             return ENTIER;
-"float"           return REEL;
-"bool"            return BOOLEEN;
-"char"		   	  return CARACTERE;
+"int"             return TYPE_ENTIER;
+"float"           return TYPE_REEL;
+"bool"            return TYPE_BOOLEEN;
+"char"		   	  return TYPE_CARACTERE;
 
 	/* Déclaration des opérateurs */
 \+                return PLUS;
@@ -83,7 +83,7 @@ letter			[a-zA-Z]
 [1-9]+{digit}*    { yylval = atoi(yytext); return ENTIER; }
 
   /* Déclaration des nombres réels */
-[0-9]+,{digit}+		{ yylval = atof(yytext); return REEL; }
+    /* [0-9]+,{digit}+		{ yylval = atof(yytext); return REEL; } */
 
 	/* A modifier */
 {letter}+({letter}|{digit}|"_")*	{ yylval = tlex_nouvelle_entree(yytext); return IDF; }

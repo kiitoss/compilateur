@@ -35,17 +35,6 @@ void tlex_init() {
 }
 
 /*
- * Recuperation du lexeme correspondant a un numero lexicographique
- */
-char *recupere_lexeme(int num_lexicographique) {
-    /* cas d'erreur */
-    if (num_lexicographique < 0 || num_lexicographique > TLEX_TMAX) return NULL;
-    if (TLEX[num_lexicographique].taille == 0) return NULL;
-
-    return TLEX[num_lexicographique].lexeme;
-}
-
-/*
  * Affichage de la table lexicographique
  */
 void tlex_affiche() {

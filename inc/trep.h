@@ -12,6 +12,12 @@ void trep_init();
 /* Insertion d'une nouvelle entree dans la table des representations */
 int trep_nouvelle_entree(int valeur);
 
+/* Mise a jour d'une valeur de la table des representations */
+void trep_maj_valeur(int index, int valeur);
+
+/* Recuperation d'une valeur de la table des representations */
+int trep_recupere_valeur(int index);
+
 /* Affichage de la table des representations */
 void trep_affiche();
 

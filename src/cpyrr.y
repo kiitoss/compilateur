@@ -128,7 +128,7 @@ type_simple: TYPE_ENTIER { $$ = 0; }
 
 
 	/* Grammaire de déclaration d'une variable */
-declaration_variable: VARIABLE IDF DEUX_POINTS nom_type { nouvelle_variable($2); }
+declaration_variable: VARIABLE IDF DEUX_POINTS nom_type { nouvelle_variable($4); }
 ;
 
 
@@ -322,6 +322,8 @@ int main(void) {
 		tdec_affiche();
         printf("\n\nAffichage de la table des representations:\n");
 		trep_affiche();
+        printf("\n\nAffichage de la table des regions:\n");
+		treg_affiche();
 		printf("\n");
 	} else {
 		printf("Affichage des tables désactivé.\n");

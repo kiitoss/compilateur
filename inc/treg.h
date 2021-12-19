@@ -25,4 +25,7 @@ int treg_recupere_taille(int index);
 /* Mise a jour de la taille d'une entree de la table des regions */
 void treg_maj_taille(int index, int taille);
 
+/* Affichage de la table des regions */
+void treg_affiche();
+
 #endif

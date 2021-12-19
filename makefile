@@ -3,8 +3,8 @@ CFLAGS = -W -Wall -pedantic -std=c99 -O3
 
 compilateur-clean: compilateur simple-clean
 
-compilateur: cpyrr-lex cpyrr-yacc pile.o thash.o tlex.o tdec.o trep.o treg.o variable.o structure.o tableau.o utils.o
-	$(CC) lex.yy.c y.tab.c pile.o thash.o tlex.o tdec.o trep.o treg.o variable.o structure.o tableau.o utils.o -o cpyrr.exe
+compilateur: cpyrr-lex cpyrr-yacc pile.o thash.o tlex.o tdec.o trep.o treg.o variable.o structure.o tableau.o fonc_proc.o utils.o
+	$(CC) lex.yy.c y.tab.c pile.o thash.o tlex.o tdec.o trep.o treg.o variable.o structure.o tableau.o fonc_proc.o utils.o -o cpyrr.exe
 
 cpyrr-lex: src/cpyrr.l
 	lex src/cpyrr.l
@@ -15,6 +15,9 @@ cpyrr-yacc: src/cpyrr.y
 
 utils.o: src/utils.c inc/utils.h inc/global.h
 	$(CC) $(CFLAGS) src/utils.c -c
+
+fonc_proc.o: src/utils/fonc_proc.c inc/utils.h inc/global.h
+	$(CC) $(CFLAGS) src/utils/fonc_proc.c -c
 
 tableau.o: src/utils/tableau.c inc/utils.h inc/global.h
 	$(CC) $(CFLAGS) src/utils/tableau.c -c

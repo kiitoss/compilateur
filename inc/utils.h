@@ -11,22 +11,32 @@
 /* Structure d'une variable globale pour stocker les information d'un tableau */
 typedef struct {
     int taille;                    // la taille du tableau (si chaque element du tableau a une taille de 1)
-    int trep_index_type;           // index dans la table des representations du type du tableau
-    int trep_index_nb_dimensions;  // index dans la table des representations du nb de dimensions du tableau
-    int tdec_index;                // index dans la table des declarations du tableau
+    int trep_index_type;           // index dans TREP du type du tableau
+    int trep_index_nb_dimensions;  // index dans TREP du nb de dimensions du tableau
+    int tdec_index;                // index dans TDEC du tableau
 } global_tableau;
 
 /* Structure d'une variable globale pour stocker les information d'une structure */
 typedef struct {
-    int trep_index_nb_champs;  // index dans la table des representations du nb de champs de la structure
-    int tdec_index;            // index dans la table des declarations de la structure
+    int trep_index_nb_champs;  // index dans TREP du nb de champs de la structure
+    int tdec_index;            // index dans TDEC de la structure
     int deplacement_exec;      // deplacement a l'execution a l'interieur de la structure
 } global_structure;
+
+/* Structure d'une variable globale pour stocker les information d'une fonction ou d'une procedure */
+typedef struct {
+    int trep_index_type;           // index dans TREP du type de retour (utile uniquement pour les fonctions)
+    int trep_index_nb_parametres;  // index dans TREP du nb de params
+    int tdec_index;                // index dans TDEC de la fonction ou de la procedure
+} global_fonc_proc;
 
 /* Index dans la table lexicographique */
 extern int global_tlex_index;
 /* Pile des regions */
 extern pile PREG;
+
+/* Insertion d'une nouvelle region dans PREG et dans TREG */
+void nouvelle_region();
 
 /* Inisitalisation des differentes tables */
 void init_tables();
@@ -60,5 +70,14 @@ void nouveau_champ(int tlex_index);
 
 /* Mise a jour de la taille de la structure dans TDEC */
 void fin_nouvelle_structure();
+
+/* Insertion d'une nouvelle fonction ou procedure dans les differentes tables */
+void nouvelle_fonction_ou_procedure(int type);
+
+/* Insertion d'un nouveau parametre d'une fonction ou d'une procedure dans les differentes tables */
+void nouveau_parametre(int tlex_index);
+
+/* Mise a jour du type de retour d'une fonction dans TDEC */
+void fin_nouvelle_fonction(int tlex_index_type);
 
 #endif

@@ -21,7 +21,7 @@ static void insere_types_base() {
 /*
  * Insertion d'une nouvelle region dans PREG et dans TREG
  */
-static void nouvelle_region() {
+void nouvelle_region() {
     int region = treg_nouvelle_entree(pile_recupere_taille(PREG));
     pile_empile(PREG, region);
 }

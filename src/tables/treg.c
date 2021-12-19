@@ -51,3 +51,18 @@ void treg_maj_taille(int index, int taille) {
 
     TREG[index].taille = taille;
 }
+
+/*
+ * Affichage de la table des regions
+ */
+void treg_affiche() {
+    printf("---------------------\n");
+    printf("index\t|taille\t|nis\n");
+    printf("---------------------\n");
+
+    for (int i = 0; i < treg_taille; i++) {
+        printf("%d\t|%d\t|%d\n", i, TREG[i].taille, TREG[i].nis);
+    }
+
+    printf("---------------------\n");
+}

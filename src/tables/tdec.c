@@ -60,7 +60,8 @@ void tdec_init() {
 /*
  * Insertion d'une nouvelle entree dans la table des declarations a partir d'un index lexicographique
  */
-void tdec_nouvelle_entree(int tlex_index, int nature, int region, int description, int execution) {
+int tdec_nouvelle_entree(int tlex_index, int nature, int region, int description, int execution) {
+    int index = tdec_taille;
     /*
      * index du champ precedent :
      * utile si l'insertion se fait dans la zone de debordement
@@ -70,7 +71,7 @@ void tdec_nouvelle_entree(int tlex_index, int nature, int region, int descriptio
     /* si aucun champ n'existe a l'index tlex_index : insertion et quitte la fonction */
     if (TDEC[tlex_index].nature == VALEUR_NULL) {
         tdec_ecrit(tlex_index, nature, region, description, execution);
-        return;
+        return tlex_index;
     }
 
     /* ecriture de la nouvelle entree dans la zone de debordement */
@@ -85,6 +86,8 @@ void tdec_nouvelle_entree(int tlex_index, int nature, int region, int descriptio
 
     /* maj de la taille de la table des declarations */
     tdec_taille++;
+
+    return index;
 }
 
 /*

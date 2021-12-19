@@ -10,4 +10,12 @@
 /* Valeur NULL par defaut */
 #define VALEUR_NULL -1
 
+/* Liste des natures */
+#define TYPE_B 0
+#define TYPE_S 1
+#define TYPE_T 2
+#define VAR    3
+#define PROC   4
+#define FONC   5
+
 #endif

@@ -2,7 +2,6 @@
 PROG
   procedure g(b:5)
     DEBUT
-      print 5;
       si ((idriss et antoine) == false)  alors DEBUT FIN sinon DEBUT FIN;
       si ((moi == toi) et (((ok > pasok) ou (!ok < pasok)) == true)) alors DEBUT FIN sinon DEBUT FIN;
     FIN;
@@ -15,5 +14,5 @@ PROG
     si ((!oui et !non) >= nope)  alors DEBUT FIN sinon DEBUT FIN;
     si (!ne ou pas)  alors DEBUT FIN sinon DEBUT FIN;
     si ((pas <= !ne) ou (ne >= pas)) alors DEBUT FIN sinon DEBUT FIN;  
-    tantque ((idriss <= antoine) et (islem >= !antoine) ou (!idriss >= !islem)) faire DEBUT print 1 ; FIN;
+    tantque ((idriss <= antoine) et (islem >= !antoine) ou (!idriss >= !islem)) faire DEBUT  FIN;
   FIN

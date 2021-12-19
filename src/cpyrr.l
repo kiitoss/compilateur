@@ -65,8 +65,8 @@ letter			[a-zA-Z]
 ">"                             return SUPERIEUR;
 ">="                            return SUP_EGAL;
 "<="                            return INF_EGAL;
-"vrai"						{ yylval.t_entier = 1; return TRUE; }
-"faux"						{ yylval.t_entier = 0; return FALSE; }
+"vrai"						{ yylval = 1; return VRAI; }
+"faux"						{ yylval = 0; return FAUX; }
 "int"             return ENTIER;
 "float"           return REEL;
 "bool"            return BOOLEEN;
@@ -80,13 +80,13 @@ letter			[a-zA-Z]
 
 
 	/* Déclaration des nombres entiers */
-[1-9]+{digit}*    { yylval.t_entier = atoi(yytext); return ENTIER; }
+[1-9]+{digit}*    { yylval = atoi(yytext); return ENTIER; }
 
   /* Déclaration des nombres réels */
-[0-9]+,{digit}+		{ yylval.t_entier = atof(yytext); return REEL; }
+[0-9]+,{digit}+		{ yylval = atof(yytext); return REEL; }
 
 	/* A modifier */
-{letter}+({letter}|{digit}|"_")*	{ yylval.t_entier = tlex_nouvelle_entree(yytext); return IDF; }
+{letter}+({letter}|{digit}|"_")*	{ yylval = tlex_nouvelle_entree(yytext); return IDF; }
 
 
 	/* Cas d'erreur */

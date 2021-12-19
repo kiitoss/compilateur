@@ -1,10 +1,10 @@
 CC = gcc
-CFLAGS = -W -Wall
+CFLAGS = -W -Wall -pedantic -std=c99 -O3
 
 compilateur-clean: compilateur simple-clean
 
-compilateur: cpyrr-lex cpyrr-yacc thash.o tlex.o tdec.o global.o
-	$(CC) lex.yy.c y.tab.c thash.o tlex.o tdec.o global.o -o cpyrr.exe
+compilateur: cpyrr-lex cpyrr-yacc thash.o tlex.o tdec.o trep.o utils.o
+	$(CC) lex.yy.c y.tab.c thash.o tlex.o tdec.o trep.o utils.o -o cpyrr.exe
 
 cpyrr-lex: src/cpyrr.l
 	lex src/cpyrr.l
@@ -13,8 +13,11 @@ cpyrr-yacc: src/cpyrr.y
 	yacc -d src/cpyrr.y
 
 
-global.o: src/global.c inc/global.h
-	$(CC) $(CFLAGS) src/global.c -c
+utils.o: src/utils.c inc/utils.h inc/global.h
+	$(CC) $(CFLAGS) src/utils.c -c
+
+trep.o: src/tables/trep.c inc/trep.h inc/global.h
+	$(CC) $(CFLAGS) src/tables/trep.c -c
 
 tdec.o: src/tables/tdec.c inc/tdec.h inc/global.h
 	$(CC) $(CFLAGS) src/tables/tdec.c -c

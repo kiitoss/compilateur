@@ -128,8 +128,7 @@ type_simple: TYPE_ENTIER { $$ = 0; }
 
 
 	/* Grammaire de déclaration d'une variable */
-declaration_variable: VARIABLE IDF DEUX_POINTS nom_type {
-    }
+declaration_variable: VARIABLE IDF DEUX_POINTS nom_type { nouvelle_variable($2); }
 ;
 
 

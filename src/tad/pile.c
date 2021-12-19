@@ -49,3 +49,8 @@ int pile_tete_de_pile(pile p) {
 
     return p[p[0]];
 }
+
+/*
+ * Recuperation de la taille de la pile
+ */
+int pile_recupere_taille(pile p) { return p[0]; }

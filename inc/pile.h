@@ -27,4 +27,7 @@ int pile_depile(pile p);
 /* Recuperation de la valeur en tete de pile */
 int pile_tete_de_pile(pile p);
 
+/* Recuperation de la taille de la pile */
+int pile_recupere_taille(pile p);
+
 #endif

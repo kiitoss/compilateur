@@ -5,6 +5,7 @@
 #include "pile.h"
 #include "tdec.h"
 #include "tlex.h"
+#include "treg.h"
 #include "trep.h"
 
 typedef struct {
@@ -25,6 +26,9 @@ void init_tables();
 
 /* * Mise a jour de l'index global de la table lexicographique */
 void maj_tlex_index(int tlex_index);
+
+/* Insertion d'une nouvelle variable dans TDEC */
+void nouvelle_variable(int tlex_index);
 
 /* Insertion d'un nouveau tableau dans les differentes tables */
 void debut_nouveau_tableau();

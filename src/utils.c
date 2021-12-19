@@ -20,6 +20,11 @@ static void insere_types_base() {
     tdec_nouvelle_entree(index_tlex_caractere, TYPE_B, 0, VALEUR_NULL, 1);
 }
 
+static void nouvelle_region() {
+    int region = treg_nouvelle_entree(pile_recupere_taille(PREG));
+    pile_empile(PREG, region);
+}
+
 /*
  * Inisitalisation des differentes tables
  */
@@ -34,13 +39,33 @@ void init_tables() {
 
     /* initialisation de la pile et stockage de la premiere region */
     pile_init(PREG);
-    pile_empile(PREG, 0);
+    nouvelle_region();
 }
 
 /*
  * Mise a jour de l'index global de la table lexicographique
  */
 void maj_tlex_index(int tlex_index) { global_tlex_index = tlex_index; }
+
+/*
+ * Insertion d'une nouvelle variable dans TDEC
+ */
+void nouvelle_variable(int tlex_index) {
+    /* recuperation de l'index du type dans TDEC grace a l'index dans TLEX */
+    int tdec_index_type = tdec_trouve_index(tlex_index, PREG);
+
+    /* recuperation de la taille a l'execution du type de la variable dans TDEC*/
+    int taille_exec = tdec_recupere_taille_exec(tdec_index_type);
+
+    /* recuperation du numero de la region dans la pile de region */
+    int region = pile_tete_de_pile(PREG);
+
+    /* insertion de la variable dans TDEC */
+    tdec_nouvelle_entree(tlex_index, VAR, region, taille_exec, treg_recupere_taille(region));
+
+    /* mise a jour de la taille de la region dans TREG */
+    treg_maj_taille(region, treg_recupere_taille(pile_tete_de_pile(PREG)) + taille_exec);
+}
 
 /*
  * Insertion d'un nouveau tableau dans les differentes tables
@@ -50,19 +75,19 @@ void debut_nouveau_tableau() {
     tableau.taille = 0;
 
     /*
-     * Nouvelle entree TREP avec pour valeur 0: index TDEC du type du tableau
+     * nouvelle entree TREP avec pour valeur 0: index TDEC du type du tableau
      * -> la modification se fera a la fin de la lecture du tableau
      */
     tableau.trep_index_type = trep_nouvelle_entree(0);
 
     /*
-     * Nouvelle entree TREP avec pour valeur 0: nombre de dimensions
+     * nouvelle entree TREP avec pour valeur 0: nombre de dimensions
      * -> la modification se fera au fur et a mesure de la lecture des dimensions
      */
     tableau.trep_index_nb_dimensions = trep_nouvelle_entree(0);
 
     /*
-     * Nouvelle entree TDEC avec pour champ exec 0: taille du tableau
+     * nouvelle entree TDEC avec pour champ exec 0: taille du tableau
      * -> la modification se fera au fur et a mesure de la lecture des dimensions
      */
     tableau.tdec_index =
@@ -94,6 +119,7 @@ void nouvelle_dimension(int borne_min, int borne_max) {
  * Mise a jour du type et de la taille du tableau dans les differentes tables
  */
 void fin_nouveau_tableau(int tlex_index_type) {
+    /* recuperation de l'index du type dans TDEC grace a l'index dans TLEX */
     int tdec_index_type = tdec_trouve_index(tlex_index_type, PREG);
 
     int taille_type = tdec_recupere_taille_exec(tdec_index_type);
@@ -109,17 +135,17 @@ void fin_nouveau_tableau(int tlex_index_type) {
  * Insertion d'une nouvelle structure dans les differentes tables
  */
 void debut_nouvelle_structure() {
-    /* Reinitialisation ddu deplacement a l'execution dans la structure */
+    /* reinitialisation ddu deplacement a l'execution dans la structure */
     structure.deplacement_exec = 0;
 
     /*
-     * Nouvelle entree TREP avec pour valeur 0: nombre de champs
+     * nouvelle entree TREP avec pour valeur 0: nombre de champs
      * -> la modification se fera au fur et a mesure de la lecture des champs
      */
     structure.trep_index_nb_champs = trep_nouvelle_entree(0);
 
     /*
-     * Nouvelle entree TDEC avec pour champ exec 0: taille de la structure
+     * nouvelle entree TDEC avec pour champ exec 0: taille de la structure
      * -> la modification se fera au fur et a mesure de la lecture des champs
      */
     structure.tdec_index =
@@ -131,6 +157,7 @@ void debut_nouvelle_structure() {
  * et mise a jour de la structure parente dans les differentes tables
  */
 void nouveau_champ(int tlex_index) {
+    /* recuperation de l'index du type dans TDEC grace a l'index dans TLEX */
     int tdec_index_type = tdec_trouve_index(tlex_index, PREG);
 
     /* ajout dans TREP de l'index du type de la structure dans TDEC */

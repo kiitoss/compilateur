@@ -148,8 +148,7 @@ int tdec_trouve_index(int tlex_index, pile PREG) {
             nature = TDEC[index].nature;
 
             /* si l'entree correspond: quitte la boucle*/
-            if ((TDEC[index].region == region) &&
-                (nature == TYPE_B || nature == TYPE_S || nature == TYPE_T || nature == FONC || nature == PROC)) {
+            if ((TDEC[index].region == region) && (nature == TYPE_B || nature == TYPE_S || nature == TYPE_T)) {
                 break;
             }
 

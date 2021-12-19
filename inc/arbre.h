@@ -44,6 +44,7 @@
 #define A_LISTE_CHAMPS 27
 #define A_STRUCT       28
 #define A_LISTE_ARGS   29
+#define A_TYPE_B       30
 
 /* Structure d'un arbre */
 typedef struct noeud {

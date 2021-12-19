@@ -1,5 +1,6 @@
 %{
 	#include "inc/tlex.h"
+    #include "inc/arbre.h"
     #include "y.tab.h"
 
     void yyerror(char *);
@@ -65,8 +66,8 @@ letter			[a-zA-Z]
 ">"                             return SUPERIEUR;
 ">="                            return SUP_EGAL;
 "<="                            return INF_EGAL;
-"vrai"						{ yylval = 1; return VRAI; }
-"faux"						{ yylval = 0; return FAUX; }
+"vrai"						{ yylval.t_entier = 1; return VRAI; }
+"faux"						{ yylval.t_entier = 0; return FAUX; }
 "int"             return TYPE_ENTIER;
 "float"           return TYPE_REEL;
 "bool"            return TYPE_BOOLEEN;
@@ -80,13 +81,13 @@ letter			[a-zA-Z]
 
 
 	/* Déclaration des nombres entiers */
-[1-9]+{digit}*    { yylval = atoi(yytext); return ENTIER; }
+[1-9]+{digit}*    { yylval.t_entier = atoi(yytext); return ENTIER; }
 
   /* Déclaration des nombres réels */
-    /* [0-9]+,{digit}+		{ yylval = atof(yytext); return REEL; } */
+    /* [0-9]+,{digit}+		{ yylval.t_entier = atof(yytext); return REEL; } */
 
 	/* A modifier */
-{letter}+({letter}|{digit}|"_")*	{ yylval = tlex_nouvelle_entree(yytext); return IDF; }
+{letter}+({letter}|{digit}|"_")*	{ yylval.t_entier = tlex_nouvelle_entree(yytext); return IDF; }
 
 
 	/* Cas d'erreur */

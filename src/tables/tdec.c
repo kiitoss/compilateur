@@ -121,7 +121,7 @@ int tdec_recupere_taille_exec(int index) {
  */
 int tdec_trouve_index(int tlex_index, pile PREG) {
     int nature, region;
-    int index = VALEUR_NULL;
+    int index = tlex_index;
 
     /* utilisation d'une pile temporaire pour reinitialiser la pile apres la recherche */
     pile pile_tmp;

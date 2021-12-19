@@ -3,7 +3,7 @@
 /*
  * Insertion d'une nouvelle variable dans TDEC
  */
-void nouvelle_variable(int tlex_index) {
+void nouvelle_variable(int tlex_index, int tlex_index_type) {
     /* recuperation du numero de la region dans la pile de region */
     int region = pile_tete_de_pile(PREG);
 
@@ -11,7 +11,7 @@ void nouvelle_variable(int tlex_index) {
     int taille_region = treg_recupere_taille(region);
 
     /* recuperation de l'index du type dans TDEC grace a l'index dans TLEX */
-    int tdec_index_type = tdec_trouve_index(tlex_index, PREG);
+    int tdec_index_type = tdec_trouve_index(tlex_index_type, PREG);
 
     /* recuperation de la taille a l'execution du type de la variable dans TDEC*/
     int taille_exec = tdec_recupere_taille_exec(tdec_index_type);

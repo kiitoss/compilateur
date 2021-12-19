@@ -45,54 +45,39 @@ programme:
 
 
 	/* Le corps du programme est une liste de déclarations puis d'instructions */
-corps: liste_declarations liste_instructions {
-	}
-	| liste_instructions {
-	}
+corps: liste_declarations liste_instructions
+    | liste_instructions
 ;
 
 
 	/* Une liste de déclarations comprend une ou plusieurs déclarations séparées par le token POINT_VIRGULE */
-liste_declarations: declaration POINT_VIRGULE {
-	}
-	| liste_declarations declaration POINT_VIRGULE {
-	}
+liste_declarations: declaration POINT_VIRGULE
+	| liste_declarations declaration POINT_VIRGULE
 ;
 
 
 	/* Une liste d'instructions commence par le token DEBUT et se termine par le token FIN */
-liste_instructions: {
-	}
-	| DEBUT suite_liste_inst FIN {
-	}
+liste_instructions:
+	| DEBUT suite_liste_inst FIN
 ;
 
 
 	/* La liste d'instructions est composée d'une ou plusieurs instructions terminé par le token POINT_VIRGULE */
-suite_liste_inst: {
-	}
-	| instruction POINT_VIRGULE {
-	}
-	| suite_liste_inst instruction POINT_VIRGULE {
-	}
+suite_liste_inst:
+	| instruction POINT_VIRGULE
+	| suite_liste_inst instruction POINT_VIRGULE
 ;
 
 
 	/* Une déclaration peut être une déclaration de variable, de fonction, de procedure ou de type */
-declaration: declaration_variable {
-	}
-	| declaration_fonction {
-	}
-	| declaration_procedure {
-	}
-	| declaration_type {
-	}
+declaration: declaration_variable
+	| declaration_fonction
+	| declaration_procedure
+	| declaration_type
 ;
 
 	/* La déclaration d'un type commence par le token TYPE */
-declaration_type: TYPE IDF { maj_tlex_index($2); } DEUX_POINTS suite_declaration_type {
-        
-	}
+declaration_type: TYPE IDF { maj_tlex_index($2); } DEUX_POINTS suite_declaration_type
 ;
 	/* La suite de déclaration d'un type est soit une structure, soit un tableau */
 suite_declaration_type: STRUCT { debut_nouvelle_structure(); } liste_champs FSTRUCT { fin_nouvelle_structure(); }
@@ -100,17 +85,19 @@ suite_declaration_type: STRUCT { debut_nouvelle_structure(); } liste_champs FSTR
 ;
 
 	/* Les dimensions d'un tableau sont représentées entre crochet */
-dimension: CROCHET_OUVRANT liste_dimensions CROCHET_FERMANT {
-	}
+dimension: CROCHET_OUVRANT liste_dimensions CROCHET_FERMANT
 ;
 
-liste_dimensions: une_dimension | liste_dimensions VIRGULE une_dimension
+liste_dimensions: une_dimension
+    | liste_dimensions VIRGULE une_dimension
 ;
 
 une_dimension: expression POINT_POINT expression { nouvelle_dimension($1, $3); }
 ;
 
-liste_champs: un_champ | liste_champs POINT_VIRGULE un_champ;
+liste_champs: un_champ
+    | liste_champs POINT_VIRGULE un_champ
+;
 
 un_champ: IDF DEUX_POINTS nom_type { nouveau_champ($3); };
 
@@ -119,7 +106,6 @@ nom_type: type_simple { $$ = $1; }
 	| IDF { $$ = $1; }
 ;
 
-	/** A modifier */
 type_simple: TYPE_ENTIER { $$ = 0; }
 	| TYPE_REEL { $$ = 1; }
 	| TYPE_BOOLEEN { $$ = 2; }
@@ -128,54 +114,42 @@ type_simple: TYPE_ENTIER { $$ = 0; }
 
 
 	/* Grammaire de déclaration d'une variable */
-declaration_variable: VARIABLE IDF DEUX_POINTS nom_type { nouvelle_variable($4); }
+declaration_variable: VARIABLE IDF DEUX_POINTS nom_type { nouvelle_variable($2, $4); }
 ;
 
 
 	/* Grammaire de déclaration d'une fonction */
-declaration_fonction: FONCTION IDF {
-	} liste_parametres RETOURNE type_simple corps {
+declaration_fonction: FONCTION IDF { debut_nouvelle_fonction_ou_procedure(FONC); } liste_parametres RETOURNE type_simple corps {
+        fin_nouvelle_fonction_ou_procedure(FONC, $6);
 	}
 ;
 /* Grammaire de déclaration d'une procedure */
-declaration_procedure: PROCEDURE IDF {
-	} liste_parametres corps {
-	}
+declaration_procedure: PROCEDURE IDF { debut_nouvelle_fonction_ou_procedure(PROC); } liste_parametres corps {
+	    fin_nouvelle_fonction_ou_procedure(PROC, 0);
+    }
 ;
 
 	/* La liste des paramètres est soit vide soit entourée de parenthèses */
-liste_parametres: PARENTHESE_OUVRANTE PARENTHESE_FERMANTE {
-	}
-	| PARENTHESE_OUVRANTE liste_param PARENTHESE_FERMANTE {
-	}
+liste_parametres: PARENTHESE_OUVRANTE PARENTHESE_FERMANTE
+	| PARENTHESE_OUVRANTE liste_param PARENTHESE_FERMANTE
 ;
 
 
 	/* La liste des paramètres comprend un ou plus paramètres séparés par le token POINT_VIRGULE */
-liste_param: un_param {
-	}
-	| liste_param POINT_VIRGULE un_param {
-	}
+liste_param: un_param
+	| liste_param POINT_VIRGULE un_param
 ;
 
 	/* Grammaire d'un paramètre */
-un_param: IDF DEUX_POINTS type_simple {
-    }
+un_param: IDF DEUX_POINTS type_simple { nouveau_parametre($1, $3); }
 ;
 
-	/** A modifier */
-instruction: condition {
-	}
-	| tant_que {
-	}
-	| affectation {
-	}
-	| appel {
-	}
-	| test_arithmetiques {
-	}
-	| RETOURNE {
-	}
+instruction: condition
+	| tant_que
+	| affectation
+	| appel
+	| test_arithmetiques
+	| RETOURNE
 ;
 	/*  */
 test_arithmetiques: PARENTHESE_OUVRANTE expression DOUBLE_EGAL expression PARENTHESE_FERMANTE
@@ -185,119 +159,79 @@ test_arithmetiques: PARENTHESE_OUVRANTE expression DOUBLE_EGAL expression PARENT
 	| PARENTHESE_OUVRANTE expression INF_EGAL expression PARENTHESE_FERMANTE
 ;
 
-	/* A completer */
-liste_arguments: {
-	}
-	| PARENTHESE_OUVRANTE liste_args PARENTHESE_FERMANTE {
-	}
+liste_arguments:
+	| PARENTHESE_OUVRANTE liste_args PARENTHESE_FERMANTE
 ;
 
 
 	/* La liste des arguments comprend un ou plus arguments séparés par le token VIRGULE */
-liste_args: un_arg {
-	}
-	| liste_args VIRGULE un_arg {
-	}
+liste_args: un_arg
+	| liste_args VIRGULE un_arg
 ;
 
 	/* Grammaire d'un argument */
-un_arg: expression {
-  }
+un_arg: expression
 ;
 
 	/** A modifier */
 condition: SI expression_booleenne
 	ALORS liste_instructions
-	SINON liste_instructions {
-	}
+	SINON liste_instructions
 ;
-tant_que: TANT_QUE expression_booleenne FAIRE liste_instructions {
-	}
+tant_que: TANT_QUE expression_booleenne FAIRE liste_instructions
 ;
-affectation: variable OPAFF expression {
-	}
+affectation: variable OPAFF expression
 ;
-variable: IDF {
-	}
-	| tableau {
-	}
-	| variable POINT variable {
-
-	}
-	| IDF POINT variable {
-	}
+variable: IDF
+	| tableau
+	| variable POINT variable
+	| IDF POINT variable
 ;
 
-tableau: IDF CROCHET_OUVRANT expression CROCHET_FERMANT {
-	}
+tableau: IDF CROCHET_OUVRANT expression CROCHET_FERMANT
 ;
 
-	/* A completer */
-appel: IDF liste_arguments {
-	}
+appel: IDF liste_arguments
 ;
 
-	/** A modifier */
-expression: expression_arithmetiques {
-	}
-	| expression_booleenne {
-	}
+expression: expression_arithmetiques
+	| expression_booleenne
 ;
 
-expression_arithmetiques: expression_arithmetiques PLUS exp {
-	}
-	| expression_arithmetiques MOINS exp {
-	}
-	| expression_arithmetiques MULT exp {
-	}
-	| expression_arithmetiques DIV exp {
-	}
-	| exp {
-	}
+expression_arithmetiques: expression_arithmetiques PLUS exp
+	| expression_arithmetiques MOINS exp
+	| expression_arithmetiques MULT exp
+	| expression_arithmetiques DIV exp
+	| exp
 ;
 
-exp: variable {
-	}
-	| CSTE_FORMAT {
-	}
-	| appel {
-	}
+exp: variable
+	| CSTE_FORMAT
+	| appel
 	| ENTIER {
         $$ = $1;
 	}
 	| REEL {
         $$ = $1;
 	}
-	| exp VIRGULE expression {
-	}
+	| exp VIRGULE expression
 
-	| liste_arguments {
-	}
+	| liste_arguments
 ;
 
 	/** A modifier */ 
-expression_booleenne: booleen {
-	}
-	| booleen ET booleen {
-	}
-	| booleen OU booleen {
-	}
-	| PARENTHESE_OUVRANTE expression_booleenne PARENTHESE_FERMANTE {
-	}
-	| expression_booleenne ET expression_booleenne {
-	}
-	| expression_booleenne OU expression_booleenne {
-	}
+expression_booleenne: booleen
+	| booleen ET booleen
+	| booleen OU booleen
+	| PARENTHESE_OUVRANTE expression_booleenne PARENTHESE_FERMANTE
+	| expression_booleenne ET expression_booleenne
+	| expression_booleenne OU expression_booleenne
 ;
 
-booleen: variable {
-	}
-	| CSTE_FORMAT {
-	}
-	| NON booleen {
-	}
-	| test_arithmetiques {
-	}
+booleen: variable
+	| CSTE_FORMAT
+	| NON booleen
+	| test_arithmetiques
 ;
 
 %%
@@ -314,10 +248,10 @@ int main(void) {
 	yyparse();
 
 	if (AFFICHER_TABLES) {
-		/* printf("\n\nAffichage de la table de hash-code:\n");
+		printf("\n\nAffichage de la table de hash-code:\n");
 		thash_affiche();
 		printf("\n\nAffichage de la table lexicographique:\n");
-		tlex_affiche(); */
+		tlex_affiche();
 		printf("\n\nAffichage de la table des declarations:\n");
 		tdec_affiche();
         printf("\n\nAffichage de la table des representations:\n");

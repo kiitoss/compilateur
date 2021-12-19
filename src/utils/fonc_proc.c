@@ -31,16 +31,16 @@ void debut_nouvelle_fonction_ou_procedure(int type) {
     /* changement de region */
     nouvelle_region();
 
-    /* mise a jour du champ "execution" de la fonction ou de la procedure avec le numer ode la region */
+    /* mise a jour du champ "execution" de la fonction ou de la procedure avec le numero de la region */
     tdec_maj_taille_exec(fonc_proc.tdec_index, pile_tete_de_pile(PREG));
 }
 
 /*
  * Insertion d'un nouveau parametre d'une fonction ou d'une procedure dans les differentes tables
  */
-void nouveau_parametre(int tlex_index) {
+void nouveau_parametre(int tlex_index, int tlex_index_type) {
     /* le type d'un parametre ne peut etre qu'un type de base, c'est donc son numero lexical */
-    int tdec_index_type = tlex_index;
+    int tdec_index_type = tlex_index_type;
 
     /* ajout dans TREP de l'index du parametre dans TLEX */
     trep_nouvelle_entree(tlex_index);
@@ -50,15 +50,22 @@ void nouveau_parametre(int tlex_index) {
 
     /* incrementation du nombre de parametres de la fonction ou procedure parente dans TREP */
     trep_maj_valeur(fonc_proc.trep_index_nb_parametres, trep_recupere_valeur(fonc_proc.trep_index_nb_parametres) + 1);
+
+    nouvelle_variable(tlex_index, tdec_index_type);
 }
 
 /*
- * Mise a jour du type de retour d'une fonction dans TDEC
+ * Mise a jour du type de retour d'une fonction et depile la region dans TDEC
  */
-void fin_nouvelle_fonction(int tlex_index_type) {
-    /* recuperation de l'index du type dans TDEC grace a l'index dans TLEX */
-    int tdec_index_type = tdec_trouve_index(tlex_index_type, PREG);
+void fin_nouvelle_fonction_ou_procedure(int type, int tlex_index_type) {
+    if (type == FONC) {
+        /* recuperation de l'index du type dans TDEC grace a l'index dans TLEX */
+        int tdec_index_type = tdec_trouve_index(tlex_index_type, PREG);
 
-    /* mise a jour du type de retour de la fonction dans TREP */
-    trep_maj_valeur(fonc_proc.trep_index_type, tdec_index_type);
+        /* mise a jour du type de retour de la fonction dans TREP */
+        trep_maj_valeur(fonc_proc.trep_index_type, tdec_index_type);
+    }
+
+    /* depile la region en cours */
+    pile_depile(PREG);
 }

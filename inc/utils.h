@@ -45,7 +45,7 @@ void init_tables();
 void maj_tlex_index(int tlex_index);
 
 /* Insertion d'une nouvelle variable dans TDEC */
-void nouvelle_variable(int tlex_index);
+void nouvelle_variable(int tlex_index, int tlex_index_type);
 
 /* Insertion d'un nouveau tableau dans les differentes tables */
 void debut_nouveau_tableau();
@@ -72,12 +72,12 @@ void nouveau_champ(int tlex_index);
 void fin_nouvelle_structure();
 
 /* Insertion d'une nouvelle fonction ou procedure dans les differentes tables */
-void nouvelle_fonction_ou_procedure(int type);
+void debut_nouvelle_fonction_ou_procedure(int type);
 
 /* Insertion d'un nouveau parametre d'une fonction ou d'une procedure dans les differentes tables */
-void nouveau_parametre(int tlex_index);
+void nouveau_parametre(int tlex_index, int tlex_index_type);
 
-/* Mise a jour du type de retour d'une fonction dans TDEC */
-void fin_nouvelle_fonction(int tlex_index_type);
+/* Mise a jour du type de retour d'une fonction et depile la region dans TDEC */
+void fin_nouvelle_fonction_ou_procedure(int type, int tlex_index_type);
 
 #endif

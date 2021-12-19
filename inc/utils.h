@@ -13,6 +13,12 @@ typedef struct {
     int tdec_index;
 } global_tableau;
 
+typedef struct {
+    int trep_index_nb_champs;
+    int tdec_index;
+    int deplacement_exec;
+} global_structure;
+
 /* Inisitalisation des differentes tables */
 void init_tables();
 
@@ -32,6 +38,18 @@ void debut_nouveau_tableau();
 void nouvelle_dimension(int borne_min, int borne_max);
 
 /* Mise a jour du type et de la taille du tableau dans les differentes tables */
-void fin_nouveau_tableau(int tdec_index_type);
+void fin_nouveau_tableau(int tlex_index_type);
+
+/* Insertion d'une nouvelle structure dans les differentes tables */
+void debut_nouvelle_structure();
+
+/*
+ * Insertion d'un nouveau champ d'une structure dans les differentes tables
+ * et mise a jour de la structure parente dans les differentes tables
+ */
+void nouveau_champ(int tlex_index);
+
+/* Mise a jour de la taille de la structure dans TDEC */
+void fin_nouvelle_structure();
 
 #endif

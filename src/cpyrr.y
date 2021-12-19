@@ -95,8 +95,8 @@ declaration_type: TYPE IDF { maj_tlex_index($2); } DEUX_POINTS suite_declaration
 	}
 ;
 	/* La suite de déclaration d'un type est soit une structure, soit un tableau */
-suite_declaration_type: STRUCT { } liste_champs FSTRUCT { }
-	| TABLEAU { debut_nouveau_tableau(TYPE_T); } dimension DE nom_type { fin_nouveau_tableau($5); }
+suite_declaration_type: STRUCT { debut_nouvelle_structure(); } liste_champs FSTRUCT { fin_nouvelle_structure(); }
+	| TABLEAU { debut_nouveau_tableau(); } dimension DE nom_type { fin_nouveau_tableau($5); }
 ;
 
 	/* Les dimensions d'un tableau sont représentées entre crochet */
@@ -112,7 +112,7 @@ une_dimension: expression POINT_POINT expression { nouvelle_dimension($1, $3); }
 
 liste_champs: un_champ | liste_champs POINT_VIRGULE un_champ;
 
-un_champ: IDF DEUX_POINTS nom_type {  };
+un_champ: IDF DEUX_POINTS nom_type { nouveau_champ($3); };
 
 	/* Le type peut être un type simple (entier, reel...) ou un identificateur (variable...) */
 nom_type: type_simple { $$ = $1; }
@@ -315,10 +315,10 @@ int main(void) {
 	yyparse();
 
 	if (AFFICHER_TABLES) {
-		printf("\n\nAffichage de la table de hash-code:\n");
+		/* printf("\n\nAffichage de la table de hash-code:\n");
 		thash_affiche();
 		printf("\n\nAffichage de la table lexicographique:\n");
-		tlex_affiche();
+		tlex_affiche(); */
 		printf("\n\nAffichage de la table des declarations:\n");
 		tdec_affiche();
         printf("\n\nAffichage de la table des representations:\n");

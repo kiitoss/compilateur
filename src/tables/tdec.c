@@ -113,6 +113,8 @@ int tdec_recupere_taille_exec(int index) {
         return VALEUR_NULL;
     }
 
+    fprintf(stderr, "attention: cas ou suivant != -1 non precise ! => pile des regions\n");
+
     return TDEC[index].execution;
 }
 

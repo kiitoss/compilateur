@@ -1,10 +1,11 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "../inc/global.h"
-#include "../inc/tdec.h"
-#include "../inc/tlex.h"
-#include "../inc/trep.h"
+#include "global.h"
+#include "pile.h"
+#include "tdec.h"
+#include "tlex.h"
+#include "trep.h"
 
 typedef struct {
     int taille;
@@ -24,9 +25,6 @@ void init_tables();
 
 /* * Mise a jour de l'index global de la table lexicographique */
 void maj_tlex_index(int tlex_index);
-
-/* Mise a jour du numero global de region */
-void maj_num_region(int num_region);
 
 /* Insertion d'un nouveau tableau dans les differentes tables */
 void debut_nouveau_tableau();

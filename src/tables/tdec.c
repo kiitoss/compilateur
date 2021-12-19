@@ -113,9 +113,65 @@ int tdec_recupere_taille_exec(int index) {
         return VALEUR_NULL;
     }
 
-    fprintf(stderr, "attention: cas ou suivant != -1 non precise ! => pile des regions\n");
-
     return TDEC[index].execution;
+}
+
+/*
+ * Recuperation de l'index d'une entree dans la table des declarrations a partir de son index lexicographique
+ */
+int tdec_trouve_index(int tlex_index, pile PREG) {
+    int nature, region;
+    int index = VALEUR_NULL;
+
+    /* utilisation d'une pile temporaire pour reinitialiser la pile apres la recherche */
+    pile pile_tmp;
+
+    /* cas d'erreur */
+    if (index > TDEC_TMAX) {
+        fprintf(stderr, "Erreur - La taille maximale de la table des declarations est atteinte.\n");
+        return VALEUR_NULL;
+    }
+
+    /* initialisation de la pile temporaire */
+    pile_init(pile_tmp);
+
+    while (!pile_est_vide(PREG)) {
+        /* recuperation de la region dans la pile */
+        region = pile_depile(PREG);
+        /* sauvegarde de la region dans la pile temporaire */
+        pile_empile(pile_tmp, region);
+        /* reinitialisation de l'index pour la recherche */
+        index = tlex_index;
+
+        /* recherche dans TDEC d'une entree avec le numero de region et le type passe en parametre */
+        while (TDEC[index].suivant != VALEUR_NULL) {
+            nature = TDEC[index].nature;
+
+            /* si l'entree correspond: quitte la boucle*/
+            if ((TDEC[index].region == region) &&
+                (nature == TYPE_B || nature == TYPE_S || nature == TYPE_T || nature == FONC || nature == PROC)) {
+                break;
+            }
+
+            /* sinon, incremente l'index */
+            index = TDEC[index].suivant;
+        }
+
+        /*
+         * si le champ suivant de la derniere entree de TDEC visitee == VALEUR NULL
+         * c'est qu'une correspondance a ete trouvee: quitte la boucle
+         */
+        if (TDEC[index].suivant != VALEUR_NULL) {
+            break;
+        }
+    }
+
+    /* reinitialisation de la pile de region initiale */
+    while (!pile_est_vide(pile_tmp)) {
+        pile_empile(PREG, pile_depile(pile_tmp));
+    }
+
+    return index;
 }
 
 /*

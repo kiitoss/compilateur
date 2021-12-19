@@ -2,6 +2,7 @@
 #define TDEC_H
 
 #include "global.h"
+#include "pile.h"
 
 /* Taille maximale de la table des declarations */
 /* = TLEX_TMAX + zone de debordement */
@@ -27,6 +28,9 @@ void tdec_maj_taille_exec(int index, int taille);
 
 /* Recuperation de la taille a l'execution d'une entree de la table des declarations */
 int tdec_recupere_taille_exec(int index);
+
+/* Recuperation de l'index d'une entree dans la table des declarrations a partir de son index lexicographique */
+int tdec_trouve_index(int tlex_index, pile PREG);
 
 /* Affichage de la table des declarations */
 void tdec_affiche();

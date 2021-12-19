@@ -2,7 +2,7 @@
 
 /* Variables globales */
 int global_tlex_index = 0;  // index dans la table lexicographique
-int global_num_region = 0;  // numero de la region
+pile PREG;
 global_tableau tableau;
 global_structure structure;
 
@@ -31,17 +31,16 @@ void init_tables() {
 
     /* insertion des types de base (entier/reel/booleen/char) */
     insere_types_base();
+
+    /* initialisation de la pile et stockage de la premiere region */
+    pile_init(PREG);
+    pile_empile(PREG, 0);
 }
 
 /*
  * Mise a jour de l'index global de la table lexicographique
  */
 void maj_tlex_index(int tlex_index) { global_tlex_index = tlex_index; }
-
-/*
- * Mise a jour du numero global de region
- */
-void maj_num_region(int num_region) { global_num_region = num_region; }
 
 /*
  * Insertion d'un nouveau tableau dans les differentes tables
@@ -66,7 +65,8 @@ void debut_nouveau_tableau() {
      * Nouvelle entree TDEC avec pour champ exec 0: taille du tableau
      * -> la modification se fera au fur et a mesure de la lecture des dimensions
      */
-    tableau.tdec_index = tdec_nouvelle_entree(global_tlex_index, TYPE_T, global_num_region, tableau.trep_index_type, 0);
+    tableau.tdec_index =
+        tdec_nouvelle_entree(global_tlex_index, TYPE_T, pile_tete_de_pile(PREG), tableau.trep_index_type, 0);
 }
 
 /*
@@ -94,10 +94,12 @@ void nouvelle_dimension(int borne_min, int borne_max) {
  * Mise a jour du type et de la taille du tableau dans les differentes tables
  */
 void fin_nouveau_tableau(int tlex_index_type) {
-    int taille_type = tdec_recupere_taille_exec(tlex_index_type);
+    int tdec_index_type = tdec_trouve_index(tlex_index_type, PREG);
+
+    int taille_type = tdec_recupere_taille_exec(tdec_index_type);
 
     /* mise a jour du type du tableau dans TREP */
-    trep_maj_valeur(tableau.trep_index_type, tlex_index_type);
+    trep_maj_valeur(tableau.trep_index_type, tdec_index_type);
 
     /* mise a jour de la taille du tableau dans TDEC */
     tdec_maj_taille_exec(tableau.tdec_index, taille_type * tableau.taille);
@@ -121,7 +123,7 @@ void debut_nouvelle_structure() {
      * -> la modification se fera au fur et a mesure de la lecture des champs
      */
     structure.tdec_index =
-        tdec_nouvelle_entree(global_tlex_index, TYPE_S, global_num_region, structure.trep_index_nb_champs, 0);
+        tdec_nouvelle_entree(global_tlex_index, TYPE_S, pile_tete_de_pile(PREG), structure.trep_index_nb_champs, 0);
 }
 
 /*
@@ -129,11 +131,13 @@ void debut_nouvelle_structure() {
  * et mise a jour de la structure parente dans les differentes tables
  */
 void nouveau_champ(int tlex_index) {
-    /* ajout dans TREP de l'index du type de la structure dans TDEC */
-    trep_nouvelle_entree(tlex_index);
+    int tdec_index_type = tdec_trouve_index(tlex_index, PREG);
 
-    /* ajout dans TREP de la borne max de la dimension */
-    trep_nouvelle_entree(tdec_recupere_taille_exec(tlex_index));
+    /* ajout dans TREP de l'index du type de la structure dans TDEC */
+    trep_nouvelle_entree(tdec_index_type);
+
+    /* ajout dans TREP de l'index du type de la structure dans TLEX */
+    trep_nouvelle_entree(tlex_index);
 
     /* ajout dans TREP du deplacement a l'execution au sein de la structure */
     trep_nouvelle_entree(structure.deplacement_exec);
@@ -142,7 +146,7 @@ void nouveau_champ(int tlex_index) {
     trep_maj_valeur(structure.trep_index_nb_champs, trep_recupere_valeur(structure.trep_index_nb_champs) + 1);
 
     /* incrementation du deplacement a l'execution */
-    structure.deplacement_exec += tdec_recupere_taille_exec(tlex_index);
+    structure.deplacement_exec += tdec_recupere_taille_exec(tdec_index_type);
 }
 
 /*

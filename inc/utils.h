@@ -8,18 +8,25 @@
 #include "treg.h"
 #include "trep.h"
 
+/* Structure d'une variable globale pour stocker les information d'un tableau */
 typedef struct {
-    int taille;
-    int trep_index_type;
-    int trep_index_nb_dimensions;
-    int tdec_index;
+    int taille;                    // la taille du tableau (si chaque element du tableau a une taille de 1)
+    int trep_index_type;           // index dans la table des representations du type du tableau
+    int trep_index_nb_dimensions;  // index dans la table des representations du nb de dimensions du tableau
+    int tdec_index;                // index dans la table des declarations du tableau
 } global_tableau;
 
+/* Structure d'une variable globale pour stocker les information d'une structure */
 typedef struct {
-    int trep_index_nb_champs;
-    int tdec_index;
-    int deplacement_exec;
+    int trep_index_nb_champs;  // index dans la table des representations du nb de champs de la structure
+    int tdec_index;            // index dans la table des declarations de la structure
+    int deplacement_exec;      // deplacement a l'execution a l'interieur de la structure
 } global_structure;
+
+/* Index dans la table lexicographique */
+extern int global_tlex_index;
+/* Pile des regions */
+extern pile PREG;
 
 /* Inisitalisation des differentes tables */
 void init_tables();

@@ -3,8 +3,8 @@ CFLAGS = -W -Wall -pedantic -std=c99 -O3
 
 compilateur-clean: compilateur simple-clean
 
-compilateur: cpyrr-lex cpyrr-yacc pile.o thash.o tlex.o tdec.o trep.o treg.o utils.o
-	$(CC) lex.yy.c y.tab.c pile.o thash.o tlex.o tdec.o trep.o treg.o utils.o -o cpyrr.exe
+compilateur: cpyrr-lex cpyrr-yacc pile.o thash.o tlex.o tdec.o trep.o treg.o variable.o structure.o tableau.o utils.o
+	$(CC) lex.yy.c y.tab.c pile.o thash.o tlex.o tdec.o trep.o treg.o variable.o structure.o tableau.o utils.o -o cpyrr.exe
 
 cpyrr-lex: src/cpyrr.l
 	lex src/cpyrr.l
@@ -16,7 +16,16 @@ cpyrr-yacc: src/cpyrr.y
 utils.o: src/utils.c inc/utils.h inc/global.h
 	$(CC) $(CFLAGS) src/utils.c -c
 
-treg.o: src/tables/treg.c inc/treg.h
+tableau.o: src/utils/tableau.c inc/utils.h inc/global.h
+	$(CC) $(CFLAGS) src/utils/tableau.c -c
+
+structure.o: src/utils/structure.c inc/utils.h inc/global.h
+	$(CC) $(CFLAGS) src/utils/structure.c -c
+
+variable.o: src/utils/variable.c inc/utils.h inc/global.h
+	$(CC) $(CFLAGS) src/utils/variable.c -c
+
+treg.o: src/tables/treg.c inc/treg.h inc/global.h
 	$(CC) $(CFLAGS) src/tables/treg.c -c
 
 trep.o: src/tables/trep.c inc/trep.h inc/global.h

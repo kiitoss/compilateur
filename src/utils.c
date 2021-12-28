@@ -8,10 +8,10 @@ pile PREG;
  * Insertion des types de base dans les differentes tables
  */
 static void insere_types_base() {
-    int index_tlex_entier    = tlex_nouvelle_entree("entier");
-    int index_tlex_reel      = tlex_nouvelle_entree("reel");
-    int index_tlex_booleen   = tlex_nouvelle_entree("booleen");
-    int index_tlex_caractere = tlex_nouvelle_entree("caractere");
+    int index_tlex_entier    = tlex_nouvelle_entree("int");
+    int index_tlex_reel      = tlex_nouvelle_entree("float");
+    int index_tlex_booleen   = tlex_nouvelle_entree("bool");
+    int index_tlex_caractere = tlex_nouvelle_entree("char");
     tdec_nouvelle_entree(index_tlex_entier, TYPE_B, 0, VALEUR_NULL, 1);
     tdec_nouvelle_entree(index_tlex_reel, TYPE_B, 0, VALEUR_NULL, 1);
     tdec_nouvelle_entree(index_tlex_booleen, TYPE_B, 0, VALEUR_NULL, 1);
@@ -47,3 +47,8 @@ void init_tables() {
  * Mise a jour de l'index global de TLEX
  */
 void maj_tlex_index(int tlex_index) { global_tlex_index = tlex_index; }
+
+/*
+ * Recuperation l'index global de TLEX
+ */
+int recupere_tlex_index() { return global_tlex_index; }

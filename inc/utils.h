@@ -8,6 +8,8 @@
 #include "treg.h"
 #include "trep.h"
 
+extern int line;
+
 /* Structure d'une variable globale pour stocker les information d'un tableau */
 typedef struct {
     int taille;                    // la taille du tableau (si chaque element du tableau a une taille de 1)
@@ -43,6 +45,9 @@ void init_tables();
 
 /* * Mise a jour de l'index global de la table lexicographique */
 void maj_tlex_index(int tlex_index);
+
+/* Recuperation l'index global de TLEX */
+int recupere_tlex_index();
 
 /* Insertion d'une nouvelle variable dans TDEC */
 void nouvelle_variable(int tlex_index, int tlex_index_type);

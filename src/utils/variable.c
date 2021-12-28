@@ -16,8 +16,13 @@ void nouvelle_variable(int tlex_index, int tlex_index_type) {
     /* recuperation de la taille a l'execution du type de la variable dans TDEC*/
     int taille_exec = tdec_recupere_taille_exec(tdec_index_type);
 
+    if (taille_exec == VALEUR_NULL) {
+        fprintf(stderr, "(l:%d) Variable non initialisée ! (tlex: %d, tlex_type: %d)\n", line, tlex_index, taille_exec);
+        exit(EXIT_FAILURE);
+    }
+
     /* insertion de la variable dans TDEC */
-    tdec_nouvelle_entree(tlex_index, VAR, region, taille_exec, taille_region);
+    tdec_nouvelle_entree(tlex_index, VAR, region, tdec_index_type, taille_region);
 
     /* mise a jour de la taille de la region dans TREG */
     treg_maj_taille(region, taille_region + taille_exec);

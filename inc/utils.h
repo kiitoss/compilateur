@@ -77,12 +77,15 @@ void nouveau_champ(int tlex_index);
 void fin_nouvelle_structure();
 
 /* Insertion d'une nouvelle fonction ou procedure dans les differentes tables */
-void debut_nouvelle_fonction_ou_procedure(int type);
+void debut_nouvelle_fonction_ou_procedure(int type, int tlex_index);
 
 /* Insertion d'un nouveau parametre d'une fonction ou d'une procedure dans les differentes tables */
 void nouveau_parametre(int tlex_index, int tlex_index_type);
 
 /* Mise a jour du type de retour d'une fonction et depile la region dans TDEC */
 void fin_nouvelle_fonction_ou_procedure(int type, int tlex_index_type);
+
+/* Dépile la region en cours apres etre sortie de la fonction ou de la procedure */
+void quitte_nouvelle_fonction_ou_procedure();
 
 #endif

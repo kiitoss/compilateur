@@ -5,7 +5,7 @@ global_fonc_proc fonc_proc;
 /*
  * Insertion d'une nouvelle fonction ou procedure dans les differentes tables
  */
-void debut_nouvelle_fonction_ou_procedure(int type) {
+void debut_nouvelle_fonction_ou_procedure(int type, int tlex_index) {
     int trep_index_fonc_proc;
 
     /* Si le type est une fonction, insertion de son type */
@@ -25,8 +25,7 @@ void debut_nouvelle_fonction_ou_procedure(int type) {
     }
 
     /* nouvelle entree TDEC */
-    fonc_proc.tdec_index =
-        tdec_nouvelle_entree(global_tlex_index, FONC, pile_tete_de_pile(PREG), trep_index_fonc_proc, 0);
+    fonc_proc.tdec_index = tdec_nouvelle_entree(tlex_index, type, pile_tete_de_pile(PREG), trep_index_fonc_proc, 0);
 
     /* changement de region */
     nouvelle_region();
@@ -65,7 +64,12 @@ void fin_nouvelle_fonction_ou_procedure(int type, int tlex_index_type) {
         /* mise a jour du type de retour de la fonction dans TREP */
         trep_maj_valeur(fonc_proc.trep_index_type, tdec_index_type);
     }
+}
 
+/*
+ * Dépile la region en cours apres etre sortie de la fonction ou de la procedure
+ */
+void quitte_nouvelle_fonction_ou_procedure() {
     /* depile la region en cours */
     pile_depile(PREG);
 }

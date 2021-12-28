@@ -221,30 +221,34 @@ declaration_variable: VARIABLE idf DEUX_POINTS nom_type {
     }
 ;
 
-declaration_fonction: FONCTION IDF { debut_nouvelle_fonction_ou_procedure(FONC); } liste_parametres RETOURNE type_simple corps {
+declaration_fonction: FONCTION idf { debut_nouvelle_fonction_ou_procedure(FONC, $2); } liste_parametres RETOURNE type_simple  {
         int tlex_index_type = $6->valeur_1;
-
         fin_nouvelle_fonction_ou_procedure(FONC, tlex_index_type);
+        
+	} corps {
+        quitte_nouvelle_fonction_ou_procedure();
         $$ = arbre_concat_pere_fils(
 			arbre_creer_noeud_vide(A_DECL_FONC),
 			arbre_concat_pere_frere(
 				$4,
 				arbre_concat_pere_frere(
 					$6,
-					$7
+					$8
 				)
 			)
 		);
-	}
+    }
 ;
 
-declaration_procedure: PROCEDURE idf { debut_nouvelle_fonction_ou_procedure(PROC); } liste_parametres corps {
+declaration_procedure: PROCEDURE idf { debut_nouvelle_fonction_ou_procedure(PROC, $2); } liste_parametres {
 	    fin_nouvelle_fonction_ou_procedure(PROC, 0);
+    } corps {
+        quitte_nouvelle_fonction_ou_procedure();
         $$ = arbre_concat_pere_fils(
 			arbre_creer_noeud(A_DECL_PROC, $2, VALEUR_NULL),
 			arbre_concat_pere_frere(
 				$4,
-				$5
+				$6
 			)
 		);
     }

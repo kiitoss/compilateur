@@ -11,6 +11,7 @@ treg_entree TREG[TREG_TMAX];
  * Insertion d'une nouvelle entree dans la table des regions
  */
 int treg_nouvelle_entree(int nis) {
+    int taille;
     int index = treg_taille;
 
     /* cas d'erreur */
@@ -19,7 +20,12 @@ int treg_nouvelle_entree(int nis) {
         return VALEUR_NULL;
     }
 
-    TREG[index].taille = 0;
+    if (index == 0) {
+        taille = 0;
+    } else {
+        taille = 1 + nis;
+    }
+    TREG[index].taille = taille;
     TREG[index].nis    = nis;
 
     treg_taille++;

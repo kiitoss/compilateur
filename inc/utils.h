@@ -71,7 +71,7 @@ void debut_nouvelle_structure();
  * Insertion d'un nouveau champ d'une structure dans les differentes tables
  * et mise a jour de la structure parente dans les differentes tables
  */
-void nouveau_champ(int tlex_index);
+void nouveau_champ(int tlex_index, int tlex_index_type);
 
 /* Mise a jour de la taille de la structure dans TDEC */
 void fin_nouvelle_structure();

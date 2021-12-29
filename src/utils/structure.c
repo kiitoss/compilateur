@@ -27,15 +27,15 @@ void debut_nouvelle_structure() {
  * Insertion d'un nouveau champ d'une structure dans les differentes tables
  * et mise a jour de la structure parente dans les differentes tables
  */
-void nouveau_champ(int tlex_index) {
+void nouveau_champ(int tlex_index, int tlex_index_type) {
     /* recuperation de l'index du type dans TDEC grace a l'index dans TLEX */
-    int tdec_index_type = tdec_trouve_index(tlex_index, PREG);
+    int tdec_index_type = tdec_trouve_index(tlex_index_type, PREG);
 
-    /* ajout dans TREP de l'index du type de la structure dans TDEC */
-    trep_nouvelle_entree(tdec_index_type);
-
-    /* ajout dans TREP de l'index du type de la structure dans TLEX */
+    /* ajout dans TREP de l'index du champ dans TLEX */
     trep_nouvelle_entree(tlex_index);
+
+    /* ajout dans TREP de l'index du type du champ dans TDEC */
+    trep_nouvelle_entree(tdec_index_type);
 
     /* ajout dans TREP du deplacement a l'execution au sein de la structure */
     trep_nouvelle_entree(structure.deplacement_exec);

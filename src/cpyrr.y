@@ -186,7 +186,7 @@ liste_champs: un_champ {
 
 un_champ: idf DEUX_POINTS nom_type {
         int tlex_index_type = $3->valeur_1;
-        nouveau_champ(tlex_index_type);
+        nouveau_champ($1, tlex_index_type);
         $$ = arbre_creer_noeud(A_CHAMP, $1, tlex_index_type);
     }
 ;

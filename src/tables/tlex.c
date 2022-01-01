@@ -10,19 +10,20 @@ tlex_entree TLEX[TLEX_TMAX];
 /*
  * Ecriture d'une nouvelle entree dans la table lexicographique
  */
-static void tlex_ecrit(int index, int hash_code, int taille, char *lexeme) {
+void tlex_ecrit(int index, int taille, int suivant, char *lexeme) {
     /* cas d'erreur */
     if (index >= TLEX_TMAX) {
         fprintf(stderr, "Erreur - La taille maximale de la table lexicographique est atteinte.\n");
         return;
     }
 
-    /* lie ensemble un hash-code et un lexeme dans la table de hash-code */
-    thash_ecrit(hash_code, index);
-
     /* ajoute une nouvelle entree dans la table lexicographique */
-    TLEX[index].taille = taille;
+    TLEX[index].taille  = taille;
+    TLEX[index].suivant = suivant;
     strcpy(TLEX[index].lexeme, lexeme);
+
+    /* maj de la taille de la table lexicographique */
+    tlex_taille++;
 }
 
 /*
@@ -84,13 +85,13 @@ int tlex_nouvelle_entree(char *lexeme) {
     }
 
     /* ecriture de la nouvelle entree */
-    tlex_ecrit(index, hash_code, strlen(lexeme), lexeme);
+    tlex_ecrit(index, strlen(lexeme), VALEUR_NULL, lexeme);
+
+    /* lie ensemble un hash-code et un lexeme dans la table de hash-code */
+    thash_ecrit(hash_code, index);
 
     /* mise a jour du champ "suivant" de l'entree precedente de meme lexeme */
     if (precedent != VALEUR_NULL) TLEX[precedent].suivant = index;
-
-    /* maj de la taille de la table lexicographique */
-    tlex_taille++;
 
     return index;
 }

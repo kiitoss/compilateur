@@ -1,12 +1,8 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef COMPILATEUR_H
+#define COMPILATEUR_H
 
-#include "global.h"
 #include "pile.h"
-#include "tdec.h"
-#include "tlex.h"
-#include "treg.h"
-#include "trep.h"
+#include "tables.h"
 
 extern int line;
 
@@ -37,11 +33,11 @@ extern int global_tlex_index;
 /* Pile des regions */
 extern pile PREG;
 
+/* Inisitalisation des differentes tables, de la pile et des regions */
+void init_compilation();
+
 /* Insertion d'une nouvelle region dans PREG et dans TREG */
 void nouvelle_region();
-
-/* Inisitalisation des differentes tables */
-void init_tables();
 
 /* * Mise a jour de l'index global de la table lexicographique */
 void maj_tlex_index(int tlex_index);

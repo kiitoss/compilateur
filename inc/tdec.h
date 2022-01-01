@@ -1,8 +1,8 @@
 #ifndef TDEC_H
 #define TDEC_H
 
-#include "global.h"
 #include "pile.h"
+#include "tables.h"
 
 /* Taille maximale de la table des declarations */
 /* = TLEX_TMAX + zone de debordement */

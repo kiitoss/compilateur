@@ -1,5 +1,5 @@
 %{
-	#include "inc/utils.h"
+    #include "inc/compilateur.h"
     #include "inc/arbre.h"
 
     #ifndef AFFICHER_TABLES
@@ -17,7 +17,6 @@
 
     arbre mon_arbre;
 %}
-
 %union {
 	arbre t_arbre;
 	int t_entier;
@@ -625,12 +624,12 @@ booleen: variable {
 
 void yyerror(char *s) {
 	fprintf(stderr, "ligne %d: %s\n", line, s);
-	exit(-1);
+	exit(EXIT_FAILURE);
 }
 
-
 int main(void) {
-    init_tables();
+    init_compilation();
+    
 	yyparse();
 
 	if (AFFICHER_TABLES) {

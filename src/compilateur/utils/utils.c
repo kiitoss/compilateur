@@ -1,4 +1,4 @@
-#include "../inc/utils.h"
+#include "../../../inc/compilateur.h"
 
 /* Variables globales */
 int global_tlex_index = 0;  // index dans la table lexicographique
@@ -24,13 +24,10 @@ static void insere_types_base() {
 void nouvelle_region() { pile_empile(PREG, treg_nouvelle_entree(pile_recupere_taille(PREG))); }
 
 /*
- * Inisitalisation des differentes tables
+ * Inisitalisation des differentes tables, de la pile et des regions
  */
-void init_tables() {
-    thash_init();
-    tlex_init();
-    tdec_init();
-    trep_init();
+void init_compilation() {
+    init_tables();
 
     /* insertion des types de base (entier/reel/booleen/char) */
     insere_types_base();

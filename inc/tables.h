@@ -1,8 +1,13 @@
-#ifndef GLOBAL_H
-#define GLOBAL_H
+#ifndef TABLES_H
+#define TABLES_H
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "tdec.h"
+#include "tlex.h"
+#include "treg.h"
+#include "trep.h"
 
 /* Taille maximale de la table lexicographique */
 #define TLEX_TMAX 500
@@ -17,5 +22,8 @@
 #define VAR    3
 #define PROC   4
 #define FONC   5
+
+/* Inisitalisation des differentes tables */
+void init_tables();
 
 #endif

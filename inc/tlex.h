@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-#include "global.h"
+#include "tables.h"
 #include "thash.h"
 
 #define LEXEME_TAILLE_MAX 50
@@ -20,6 +20,9 @@ void tlex_init();
 
 /* Affichage de la table lexicographique */
 void tlex_affiche();
+
+/* Ecriture d'une nouvelle entree dans la table lexicographique */
+void tlex_ecrit(int index, int taille, int suivant, char *lexeme);
 
 /*
  * Insertion d'une nouvelle entree et recuperation de son index ou recuperation de l'index du lexeme dans la table

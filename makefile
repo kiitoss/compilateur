@@ -1,53 +1,75 @@
 CC = gcc
 CFLAGS = -W -Wall -pedantic -std=c99 -O3
 
-compilateur-clean: compilateur simple-clean
+tables = thash.o tlex.o tdec.o trep.o treg.o tables.o
+utils = variable.o structure.o tableau.o fonc_proc.o utils.o
 
-compilateur: cpyrr-lex cpyrr-yacc pile.o arbre.o thash.o tlex.o tdec.o trep.o treg.o variable.o structure.o tableau.o fonc_proc.o utils.o
-	$(CC) lex.yy.c y.tab.c pile.o arbre.o thash.o tlex.o tdec.o trep.o treg.o variable.o structure.o tableau.o fonc_proc.o utils.o -o cpyrr.exe
+all: interpreteur compilateur simple-clean
 
-cpyrr-lex: src/cpyrr.l
-	lex src/cpyrr.l
+interpreteur: interpreteur-lex interpreteur-yacc pile.o $(tables)
+	$(CC) lex.yy.c y.tab.c pile.o $(tables) -o interpreteur.exe
 
-cpyrr-yacc: src/cpyrr.y
-	yacc -d src/cpyrr.y
+interpreteur-lex: src/interpreteur/interpreteur.l
+	lex src/interpreteur/interpreteur.l
+
+interpreteur-yacc: src/interpreteur/interpreteur.y
+	yacc -d src/interpreteur/interpreteur.y
 
 
-utils.o: src/utils.c inc/utils.h inc/global.h
-	$(CC) $(CFLAGS) src/utils.c -c
 
-fonc_proc.o: src/utils/fonc_proc.c inc/utils.h inc/global.h
-	$(CC) $(CFLAGS) src/utils/fonc_proc.c -c
 
-tableau.o: src/utils/tableau.c inc/utils.h inc/global.h
-	$(CC) $(CFLAGS) src/utils/tableau.c -c
+compilateur: compilateur-lex compilateur-yacc arbre.o pile.o $(tables) $(utils)
+	$(CC) lex.yy.c y.tab.c arbre.o pile.o $(tables) $(utils) -o compilateur.exe
 
-structure.o: src/utils/structure.c inc/utils.h inc/global.h
-	$(CC) $(CFLAGS) src/utils/structure.c -c
+compilateur-lex: src/compilateur/compilateur.l
+	lex src/compilateur/compilateur.l
 
-variable.o: src/utils/variable.c inc/utils.h inc/global.h
-	$(CC) $(CFLAGS) src/utils/variable.c -c
+compilateur-yacc: src/compilateur/compilateur.y
+	yacc -d src/compilateur/compilateur.y
 
-treg.o: src/tables/treg.c inc/treg.h inc/global.h
+# UTILS (COMPILATEUR)
+utils.o: src/compilateur/utils/utils.c inc/compilateur.h
+	$(CC) $(CFLAGS) src/compilateur/utils/utils.c -c
+
+fonc_proc.o: src/compilateur/utils/fonc_proc.c inc/compilateur.h
+	$(CC) $(CFLAGS) src/compilateur/utils/fonc_proc.c -c
+
+tableau.o: src/compilateur/utils/tableau.c inc/compilateur.h
+	$(CC) $(CFLAGS) src/compilateur/utils/tableau.c -c
+
+structure.o: src/compilateur/utils/structure.c inc/compilateur.h
+	$(CC) $(CFLAGS) src/compilateur/utils/structure.c -c
+
+variable.o: src/compilateur/utils/variable.c inc/compilateur.h
+	$(CC) $(CFLAGS) src/compilateur/utils/variable.c -c
+
+
+# TABLES
+tables.o: src/tables/tables.c inc/treg.h inc/tables.h
+	$(CC) $(CFLAGS) src/tables/tables.c -c
+
+treg.o: src/tables/treg.c inc/treg.h inc/tables.h
 	$(CC) $(CFLAGS) src/tables/treg.c -c
 
-trep.o: src/tables/trep.c inc/trep.h inc/global.h
+trep.o: src/tables/trep.c inc/trep.h inc/tables.h
 	$(CC) $(CFLAGS) src/tables/trep.c -c
 
-tdec.o: src/tables/tdec.c inc/tdec.h inc/global.h
+tdec.o: src/tables/tdec.c inc/tdec.h inc/tables.h
 	$(CC) $(CFLAGS) src/tables/tdec.c -c
 
-tlex.o: src/tables/tlex.c inc/tlex.h inc/thash.h inc/global.h
+tlex.o: src/tables/tlex.c inc/tlex.h inc/thash.h inc/tables.h
 	$(CC) $(CFLAGS) src/tables/tlex.c -c
 
 thash.o: src/tables/thash.c inc/thash.h
 	$(CC) $(CFLAGS) src/tables/thash.c -c
 
+# TAD
 arbre.o: src/tad/arbre.c inc/arbre.h
 	$(CC) $(CFLAGS) src/tad/arbre.c -c
 
 pile.o: src/tad/pile.c inc/pile.h
 	$(CC) $(CFLAGS) src/tad/pile.c -c
+
 
 simple-clean:
 	rm -f *.yy.c *.tab.c *.tab.h *.o

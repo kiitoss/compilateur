@@ -1,4 +1,5 @@
 %{
+    #include "inc/compilateur.h"
 	#include "inc/tlex.h"
     #include "inc/arbre.h"
     #include "y.tab.h"

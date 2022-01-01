@@ -1,7 +1,7 @@
 #ifndef TREP_H
 #define TREP_H
 
-#include "global.h"
+#include "tables.h"
 
 /* Taille maximale de la table des representations */
 #define TREP_TMAX 500

@@ -100,8 +100,20 @@ void treg_affiche() {
         arbre_affiche(TREG[i].arbre);
         printf("\n");
     }
+    for (int i = 0; i < treg_taille; i++) {
+        printf("%d\t|%d\t|%d\n", i, TREG[i].taille, TREG[i].nis);
+    }
+    for (int i = 0; i < treg_taille; i++) {
+        printf("---------------------\n");
+        printf("DEBUT_ARBRE_REGION %d\n", i);
+        printf("---------------------\n");
+        arbre_affiche(TREG[i].arbre);
+        printf("---------------------\n");
+        printf("FIN_ARBRE_REGION\n");
+        printf("---------------------\n\n");
+    }
 
-    printf("---------------------\n");
+    printf("\n");
 }
 
 /*
@@ -113,7 +125,7 @@ void treg_sauvegarde(FILE *f) {
     }
     for (int i = 0; i < treg_taille; i++) {
         fprintf(f, "\n\t#DEBUT_ARBRE_REGION %d\n", i);
-        arbre_sauvegarde(f, TREG[i].arbre, 2);
+        arbre_sauvegarde(f, TREG[i].arbre, 0, 2);
         fprintf(f, "\t#FIN_ARBRE_REGION\n");
     }
 }

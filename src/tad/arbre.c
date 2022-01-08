@@ -191,17 +191,17 @@ static void arbre_affiche_bis(arbre a, int espace) {
     /* affichage du noeud */
     printf("%s", arbre_recupere_nature_str(a->nature));
     if (a->valeur_1 != VALEUR_NULL || a->valeur_2 != VALEUR_NULL) {
-        printf(" (");
+        printf(" [");
         if (a->valeur_1 != VALEUR_NULL) {
             printf("%d", a->valeur_1);
         }
         if (a->valeur_1 != VALEUR_NULL && a->valeur_2 != VALEUR_NULL) {
-            printf(", ");
+            printf("][");
         }
         if (a->valeur_2 != VALEUR_NULL) {
             printf("%d", a->valeur_2);
         }
-        printf(")");
+        printf("]");
     }
     printf("\n");
 
@@ -221,7 +221,7 @@ void arbre_affiche(arbre a) { arbre_affiche_bis(a, 0); }
 /*
  * Fonction auxiliaire de sauvegarde de l'arbre
  */
-void arbre_sauvegarde(FILE *f, arbre a, int espace) {
+void arbre_sauvegarde(FILE *f, arbre a, int niveau, int espace) {
     /* ignore les noeud vide */
     if (arbre_est_vide(a)) return;
 
@@ -229,12 +229,12 @@ void arbre_sauvegarde(FILE *f, arbre a, int espace) {
     for (int i = 0; i < espace * TAILLE_ESPACE; i++) fprintf(f, "\t");
 
     /* affichage du noeud */
-    fprintf(f, "%d[%d][%d]\n", a->nature, a->valeur_1, a->valeur_2);
+    fprintf(f, "%d | %d[%d][%d]\n", niveau, a->nature, a->valeur_1, a->valeur_2);
 
     /* appel recursif de la fonction de sauvegarde des fils */
     espace += TAILLE_ESPACE;
-    arbre_sauvegarde(f, a->fils_gauche, espace);
+    arbre_sauvegarde(f, a->fils_gauche, niveau + 1, espace);
 
     espace -= TAILLE_ESPACE;
-    arbre_sauvegarde(f, a->frere_droit, espace);
+    arbre_sauvegarde(f, a->frere_droit, niveau, espace);
 }

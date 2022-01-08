@@ -7,6 +7,11 @@
 	#define AFFICHER_TABLES 1
     #endif
 
+    /* Nombre maximal de noeuds */
+    #define MAX_NOEUDS 100
+
+    #define MAX_PROFONDEUR 10
+
     extern int line;
 
     extern FILE *yyin;
@@ -16,6 +21,14 @@
 
     int nb_entrees_treg = 0;
     int nb_arbres_treg = 0;
+
+    arbre liste_noeuds[MAX_NOEUDS];
+    int index_noeuds_parents[MAX_PROFONDEUR];
+    int taille_liste_noeuds;
+    int profondeur;
+
+    void init_liste_noeuds();
+    void reinitialise_noeuds_parents(int profondeur_min, int profondeur_max);
 %}
 
 %union {
@@ -31,7 +44,6 @@
 %token <entier> ENTIER
 %token <string> LEXEME
 
-%type <arbre> treg_arbre treg_arbre_noeud
 %%
 programme:
     | DEBUT DEBUT_TLEX tlex FIN_TLEX DEBUT_TDEC tdec FIN_TDEC DEBUT_TREP trep FIN_TREP DEBUT_TREG treg_tableau treg_arbres FIN_TREG FIN {
@@ -80,28 +92,60 @@ treg_tableau_entree: ENTIER SEPARATEUR ENTIER SEPARATEUR ENTIER {
 ;
 
 treg_arbres:
-    | treg_arbres DEBUT_ARBRE_REGION ENTIER treg_arbre FIN_ARBRE_REGION {
+    | treg_arbres DEBUT_ARBRE_REGION ENTIER { init_liste_noeuds(); } treg_arbre FIN_ARBRE_REGION {
         nb_arbres_treg++;
-        treg_maj_arbre($3, $4);
+        treg_maj_arbre($3, liste_noeuds[index_noeuds_parents[0]]);
     }
 ;
 
-treg_arbre: {
-        $$ = arbre_creer_noeud_vide(A_NONE);
-    }
-    | treg_arbre treg_arbre_noeud {
-        $$ = arbre_concat_pere_fils($1, $2);
-    }
+treg_arbre:
+    | treg_arbre treg_arbre_noeud
 ;
 
-treg_arbre_noeud: {
-        $$ = arbre_creer_noeud_vide(A_NONE);
-    }
-    | treg_arbre_noeud ENTIER CROCHET_OUVRANT ENTIER CROCHET_FERMANT CROCHET_OUVRANT ENTIER CROCHET_FERMANT {
-        $$ = arbre_creer_noeud_vide(A_NONE);
+treg_arbre_noeud:
+    | treg_arbre_noeud ENTIER SEPARATEUR ENTIER CROCHET_OUVRANT ENTIER CROCHET_FERMANT CROCHET_OUVRANT ENTIER CROCHET_FERMANT {
+        int index = taille_liste_noeuds;
+        liste_noeuds[index] = arbre_creer_noeud($4, $6, $9);
+        taille_liste_noeuds++;
+
+        reinitialise_noeuds_parents($2 + 1, profondeur);
+
+        profondeur = $2;
+
+        if (index_noeuds_parents[profondeur] == VALEUR_NULL) {
+            index_noeuds_parents[profondeur] = index;
+
+            if (profondeur > 0) {
+                liste_noeuds[index_noeuds_parents[profondeur - 1]] = arbre_concat_pere_fils(
+                    liste_noeuds[index_noeuds_parents[profondeur - 1]],
+                    liste_noeuds[index]
+                );
+            }
+        } else {
+            liste_noeuds[index_noeuds_parents[profondeur]] = arbre_concat_pere_frere(
+                liste_noeuds[index_noeuds_parents[profondeur]],
+                liste_noeuds[index]
+            );
+
+            index_noeuds_parents[profondeur] = index;
+        }
     }
 ;
 %%
+
+void reinitialise_noeuds_parents(int profondeur_min, int profondeur_max) {
+    if (profondeur_max > MAX_PROFONDEUR) profondeur_max = MAX_PROFONDEUR;
+
+    for (int i = profondeur_min; i <= profondeur_max; i++) {
+        index_noeuds_parents[i] = VALEUR_NULL;
+    }
+}
+
+void init_liste_noeuds() {
+    taille_liste_noeuds = 0;
+    profondeur = 0;
+    reinitialise_noeuds_parents(0, MAX_PROFONDEUR);
+}
 
 void yyerror(char *s) {
 	fprintf(stderr, "ligne %d: %s\n", line, s);

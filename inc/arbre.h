@@ -101,6 +101,6 @@ arbre arbre_concat_pere_frere(arbre pere, arbre frere);
 void arbre_affiche(arbre a);
 
 /* Sauvegarde de l’arbre */
-void arbre_sauvegarde(FILE *f, arbre a, int espace);
+void arbre_sauvegarde(FILE *f, arbre a, int niveau, int espace);
 
 #endif

@@ -206,7 +206,7 @@ void tdec_sauvegarde(FILE *f) {
         /* ignore les valeurs nulles */
         if (TDEC[i].nature == VALEUR_NULL) continue;
 
-        fprintf(f, "%d|%d|%d|%d|%d|%d\n", i, TDEC[i].nature, TDEC[i].suivant, TDEC[i].region, TDEC[i].description,
+        fprintf(f, "\t%d|%d|%d|%d|%d|%d\n", i, TDEC[i].nature, TDEC[i].suivant, TDEC[i].region, TDEC[i].description,
                 TDEC[i].execution);
     }
 }

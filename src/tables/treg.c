@@ -109,6 +109,11 @@ void treg_affiche() {
  */
 void treg_sauvegarde(FILE *f) {
     for (int i = 0; i < treg_taille; i++) {
-        fprintf(f, "%d|%d|%d\n", i, TREG[i].taille, TREG[i].nis);
+        fprintf(f, "\t%d|%d|%d\n", i, TREG[i].taille, TREG[i].nis);
+    }
+    for (int i = 0; i < treg_taille; i++) {
+        fprintf(f, "\n\t#DEBUT_ARBRE_REGION %d\n", i);
+        arbre_sauvegarde(f, TREG[i].arbre, 2);
+        fprintf(f, "\t#FIN_ARBRE_REGION\n");
     }
 }

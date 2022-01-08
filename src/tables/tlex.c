@@ -111,6 +111,6 @@ void tlex_sauvegarde(FILE *f) {
     for (int i = 0; i < TLEX_TMAX; i++) {
         /* ignore les valeurs nulles */
         if (TLEX[i].taille == 0) continue;
-        fprintf(f, "%d|%d|%d|%s\n", i, TLEX[i].taille, TLEX[i].suivant, TLEX[i].lexeme);
+        fprintf(f, "\t%d|%d|%d|%s\n", i, TLEX[i].taille, TLEX[i].suivant, TLEX[i].lexeme);
     }
 }

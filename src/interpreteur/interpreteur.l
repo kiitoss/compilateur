@@ -34,6 +34,12 @@ letter  [a-zA-Z]
 "#DEBUT_TREG" { return DEBUT_TREG; }
 "#FIN_TREG" { return FIN_TREG; }
 
+"#DEBUT_ARBRE_REGION" { return DEBUT_ARBRE_REGION; }
+"#FIN_ARBRE_REGION" { return FIN_ARBRE_REGION; }
+
+"[" { return CROCHET_OUVRANT; }
+"]" { return CROCHET_FERMANT; }
+
 [+-]?{digit}+    { yylval.entier = atoi(yytext); return ENTIER; }
 {letter}+({letter}|{digit}|"_")*	{ yylval.string = yytext; return LEXEME; }
 

@@ -13,23 +13,33 @@
 	
 	int yylex(void);
 	void yyerror(char *);
+
+    int nb_entrees_treg = 0;
+    int nb_arbres_treg = 0;
 %}
 
 %union {
     int entier;
     char *string;
+    arbre arbre;
 }
 
-%token DEBUT DEBUT_TLEX DEBUT_TDEC DEBUT_TREP DEBUT_TREG
-%token FIN FIN_TLEX FIN_TDEC FIN_TREP FIN_TREG
-%token SEPARATEUR
+%token DEBUT DEBUT_TLEX DEBUT_TDEC DEBUT_TREP DEBUT_TREG DEBUT_ARBRE_REGION
+%token FIN FIN_TLEX FIN_TDEC FIN_TREP FIN_TREG FIN_ARBRE_REGION
+%token SEPARATEUR CROCHET_OUVRANT CROCHET_FERMANT
 
 %token <entier> ENTIER
 %token <string> LEXEME
 
+%type <arbre> treg_arbre treg_arbre_noeud
 %%
 programme:
-    | DEBUT DEBUT_TLEX tlex FIN_TLEX DEBUT_TDEC tdec FIN_TDEC DEBUT_TREP trep FIN_TREP DEBUT_TREG treg FIN_TREG FIN
+    | DEBUT DEBUT_TLEX tlex FIN_TLEX DEBUT_TDEC tdec FIN_TDEC DEBUT_TREP trep FIN_TREP DEBUT_TREG treg_tableau treg_arbres FIN_TREG FIN {
+        if (nb_entrees_treg != nb_arbres_treg) {
+            fprintf(stderr, "Erreur - Nombre de regions != nombre d'arbres de regions\n");
+            exit(EXIT_FAILURE);
+        }
+    }
 ;
 
 tlex:
@@ -59,12 +69,36 @@ entree_trep: ENTIER SEPARATEUR ENTIER {
     }
 ;
 
-treg:
-    | treg entree_treg
+treg_tableau:
+    | treg_tableau treg_tableau_entree
 ;
 
-entree_treg: ENTIER SEPARATEUR ENTIER SEPARATEUR ENTIER {
+treg_tableau_entree: ENTIER SEPARATEUR ENTIER SEPARATEUR ENTIER {
+        nb_entrees_treg++;
         treg_ecrit($1, $3, $5);
+    }
+;
+
+treg_arbres:
+    | treg_arbres DEBUT_ARBRE_REGION ENTIER treg_arbre FIN_ARBRE_REGION {
+        nb_arbres_treg++;
+        treg_maj_arbre($3, $4);
+    }
+;
+
+treg_arbre: {
+        $$ = arbre_creer_noeud_vide(A_NONE);
+    }
+    | treg_arbre treg_arbre_noeud {
+        $$ = arbre_concat_pere_fils($1, $2);
+    }
+;
+
+treg_arbre_noeud: {
+        $$ = arbre_creer_noeud_vide(A_NONE);
+    }
+    | treg_arbre_noeud ENTIER CROCHET_OUVRANT ENTIER CROCHET_FERMANT CROCHET_OUVRANT ENTIER CROCHET_FERMANT {
+        $$ = arbre_creer_noeud_vide(A_NONE);
     }
 ;
 %%

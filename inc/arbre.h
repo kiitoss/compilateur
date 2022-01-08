@@ -11,7 +11,7 @@
 /* Affichage ou non d'un noeud vide */
 #define AFFICHE_NOEUD_VIDE 0
 /* Tailel de l'espace inter-noeud */
-#define TAILLE_ESPACE 3
+#define TAILLE_ESPACE 1
 
 /* Liste des natures des noeuds */
 #define A_NONE         0
@@ -99,5 +99,8 @@ arbre arbre_concat_pere_frere(arbre pere, arbre frere);
 
 /* Affichage de l’arbre */
 void arbre_affiche(arbre a);
+
+/* Sauvegarde de l’arbre */
+void arbre_sauvegarde(FILE *f, arbre a, int espace);
 
 #endif

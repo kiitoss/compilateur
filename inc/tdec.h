@@ -20,6 +20,9 @@ typedef struct {
 /* Initialisation de la table des declarations avec des valeurs nulles */
 void tdec_init();
 
+/* Ecriture d'une nouvelle entree dans la table des declarations */
+void tdec_ecrit(int index, int nature, int suivant, int region, int description, int execution);
+
 /* Insertion d'une nouvelle entree dans la table des declarations a partir d'un index lexicographique */
 int tdec_nouvelle_entree(int tlex_index, int nature, int region, int description, int execution);
 

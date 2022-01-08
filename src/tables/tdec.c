@@ -34,7 +34,7 @@ static char *tdec_recupere_nature_str(int nature) {
 /*
  * Ecriture d'une nouvelle entree dans la table des declarations
  */
-static void tdec_ecrit(int index, int nature, int region, int description, int execution) {
+void tdec_ecrit(int index, int nature, int suivant, int region, int description, int execution) {
     /* cas d'erreur */
     if (index >= TDEC_TMAX) {
         fprintf(stderr, "Erreur - La taille maximale de la table des declarations est atteinte.\n");
@@ -42,7 +42,7 @@ static void tdec_ecrit(int index, int nature, int region, int description, int e
     }
 
     TDEC[index].nature      = nature;
-    TDEC[index].suivant     = VALEUR_NULL;
+    TDEC[index].suivant     = suivant;
     TDEC[index].region      = region;
     TDEC[index].description = description;
     TDEC[index].execution   = execution;
@@ -53,7 +53,7 @@ static void tdec_ecrit(int index, int nature, int region, int description, int e
  */
 void tdec_init() {
     for (int i = 0; i < TDEC_TMAX; i++) {
-        tdec_ecrit(i, VALEUR_NULL, VALEUR_NULL, VALEUR_NULL, VALEUR_NULL);
+        tdec_ecrit(i, VALEUR_NULL, VALEUR_NULL, VALEUR_NULL, VALEUR_NULL, VALEUR_NULL);
     }
 }
 
@@ -70,12 +70,12 @@ int tdec_nouvelle_entree(int tlex_index, int nature, int region, int description
 
     /* si aucun champ n'existe a l'index tlex_index : insertion et quitte la fonction */
     if (TDEC[tlex_index].nature == VALEUR_NULL) {
-        tdec_ecrit(tlex_index, nature, region, description, execution);
+        tdec_ecrit(tlex_index, nature, VALEUR_NULL, region, description, execution);
         return tlex_index;
     }
 
     /* ecriture de la nouvelle entree dans la zone de debordement */
-    tdec_ecrit(tdec_taille, nature, region, description, execution);
+    tdec_ecrit(tdec_taille, nature, VALEUR_NULL, region, description, execution);
 
     /* mise a jour du champ "suivant" de l'entree precedente de meme lexeme */
     precedent = tlex_index;
@@ -185,7 +185,7 @@ void tdec_affiche() {
     printf("index\t|nature\t|suivant|region\t\t|description\t|execution\n");
     printf("-------------------------------------------------------------------\n");
 
-    for (int i = 0; i < tdec_taille; i++) {
+    for (int i = 0; i < TDEC_TMAX; i++) {
         /* ignore les valeurs nulles */
         if (TDEC[i].nature == VALEUR_NULL && !affiche_ligne_vide) continue;
 

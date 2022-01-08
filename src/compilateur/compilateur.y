@@ -9,6 +9,9 @@
     #ifndef AFFICHER_ARBRE
     #define AFFICHER_ARBRE 1
     #endif
+
+    extern FILE *yyin;
+    extern FILE *yyout;
 	
 	int yylex(void);
 	void yyerror(char *);
@@ -627,26 +630,49 @@ void yyerror(char *s) {
 	exit(EXIT_FAILURE);
 }
 
-int main(void) {
-    init_compilation();
+void usage(char *s) {
+    fprintf(stderr, "Usage: %s input [output]\n\tinput : fichier d'entree\n\toutput : fichier de sortie\n", s);
+    exit(EXIT_FAILURE);
+}
+
+int main(int argc, char *argv[]) {
+    FILE *fh = NULL;
+    FILE *yyout = NULL;
+
+    if (argc < 2 || argc > 3) {
+        usage(argv[0]);
+    }
+
+    yyin = fopen(argv[1], "r");
+    if (yyin == NULL) {
+        fprintf(stderr, "Impossible d'ouvrir le fichier %s en lecture.\n", argv[1]);
+        return EXIT_FAILURE;
+    }
     
-	yyparse();
+    if (argc == 3) {
+        yyout = fopen(argv[2],"w");
+
+        if (yyout == NULL) {
+            fprintf(stderr, "Impossible d'ouvrir le fichier %s en ecriture.\n", argv[2]);
+            return EXIT_FAILURE;
+        }
+    }
+
+    
+    init_compilation();
+
+    yyparse();
 
 	if (AFFICHER_TABLES) {
-		printf("\n\nAffichage de la table de hash-code:\n");
-		thash_affiche();
-		printf("\n\nAffichage de la table lexicographique:\n");
-		tlex_affiche();
-		printf("\n\nAffichage de la table des declarations:\n");
-		tdec_affiche();
-        printf("\n\nAffichage de la table des representations:\n");
-		trep_affiche();
-        printf("\n\nAffichage de la table des regions:\n");
-		treg_affiche();
-		printf("\n");
-	} else {
-		printf("Affichage des tables désactivé.\n");
-	}
+        affiche_tables();
+    } else {
+        printf("Affichage des tables désactivé.\n");
+    }
+
+    if (argc == 3) {
+        sauvegarde_tables(yyout);
+        fclose(yyout);
+    }
 
 	return EXIT_SUCCESS;
 }

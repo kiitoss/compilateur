@@ -17,6 +17,22 @@ void trep_init() {
 }
 
 /*
+ * Ecriture d'une nouvelle entree dans la table des representations
+ */
+void trep_ecrit(int index, int valeur) {
+    /* cas d'erreur */
+    if (index >= TREP_TMAX) {
+        fprintf(stderr, "Erreur TMAX - La taille maximale de la table des representations est atteinte.\n");
+        return;
+    }
+
+    TREP[index] = valeur;
+
+    /* maj de la taille de la table des representations */
+    trep_taille++;
+}
+
+/*
  * Insertion d'une nouvelle entree dans la table des representations
  */
 int trep_nouvelle_entree(int valeur) {
@@ -28,10 +44,7 @@ int trep_nouvelle_entree(int valeur) {
         return VALEUR_NULL;
     }
 
-    TREP[index] = valeur;
-
-    /* maj de la taille de la table des representations */
-    trep_taille++;
+    trep_ecrit(index, valeur);
 
     return index;
 }
@@ -73,7 +86,7 @@ void trep_affiche() {
     printf("index\t|valeur\n");
     printf("----------------\n");
 
-    for (int i = 0; i < trep_taille; i++) {
+    for (int i = 0; i < TREP_TMAX; i++) {
         /* ignore les valeurs nulles */
         if (TREP[i] == VALEUR_NULL && !affiche_ligne_vide) continue;
 

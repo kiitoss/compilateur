@@ -39,12 +39,20 @@ void tlex_init() {
  * Affichage de la table lexicographique
  */
 void tlex_affiche() {
+    /* permet l'affichage d'une ligne vide en cas de saut dans le tableau */
+    int affiche_ligne_vide = 1;
+
     printf("---------------------------------------\n");
     printf("indice\t|taille\t|suiv\t|lexeme\n");
     printf("---------------------------------------\n");
 
-    for (int i = 0; i < tlex_taille; i++) {
+    for (int i = 0; i < TLEX_TMAX; i++) {
+        /* ignore les valeurs nulles */
+        if (TLEX[i].taille == 0 && !affiche_ligne_vide) continue;
+
         printf("%d\t|%d\t|%d\t|%s\n", i, TLEX[i].taille, TLEX[i].suivant, TLEX[i].lexeme);
+
+        affiche_ligne_vide = (TLEX[i].taille != 0);
     }
 
     printf("---------------------------------------\n");

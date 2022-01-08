@@ -23,7 +23,13 @@
 #define PROC   4
 #define FONC   5
 
-/* Inisitalisation des differentes tables */
+/* Inititalisation des differentes tables */
 void init_tables();
+
+/* Affichage des differentes tables */
+void affiche_tables();
+
+/* Sauvegarde des tables */
+void sauvegarde_tables(FILE *f);
 
 #endif

@@ -16,6 +16,9 @@ typedef struct {
     int nis;     // nombre de regions parentes
 } treg_entree;
 
+/* Ecriture d'une nouvelle entree dans la table des regions */
+void treg_ecrit(int index, int taille, int nis);
+
 /* Insertion d'une nouvelle entree dans la table des regions */
 int treg_nouvelle_entree(int nis);
 

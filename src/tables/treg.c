@@ -8,6 +8,23 @@ int treg_taille = 0;
 treg_entree TREG[TREG_TMAX];
 
 /*
+ * Ecriture d'une nouvelle entree dans la table des regions
+ */
+void treg_ecrit(int index, int taille, int nis) {
+    /* cas d'erreur */
+    if (index >= TREG_TMAX) {
+        fprintf(stderr, "Erreur - La taille maximale de la table des regions est atteinte.\n");
+        return;
+    }
+
+    TREG[index].taille = taille;
+    TREG[index].nis    = nis;
+
+    /* maj de la taille de la table des regions */
+    treg_taille++;
+}
+
+/*
  * Insertion d'une nouvelle entree dans la table des regions
  */
 int treg_nouvelle_entree(int nis) {
@@ -25,10 +42,9 @@ int treg_nouvelle_entree(int nis) {
     } else {
         taille = 1 + nis;
     }
-    TREG[index].taille = taille;
-    TREG[index].nis    = nis;
 
-    treg_taille++;
+    treg_ecrit(index, taille, nis);
+
     return index;
 }
 

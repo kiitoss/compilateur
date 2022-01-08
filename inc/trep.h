@@ -9,6 +9,9 @@
 /* Initialisation de la table des representations avec des valeurs nulles */
 void trep_init();
 
+/* Ecriture d'une nouvelle entree dans la table des representations */
+void trep_ecrit(int index, int valeur);
+
 /* Insertion d'une nouvelle entree dans la table des representations */
 int trep_nouvelle_entree(int valeur);
 

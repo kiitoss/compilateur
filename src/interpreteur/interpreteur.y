@@ -11,10 +11,6 @@
 	
 	int yylex(void);
 	void yyerror(char *);
-
-
-    int tlex_index = 0;
-
 %}
 
 %union {
@@ -31,16 +27,42 @@
 
 %%
 programme:
-    | DEBUT DEBUT_TLEX table_lexicographique FIN_TLEX DEBUT_TDEC FIN_TDEC DEBUT_TREP FIN_TREP DEBUT_TREG FIN_TREG FIN
+    | DEBUT DEBUT_TLEX tlex FIN_TLEX DEBUT_TDEC tdec FIN_TDEC DEBUT_TREP trep FIN_TREP DEBUT_TREG treg FIN_TREG FIN
 ;
 
-table_lexicographique:
-    | table_lexicographique entree_tlex
+tlex:
+    | tlex entree_tlex
 ;
 
 entree_tlex: ENTIER SEPARATEUR ENTIER SEPARATEUR ENTIER SEPARATEUR LEXEME {
-    tlex_ecrit($1, $3, $5, $7);
-        // printf("%d\t%d\t%d\t%s\n", $1, $3, $5, $7);
+        tlex_ecrit($1, $3, $5, $7);
+    }
+;
+
+tdec:
+    | tdec entree_tdec
+;
+
+entree_tdec: ENTIER SEPARATEUR ENTIER SEPARATEUR ENTIER SEPARATEUR ENTIER SEPARATEUR ENTIER SEPARATEUR ENTIER {
+        tdec_ecrit($1, $3, $5, $7, $9, $11);
+    }
+;
+
+trep:
+    | trep entree_trep
+;
+
+entree_trep: ENTIER SEPARATEUR ENTIER {
+        trep_ecrit($1, $3);
+    }
+;
+
+treg:
+    | treg entree_treg
+;
+
+entree_treg: ENTIER SEPARATEUR ENTIER SEPARATEUR ENTIER {
+        treg_ecrit($1, $3, $5);
     }
 ;
 %%
@@ -56,15 +78,7 @@ int main(void) {
 	yyparse();
 
     if (AFFICHER_TABLES) {
-		printf("\n\nAffichage de la table lexicographique:\n");
-		tlex_affiche();
-		/* printf("\n\nAffichage de la table des declarations:\n");
-		tdec_affiche();
-        printf("\n\nAffichage de la table des representations:\n");
-		trep_affiche();
-        printf("\n\nAffichage de la table des regions:\n");
-		treg_affiche(); */
-		printf("\n");
+		affiche_tables();
 	} else {
 		printf("Affichage des tables désactivé.\n");
 	}

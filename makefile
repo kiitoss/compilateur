@@ -6,6 +6,12 @@ utils = variable.o structure.o tableau.o fonc_proc.o utils.o
 
 all: interpreteur compilateur simple-clean
 
+interpreteur-clean: interpreteur simple-clean
+
+compilateur-clean: compilateur simple-clean
+
+
+
 interpreteur: interpreteur-lex interpreteur-yacc pile.o $(tables)
 	$(CC) lex.yy.c y.tab.c pile.o $(tables) -o interpreteur.exe
 

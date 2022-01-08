@@ -45,6 +45,9 @@ void maj_tlex_index(int tlex_index);
 /* Recuperation l'index global de TLEX */
 int recupere_tlex_index();
 
+/* Affecte l'arbre a la region en cours */
+void affecte_arbre_region_en_cours(arbre a);
+
 /* Insertion d'une nouvelle variable dans TDEC */
 void nouvelle_variable(int tlex_index, int tlex_index_type);
 

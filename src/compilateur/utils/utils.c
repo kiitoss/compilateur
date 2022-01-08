@@ -46,3 +46,8 @@ void maj_tlex_index(int tlex_index) { global_tlex_index = tlex_index; }
  * Recuperation l'index global de TLEX
  */
 int recupere_tlex_index() { return global_tlex_index; }
+
+/*
+ * Affecte l'arbre a la region en cours
+ */
+void affecte_arbre_region_en_cours(arbre a) { treg_maj_arbre(pile_tete_de_pile(PREG), a); }

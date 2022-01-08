@@ -6,10 +6,6 @@
 	#define AFFICHER_TABLES 1
     #endif
 
-    #ifndef AFFICHER_ARBRE
-    #define AFFICHER_ARBRE 1
-    #endif
-
     extern FILE *yyin;
     extern FILE *yyout;
 	
@@ -57,13 +53,7 @@
 %%
 programme:
     | PROG corps {
-        if (AFFICHER_ARBRE) {
-			printf("Affichage d'un corps de programme :\n");
-			arbre_affiche($2);
-			printf("\n");
-		} else {
-			printf("Affichage de l'arbre désactivé.\n");
-		}
+        affecte_arbre_region_en_cours($2);
     }
 ;
 
@@ -168,8 +158,6 @@ liste_dimensions: une_dimension {
 ;
 
 une_dimension: expression POINT_POINT expression {
-        // int e1 = arbre_resoud($1);
-        // int e1 = arbre_resoud($2);
         int e1 = $1->valeur_1;
         int e2 = $3->valeur_1;
 
@@ -226,10 +214,8 @@ declaration_variable: VARIABLE idf DEUX_POINTS nom_type {
 declaration_fonction: FONCTION idf { debut_nouvelle_fonction_ou_procedure(FONC, $2); } liste_parametres RETOURNE type_simple  {
         int tlex_index_type = $6->valeur_1;
         fin_nouvelle_fonction_ou_procedure(FONC, tlex_index_type);
-        
 	} corps {
-        quitte_nouvelle_fonction_ou_procedure();
-        $$ = arbre_concat_pere_fils(
+        affecte_arbre_region_en_cours(arbre_concat_pere_fils(
 			arbre_creer_noeud_vide(A_DECL_FONC),
 			arbre_concat_pere_frere(
 				$4,
@@ -238,21 +224,28 @@ declaration_fonction: FONCTION idf { debut_nouvelle_fonction_ou_procedure(FONC, 
 					$8
 				)
 			)
-		);
+		));
+
+        quitte_nouvelle_fonction_ou_procedure();
+        
+        $$ = arbre_creer_noeud(A_DECL_FONC, $2, VALEUR_NULL);
     }
 ;
 
 declaration_procedure: PROCEDURE idf { debut_nouvelle_fonction_ou_procedure(PROC, $2); } liste_parametres {
 	    fin_nouvelle_fonction_ou_procedure(PROC, 0);
     } corps {
-        quitte_nouvelle_fonction_ou_procedure();
-        $$ = arbre_concat_pere_fils(
+        affecte_arbre_region_en_cours(arbre_concat_pere_fils(
 			arbre_creer_noeud(A_DECL_PROC, $2, VALEUR_NULL),
 			arbre_concat_pere_frere(
 				$4,
 				$6
 			)
-		);
+		));
+
+        quitte_nouvelle_fonction_ou_procedure();
+
+        $$ = arbre_creer_noeud(A_DECL_PROC, $2, VALEUR_NULL);
     }
 ;
 

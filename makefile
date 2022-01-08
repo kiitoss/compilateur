@@ -12,8 +12,8 @@ compilateur-clean: compilateur simple-clean
 
 
 
-interpreteur: interpreteur-lex interpreteur-yacc pile.o $(tables)
-	$(CC) lex.yy.c y.tab.c pile.o $(tables) -o interpreteur.exe
+interpreteur: interpreteur-lex interpreteur-yacc arbre.o pile.o $(tables)
+	$(CC) lex.yy.c y.tab.c arbre.o pile.o $(tables) -o interpreteur.exe
 
 interpreteur-lex: src/interpreteur/interpreteur.l
 	lex src/interpreteur/interpreteur.l

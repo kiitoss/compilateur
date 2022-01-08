@@ -44,6 +44,7 @@ int treg_nouvelle_entree(int nis) {
     }
 
     treg_ecrit(index, taille, nis);
+    treg_maj_arbre(index, arbre_creer_noeud_vide(A_NONE));
 
     return index;
 }
@@ -75,6 +76,18 @@ void treg_maj_taille(int index, int taille) {
 }
 
 /*
+ * Mise à jour de l'abre d'une region
+ */
+void treg_maj_arbre(int index, arbre a) {
+    /* cas d'erreur */
+    if (index >= TREG_TMAX) {
+        fprintf(stderr, "Erreur - MAJ de l'arbre de la region %d impossible.\n", index);
+        return;
+    }
+    TREG[index].arbre = a;
+}
+
+/*
  * Affichage de la table des regions
  */
 void treg_affiche() {
@@ -84,6 +97,8 @@ void treg_affiche() {
 
     for (int i = 0; i < treg_taille; i++) {
         printf("%d\t|%d\t|%d\n", i, TREG[i].taille, TREG[i].nis);
+        arbre_affiche(TREG[i].arbre);
+        printf("\n");
     }
 
     printf("---------------------\n");

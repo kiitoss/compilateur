@@ -24,4 +24,7 @@ int trep_recupere_valeur(int index);
 /* Affichage de la table des representations */
 void trep_affiche();
 
+/* Sauvegarde de la table des representations */
+void trep_sauvegarde(FILE *f);
+
 #endif

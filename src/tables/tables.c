@@ -28,4 +28,24 @@ void affiche_tables() {
 /*
  * Sauvegarde des tables
  */
-void sauvegarde_tables(FILE *f) { fprintf(f, "test\n"); }
+void sauvegarde_tables(FILE *f) {
+    fprintf(f, "#DEBUT\n\n");
+
+    fprintf(f, "#DEBUT_TLEX\n");
+    tlex_sauvegarde(f);
+    fprintf(f, "#FIN_TLEX\n\n");
+
+    fprintf(f, "#DEBUT_TDEC\n");
+    tdec_sauvegarde(f);
+    fprintf(f, "#FIN_TDEC\n\n");
+
+    fprintf(f, "#DEBUT_TREP\n");
+    trep_sauvegarde(f);
+    fprintf(f, "#FIN_TREP\n\n");
+
+    fprintf(f, "#DEBUT_TREG\n");
+    treg_sauvegarde(f);
+    fprintf(f, "#FIN_TREG\n\n");
+
+    fprintf(f, "#FIN");
+}

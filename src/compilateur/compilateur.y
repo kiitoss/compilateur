@@ -636,7 +636,6 @@ void usage(char *s) {
 }
 
 int main(int argc, char *argv[]) {
-    FILE *fh = NULL;
     FILE *yyout = NULL;
 
     if (argc < 2 || argc > 3) {
@@ -669,6 +668,7 @@ int main(int argc, char *argv[]) {
         printf("Affichage des tables désactivé.\n");
     }
 
+    fclose(yyin);
     if (argc == 3) {
         sauvegarde_tables(yyout);
         fclose(yyout);

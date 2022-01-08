@@ -97,3 +97,14 @@ void trep_affiche() {
 
     printf("----------------\n");
 }
+
+/*
+ * Sauvegarde de la table des representations
+ */
+void trep_sauvegarde(FILE *f) {
+    for (int i = 0; i < TREP_TMAX; i++) {
+        /* ignore les valeurs nulles */
+        if (TREP[i] == VALEUR_NULL) continue;
+        fprintf(f, "%d|%d\n", i, TREP[i]);
+    }
+}

@@ -31,4 +31,7 @@ void treg_maj_taille(int index, int taille);
 /* Affichage de la table des regions */
 void treg_affiche();
 
+/* Sauvegarde de la table des regions */
+void treg_sauvegarde(FILE *f);
+
 #endif

@@ -197,3 +197,16 @@ void tdec_affiche() {
 
     printf("-------------------------------------------------------------------\n");
 }
+
+/*
+ * Sauvegarde de la table des declarations
+ */
+void tdec_sauvegarde(FILE *f) {
+    for (int i = 0; i < TDEC_TMAX; i++) {
+        /* ignore les valeurs nulles */
+        if (TDEC[i].nature == VALEUR_NULL) continue;
+
+        fprintf(f, "%d|%d|%d|%d|%d|%d\n", i, TDEC[i].nature, TDEC[i].suivant, TDEC[i].region, TDEC[i].description,
+                TDEC[i].execution);
+    }
+}

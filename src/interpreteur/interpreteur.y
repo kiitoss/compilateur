@@ -8,6 +8,8 @@
     #endif
 
     extern int line;
+
+    extern FILE *yyin;
 	
 	int yylex(void);
 	void yyerror(char *);
@@ -72,7 +74,22 @@ void yyerror(char *s) {
 	exit(EXIT_FAILURE);
 }
 
-int main(void) {
+void usage(char *s) {
+    fprintf(stderr, "Usage: %s input\n\tinput : fichier d'entree\n", s);
+    exit(EXIT_FAILURE);
+}
+
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        usage(argv[0]);
+    }
+
+    yyin = fopen(argv[1], "r");
+    if (yyin == NULL) {
+        fprintf(stderr, "Impossible d'ouvrir le fichier %s en lecture.\n", argv[1]);
+        return EXIT_FAILURE;
+    }
+
     init_tables();
 
 	yyparse();
@@ -83,5 +100,7 @@ int main(void) {
 		printf("Affichage des tables désactivé.\n");
 	}
 	
+    fclose(yyin);
+
     return EXIT_SUCCESS;
 }

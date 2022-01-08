@@ -38,4 +38,7 @@ int tdec_trouve_index(int tlex_index, pile PREG);
 /* Affichage de la table des declarations */
 void tdec_affiche();
 
+/* Sauvegarde de la table des declarations */
+void tdec_sauvegarde(FILE *f);
+
 #endif

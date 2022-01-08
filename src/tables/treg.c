@@ -88,3 +88,12 @@ void treg_affiche() {
 
     printf("---------------------\n");
 }
+
+/*
+ * Sauvegarde de la table des regions
+ */
+void treg_sauvegarde(FILE *f) {
+    for (int i = 0; i < treg_taille; i++) {
+        fprintf(f, "%d|%d|%d\n", i, TREG[i].taille, TREG[i].nis);
+    }
+}

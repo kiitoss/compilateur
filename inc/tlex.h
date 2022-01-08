@@ -30,4 +30,7 @@ void tlex_ecrit(int index, int taille, int suivant, char *lexeme);
  */
 int tlex_nouvelle_entree(char *lexeme);
 
+/* Sauvegarde de la table lexicographique */
+void tlex_sauvegarde(FILE *f);
+
 #endif

@@ -178,6 +178,8 @@ int main(int argc, char *argv[]) {
 		printf("Affichage des tables désactivé.\n");
 	}
 	
+    execution();
+
     fclose(yyin);
 
     return EXIT_SUCCESS;

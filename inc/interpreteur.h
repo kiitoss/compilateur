@@ -5,4 +5,7 @@
 
 extern int line;
 
+/* Execution du programme apres recuperation des donnees */
+void execution();
+
 #endif

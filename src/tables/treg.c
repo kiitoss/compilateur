@@ -97,11 +97,6 @@ void treg_affiche() {
 
     for (int i = 0; i < treg_taille; i++) {
         printf("%d\t|%d\t|%d\n", i, TREG[i].taille, TREG[i].nis);
-        arbre_affiche(TREG[i].arbre);
-        printf("\n");
-    }
-    for (int i = 0; i < treg_taille; i++) {
-        printf("%d\t|%d\t|%d\n", i, TREG[i].taille, TREG[i].nis);
     }
     for (int i = 0; i < treg_taille; i++) {
         printf("---------------------\n");

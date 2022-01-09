@@ -531,7 +531,7 @@ exp: variable {
 	| REEL {
 		$$ = arbre_creer_noeud(A_REEL, yylval.t_nombre, VALEUR_NULL);
 	}
-    | PARENTHESE_OUVRANTE variable PARENTHESE_FERMANTE {
+    | PARENTHESE_OUVRANTE expression_arithmetiques PARENTHESE_FERMANTE {
         $$ = $2;
     }
 ;

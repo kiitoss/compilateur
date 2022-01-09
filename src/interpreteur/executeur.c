@@ -12,6 +12,18 @@ pile PREG;
 int BC = 0;
 
 /*
+ * bases courantes des differentes regions
+ * permet de conserver les bases courantes des regions parentes
+ */
+int BC_regions[100];
+
+/*
+ * stocke le parent d'une region
+ * ex: reg_parentes[1] = region parente de la region 1
+ */
+int reg_parentes[100];
+
+/*
  * Execution d'une region = interpretation
  */
 static void execute_region(int region);
@@ -204,6 +216,18 @@ static void parcours_arbre(arbre a) {
             pexec_empile_reel(PEXEC, 0, &taille_pexec);
         }
     }
+    /* si c'est une declatation de procedure: met a jour la region parente */
+    else if (nature == A_DECL_PROC || nature == A_DECL_FONC) {
+        /* recuperation de l'index lexical de la procedure */
+        int tlex_index = (int) a->valeur_1;
+
+        /* deduction de l'index de la procedure et de sa region dans la table des declarations */
+        int tdec_index = tdec_trouve_index(tlex_index, PREG);
+        int region     = tdec_recupere_taille_exec(tdec_index);
+
+        reg_parentes[region] = pile_tete_de_pile(PREG);
+        printf("region en cours: %d, nouvel region idf lue: %d\n", pile_tete_de_pile(PREG), region);
+    }
     /* si c'est une affectation: maj dans la pile d'execution*/
     else if (nature == A_AFFECT) {
         /* recuperation de l'index lexical de l'idf */
@@ -240,8 +264,12 @@ static void parcours_arbre(arbre a) {
         pexec_empile_entier(PEXEC, BC_appelant, &taille_pexec);
 
         /* empilage la BC des parents dans la pile d'execution (chainage) */
+        int reg_parent, BC_region_parent;
+        reg_parent = reg_parentes[region];
         for (int i = 0; i < treg_recupere_nis_region(region); i++) {
-            pexec_empile_entier(PEXEC, BC_appelant, &taille_pexec);
+            BC_region_parent = BC_regions[reg_parent];
+            pexec_empile_entier(PEXEC, BC_region_parent, &taille_pexec);
+            reg_parent = reg_parentes[reg_parent];
         }
 
         /* execution de la region */
@@ -262,9 +290,16 @@ static void parcours_arbre(arbre a) {
 static void execute_region(int region) {
     /* empilage de la nouvelle region dans la pile des regions */
     pile_empile(PREG, region);
+    BC_regions[region] = BC;
 
     /* recuperation de l'arbre correspondant a la region */
     arbre a = treg_recupere_arbre_region(region);
+
+    arbre_affiche(a);
+
+    if (a->nature == A_DECL_PROC || a->nature == A_DECL_FONC) {
+        a->nature = A_CORPS;
+    }
 
     /* parcours de l'arbre avec interpretation */
     parcours_arbre(a);
@@ -279,6 +314,8 @@ static void execute_region(int region) {
 void execution() {
     /* initialisation de la pile des regions */
     pile_init(PREG);
+
+    reg_parentes[0] = 0;
 
     /* execution de la region initiale (0) */
     execute_region(0);

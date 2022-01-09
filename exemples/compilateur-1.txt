@@ -4,6 +4,10 @@ PROG
     var z : float;
     var w : float;
     procedure p()
+        procedure f()
+        DEBUT
+            x := 2;
+        FIN;
     DEBUT
         x := 5;
         z := 4;
@@ -14,4 +18,5 @@ DEBUT
     z := x + y;
     w := x / ( x + 1 );
     p;
+    f;
 FIN

@@ -44,4 +44,7 @@ void tdec_sauvegarde(FILE *f);
 /* Recuperation de l'existance ou de la non-eistence d'une entree dans la table des declarations */
 int tdec_index_existe(int index);
 
+/* Recuperation de l'index du type de la variable dans la table des declarations */
+int tdec_type_variable(int index);
+
 #endif

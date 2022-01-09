@@ -15,7 +15,7 @@
 %}
 %union {
 	arbre t_arbre;
-	int t_entier;
+	double t_nombre;
 }
 
 // Déclaration des tokens
@@ -45,7 +45,7 @@
 %type <t_arbre> appel expression expression_arithmetiques expression_booleenne resultat_retourne booleen test_arithmetiques exp lecture_tableau
 %type <t_arbre> ecrit
 
-%type <t_entier> idf
+%type <t_nombre> idf
 
 %%
 programme:
@@ -55,7 +55,7 @@ programme:
 ;
 
 idf: IDF {
-        $$ = yylval.t_entier;
+        $$ = yylval.t_nombre;
     }
 ;
 
@@ -183,7 +183,7 @@ nom_type: type_simple {
         $$ = arbre_creer_noeud(A_TYPE, tlex_index_type, VALEUR_NULL);
 	}
 	| IDF {
-        $$ = arbre_creer_noeud(A_TYPE, yylval.t_entier, VALEUR_NULL);
+        $$ = arbre_creer_noeud(A_TYPE, yylval.t_nombre, VALEUR_NULL);
     }
 ;
 
@@ -264,10 +264,10 @@ liste_param: un_param {
 
 un_param: IDF DEUX_POINTS type_simple {
         int tlex_index_type = $3->valeur_1;
-        nouveau_parametre(yylval.t_entier, tlex_index_type);
+        nouveau_parametre(yylval.t_nombre, tlex_index_type);
         $$ = arbre_concat_pere_fils(
 			arbre_creer_noeud_vide(A_PARAM),
-			arbre_concat_pere_frere(arbre_creer_noeud(A_IDF, yylval.t_entier, VALEUR_NULL), arbre_creer_noeud(A_TYPE, tlex_index_type, VALEUR_NULL))
+			arbre_concat_pere_frere(arbre_creer_noeud(A_IDF, yylval.t_nombre, VALEUR_NULL), arbre_creer_noeud(A_TYPE, tlex_index_type, VALEUR_NULL))
 		);
     }
 ;
@@ -434,7 +434,7 @@ affectation: variable OPAFF expression {
 
     // NOK !!!!!!!!!!!
 variable: IDF {
-		$$ = arbre_creer_noeud(A_VAR, yylval.t_entier, VALEUR_NULL);
+		$$ = arbre_creer_noeud(A_VAR, yylval.t_nombre, VALEUR_NULL);
 	}
 	| variable POINT variable {
         $$ = arbre_creer_noeud(A_VAR, $3->valeur_1, VALEUR_NULL);
@@ -448,7 +448,7 @@ appel: IDF liste_arguments {
         $$ = arbre_concat_pere_fils(
 			arbre_creer_noeud_vide(A_APPEL),
             arbre_concat_pere_frere(
-                arbre_creer_noeud(A_IDF, yylval.t_entier, VALEUR_NULL),
+                arbre_creer_noeud(A_IDF, yylval.t_nombre, VALEUR_NULL),
                 $2
             )
 		);
@@ -459,7 +459,7 @@ lecture_tableau: IDF CROCHET_OUVRANT lecture_dimensions CROCHET_FERMANT {
     $$ = arbre_concat_pere_fils(
 			arbre_creer_noeud_vide(A_LECTURE_TAB),
             arbre_concat_pere_frere(
-                arbre_creer_noeud(A_IDF, yylval.t_entier, VALEUR_NULL),
+                arbre_creer_noeud(A_IDF, yylval.t_nombre, VALEUR_NULL),
                 $3
 		    )
 		);
@@ -526,10 +526,10 @@ exp: variable {
 		$$ = $1;
 	}
 	| ENTIER {
-        $$ = arbre_creer_noeud(A_ENTIER, yylval.t_entier, VALEUR_NULL);
+        $$ = arbre_creer_noeud(A_ENTIER, yylval.t_nombre, VALEUR_NULL);
 	}
 	| REEL {
-		$$ = arbre_creer_noeud(A_REEL, yylval.t_entier, VALEUR_NULL);
+		$$ = arbre_creer_noeud(A_REEL, yylval.t_nombre, VALEUR_NULL);
 	}
     | PARENTHESE_OUVRANTE variable PARENTHESE_FERMANTE {
         $$ = $2;

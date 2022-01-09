@@ -124,7 +124,7 @@ int arbre_est_vide(arbre a) { return a == arbre_creer_arbre_vide(); }
 /*
  * Creation d'un nouveau noeud
  */
-arbre arbre_creer_noeud(int nature, int valeur_1, int valeur_2) {
+arbre arbre_creer_noeud(int nature, double valeur_1, double valeur_2) {
     arbre a        = malloc(sizeof(struct noeud));
     a->nature      = nature;
     a->valeur_1    = valeur_1;
@@ -143,7 +143,7 @@ arbre arbre_creer_noeud_vide(int nature) { return arbre_creer_noeud(nature, VALE
 /*
  * Creation d'un arbre
  */
-arbre arbre_creer_arbre(int nature, int valeur_1, int valeur_2, arbre fils_gauche, arbre frere_droit) {
+arbre arbre_creer_arbre(int nature, double valeur_1, double valeur_2, arbre fils_gauche, arbre frere_droit) {
     arbre a = arbre_creer_noeud(nature, valeur_1, valeur_2);
 
     a->fils_gauche = fils_gauche;
@@ -195,13 +195,13 @@ static void arbre_affiche_bis(arbre a, int espace) {
     if (a->valeur_1 != VALEUR_NULL || a->valeur_2 != VALEUR_NULL) {
         printf(" [");
         if (a->valeur_1 != VALEUR_NULL) {
-            printf("%d", a->valeur_1);
+            printf("%f", a->valeur_1);
         }
         if (a->valeur_1 != VALEUR_NULL && a->valeur_2 != VALEUR_NULL) {
             printf("][");
         }
         if (a->valeur_2 != VALEUR_NULL) {
-            printf("%d", a->valeur_2);
+            printf("%f", a->valeur_2);
         }
         printf("]");
     }
@@ -231,7 +231,7 @@ void arbre_sauvegarde(FILE *f, arbre a, int niveau, int espace) {
     for (int i = 0; i < espace * TAILLE_ESPACE; i++) fprintf(f, "\t");
 
     /* affichage du noeud */
-    fprintf(f, "%d | %d[%d][%d]\n", niveau, a->nature, a->valeur_1, a->valeur_2);
+    fprintf(f, "%d | %d[%f][%f]\n", niveau, a->nature, a->valeur_1, a->valeur_2);
 
     /* appel recursif de la fonction de sauvegarde des fils */
     espace += TAILLE_ESPACE;

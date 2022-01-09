@@ -223,3 +223,16 @@ int tdec_index_existe(int index) {
 
     return (TDEC[index].nature != VALEUR_NULL);
 }
+
+/*
+ * Recuperation de l'index du type de la variable dans la table des declarations
+ */
+int tdec_type_variable(int index) {
+    /* cas d'erreur */
+    if (index > TDEC_TMAX) {
+        fprintf(stderr, "Erreur - Index %d de la table des declarations inatteignable.\n", index);
+        return 0;
+    }
+
+    return TDEC[index].description;
+}

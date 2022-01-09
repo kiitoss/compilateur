@@ -1,11 +1,11 @@
 PROG
-    var x : int;
+    var x : float;
     var y : int;
-    var z : int;
-    var w : int;
+    var z : float;
+    var w : float;
 DEBUT
-    x := 2;
-    y := 4;
+    x := 2,5;
+    y := 2;
     z := x + y;
-    w := x * 2 + z;
+    w := x / 2;
 FIN

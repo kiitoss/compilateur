@@ -8,6 +8,8 @@
 
     /* Definition de la constante permettant de pointer la ligne de l'erreur */
     int line = 1;
+
+    char *remplace_caractere(char* str, char ancien, char nouveau);
 %}
 
 digit   [0-9]
@@ -80,23 +82,32 @@ letter  [a-zA-Z]
 \*  { return MULT; }
 \/  { return DIV; } 
 
-"vrai"  { yylval.t_entier = 1; return VRAI; }
-"faux"  { yylval.t_entier = 0; return FAUX; }
+"vrai"  { yylval.t_nombre = 1; return VRAI; }
+"faux"  { yylval.t_nombre = 0; return FAUX; }
 
 	/* Déclaration des nombres entiers */
-{digit}+    { yylval.t_entier = atoi(yytext); return ENTIER; }
+{digit}+    { yylval.t_nombre = atof(yytext); return ENTIER; }
 
   /* Déclaration des nombres réels */
-[0-9]+,{digit}+		{ yylval.t_entier = atof(yytext); return REEL; }
+{digit}+,{digit}*		{ yylval.t_nombre = atof(remplace_caractere(yytext, ',', '.')); return REEL; }
 
 	/* A modifier */
-{letter}+({letter}|{digit}|"_")*	{ yylval.t_entier = tlex_nouvelle_entree(yytext); return IDF; }
+{letter}+({letter}|{digit}|"_")*	{ yylval.t_nombre = tlex_nouvelle_entree(yytext); return IDF; }
 
-[a-zA-Z] { yylval.t_entier = yytext[0] - 'a'; return CARACTERE; }
+[a-zA-Z] { yylval.t_nombre = yytext[0] - 'a'; return CARACTERE; }
 	/* Cas d'erreur */
 .           			yyerror("Caractère invalide !");
 
 %%
+
+char *remplace_caractere(char* str, char ancien, char nouveau) {
+    char *pos_actuelle = strchr(str, ancien);
+    while (pos_actuelle) {
+        *pos_actuelle = nouveau;
+        pos_actuelle = strchr(pos_actuelle, ancien);
+    }
+    return str;
+}
 
 int yywrap(void) {
     return 1;

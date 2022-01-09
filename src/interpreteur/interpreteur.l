@@ -41,6 +41,7 @@ letter  [a-zA-Z]
 "]" { return CROCHET_FERMANT; }
 
 [+-]?{digit}+    { yylval.entier = atoi(yytext); return ENTIER; }
+[+-]?{digit}+"."{digit}+    { yylval.reel = atof(yytext); return REEL; }
 {letter}+({letter}|{digit}|"_")*	{ yylval.string = yytext; return LEXEME; }
 
 	/* Cas d'erreur */

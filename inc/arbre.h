@@ -69,8 +69,8 @@
 /* Structure d'un arbre */
 typedef struct noeud {
     int nature;                 // nature du noeud
-    int valeur_1;               // valeur 1 du noeud
-    int valeur_2;               // valeur 2 du noeud
+    double valeur_1;            // valeur 1 du noeud
+    double valeur_2;            // valeur 2 du noeud
     struct noeud *fils_gauche;  // fils gauche du noeud
     struct noeud *frere_droit;  // frere droit du noeud
 } noeud;
@@ -84,13 +84,13 @@ arbre arbre_creer_arbre_vide();
 int arbre_est_vide(arbre a);
 
 /* Creation d'un nouveau noeud */
-arbre arbre_creer_noeud(int nature, int valeur_1, int valeur_2);
+arbre arbre_creer_noeud(int nature, double valeur_1, double valeur_2);
 
 /* Creation d'un nouveau noeud sans valeur */
 arbre arbre_creer_noeud_vide(int nature);
 
 /* Creation d'un arbre */
-arbre arbre_creer_arbre(int nature, int valeur_1, int valeur_2, arbre fils_gauche, arbre frere_droit);
+arbre arbre_creer_arbre(int nature, double valeur_1, double valeur_2, arbre fils_gauche, arbre frere_droit);
 
 /* Concatenation de l'arbre pere et de l'arbre pere */
 arbre arbre_concat_pere_fils(arbre pere, arbre fils);

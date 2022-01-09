@@ -14,40 +14,105 @@ static int association_nom(int tlex_index) {
     }
 }
 
-static int resoud_expression(arbre a) {
+static int recupere_int_cellule(cellule c, int type) { return (type == 0) ? c.entier : (int) c.reel; }
+
+static double recupere_double_cellule(cellule c, int type) { return (type == 0) ? (double) c.entier : c.reel; }
+
+static cellule resoud_variable(arbre a, int type_retour) {
+    cellule c = cellule_null();
+
+    int tdec_index_variable      = association_nom(a->valeur_1);
+    int tdec_index_type_variable = tdec_type_variable(tdec_index_variable);
+
+    if (type_retour == 0) {
+        c.entier =
+            recupere_int_cellule(PEXEC[BC + tdec_recupere_taille_exec(tdec_index_variable)], tdec_index_type_variable);
+    } else if (type_retour == 1) {
+        c.reel = recupere_double_cellule(PEXEC[BC + tdec_recupere_taille_exec(tdec_index_variable)],
+                                         tdec_index_type_variable);
+    }
+    return c;
+}
+
+static cellule resoud_operation(arbre a, cellule gauche, cellule droite, int type_retour) {
+    cellule c = cellule_null();
+
+    int nature = arbre_recupere_nature(a);
+
+    if (nature == A_DIV && ((type_retour == 0 && droite.entier == 0) || (type_retour == 1 && droite.reel == 0))) {
+        fprintf(stderr, "Division par 0 interdite !\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (type_retour == 0) {
+        switch (nature) {
+            case A_PLUS:
+                c.entier = gauche.entier + droite.entier;
+                return c;
+            case A_MOINS:
+                c.entier = gauche.entier - droite.entier;
+                return c;
+            case A_MULT:
+                c.entier = gauche.entier * droite.entier;
+                return c;
+            case A_DIV:
+                c.entier = gauche.entier / droite.entier;
+                return c;
+            default:
+                return c;
+        }
+    }
+
+    if (type_retour == 1) {
+        switch (nature) {
+            case A_PLUS:
+                c.reel = gauche.reel + droite.reel;
+                return c;
+            case A_MOINS:
+                c.reel = gauche.reel - droite.reel;
+                return c;
+            case A_MULT:
+                c.reel = gauche.reel * droite.reel;
+                return c;
+            case A_DIV:
+                c.reel = gauche.reel / droite.reel;
+                return c;
+            default:
+                return c;
+        }
+    }
+
+    return c;
+}
+
+static cellule resoud_expression(arbre a, int type_retour) {
+    cellule c = cellule_null();
+    cellule gauche, droite;
     if (arbre_est_vide(a)) {
         fprintf(stderr, "Erreur - Resolution d'expression arithmetique vide impossible\n");
-        return 0;
+        return c;
     }
     switch (arbre_recupere_nature(a)) {
-        int index;
-        int gauche, droite, nature;
         case A_VAR:
-            index = association_nom(a->valeur_1);
-            return PEXEC[BC + tdec_recupere_taille_exec(index)].entier;
+            return resoud_variable(a, type_retour);
         case A_ENTIER:
-            return a->valeur_1;
+        case A_REEL:
+            if (type_retour == 0)
+                c.entier = (int) a->valeur_1;
+            else if (type_retour == 1)
+                c.reel = a->valeur_1;
+
+            return c;
         case A_PLUS:
         case A_MOINS:
         case A_MULT:
         case A_DIV:
-            gauche = resoud_expression(a->fils_gauche);
-            droite = resoud_expression(a->fils_gauche->frere_droit);
-            nature = arbre_recupere_nature(a);
-            if (nature == A_PLUS) return gauche + droite;
-            if (nature == A_MOINS) return gauche - droite;
-            if (nature == A_MULT) return gauche * droite;
-            if (nature == A_DIV) {
-                if (droite == 0) {
-                    fprintf(stderr, "Division par 0 interdite !\n");
-                    exit(EXIT_FAILURE);
-                }
-                return gauche / droite;
-            }
-            return 0;
+            gauche = resoud_expression(a->fils_gauche, type_retour);
+            droite = resoud_expression(a->fils_gauche->frere_droit, type_retour);
+            return resoud_operation(a, gauche, droite, type_retour);
         default:
             fprintf(stderr, "Cas expression arithmetique non gere\n");
-            return 0;
+            return c;
     }
 }
 
@@ -57,7 +122,10 @@ static void parcours_arbre(arbre a) {
     }
 
     if (arbre_recupere_nature(a) == A_AFFECT) {
-        PEXEC[taille_pexec++].entier = resoud_expression(a->fils_gauche->frere_droit);
+        int tdec_index = association_nom(a->fils_gauche->valeur_1);
+        int type       = tdec_type_variable(tdec_index);
+
+        PEXEC[taille_pexec++] = resoud_expression(a->fils_gauche->frere_droit, type);
     }
 
     parcours_arbre(a->fils_gauche);

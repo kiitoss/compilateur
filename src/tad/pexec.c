@@ -1,13 +1,16 @@
 #include "../../inc/pexec.h"
 
-// static cellule cellule_null() {
-//     cellule c;
-//     c.entier    = VALEUR_NULL;
-//     c.reel      = VALEUR_NULL;
-//     c.caractere = '0';
-//     c.booleen   = '0';
-//     return c;
-// }
+/*
+ * Retourne une cellule vide
+ */
+cellule cellule_null() {
+    cellule c;
+    c.entier    = VALEUR_NULL;
+    c.reel      = VALEUR_NULL;
+    c.caractere = '0';
+    c.booleen   = '0';
+    return c;
+}
 
 // /*
 //  * Initialisation de la pile

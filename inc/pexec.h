@@ -23,6 +23,9 @@ typedef union cellule cellule;
 
 typedef cellule pexec[PEXEC_TMAX];
 
+/* Retourne une cellule vide */
+cellule cellule_null();
+
 // /* Initialisation de la pile */
 // void pexec_init(pexec p);
 

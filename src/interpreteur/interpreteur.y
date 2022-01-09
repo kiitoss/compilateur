@@ -31,6 +31,7 @@
 %union {
     int entier;
     char *string;
+    double reel;
     arbre arbre;
 }
 
@@ -39,6 +40,7 @@
 %token SEPARATEUR CROCHET_OUVRANT CROCHET_FERMANT
 
 %token <entier> ENTIER
+%token <reel> REEL
 %token <string> LEXEME
 
 %%
@@ -100,7 +102,7 @@ treg_arbre:
 ;
 
 treg_arbre_noeud:
-    | treg_arbre_noeud ENTIER SEPARATEUR ENTIER CROCHET_OUVRANT ENTIER CROCHET_FERMANT CROCHET_OUVRANT ENTIER CROCHET_FERMANT {
+    | treg_arbre_noeud ENTIER SEPARATEUR ENTIER CROCHET_OUVRANT REEL CROCHET_FERMANT CROCHET_OUVRANT REEL CROCHET_FERMANT {
         int index = taille_liste_noeuds;
         liste_noeuds[index] = arbre_creer_noeud($4, $6, $9);
         taille_liste_noeuds++;

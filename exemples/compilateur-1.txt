@@ -1,22 +1,8 @@
 PROG
-    var x : float;
-    var y : int;
-    var z : float;
-    var w : float;
-    procedure p()
-        procedure f()
-        DEBUT
-            x := 2;
-        FIN;
-    DEBUT
-        x := 5;
-        z := 4;
-    FIN;
+    var i : int;
 DEBUT
-    x := 2,5;
-    y := 2;
-    z := x + y;
-    w := x / ( x + 1 );
-    p;
-    f;
+    tantque (i < 3) faire
+    DEBUT
+        i := i + 1;
+    FIN;
 FIN

@@ -419,9 +419,6 @@ tant_que: TANT_QUE expression_booleenne FAIRE liste_instructions {
 ;
 
 affectation: variable OPAFF expression {
-        if (! tdec_index_existe($1->valeur_1)) {
-            yyerror("Variable non declaree.\n");
-        }
 		$$ = arbre_concat_pere_fils(
 			arbre_creer_noeud_vide(A_AFFECT), 
 			arbre_concat_pere_frere(
@@ -434,6 +431,9 @@ affectation: variable OPAFF expression {
 
     // NOK !!!!!!!!!!!
 variable: IDF {
+        if (! tdec_index_existe(yylval.t_nombre)) {
+            yyerror("Variable non declaree.\n");
+        }
 		$$ = arbre_creer_noeud(A_VAR, yylval.t_nombre, VALEUR_NULL);
 	}
 	| variable POINT variable {
@@ -445,6 +445,9 @@ variable: IDF {
 ;
 
 appel: IDF liste_arguments {
+        if (! tdec_index_existe(yylval.t_nombre)) {
+            yyerror("Procedure ou fonction non declaree.\n");
+        }
         $$ = arbre_concat_pere_fils(
 			arbre_creer_noeud_vide(A_APPEL),
             arbre_concat_pere_frere(

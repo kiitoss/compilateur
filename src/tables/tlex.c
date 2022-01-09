@@ -114,3 +114,16 @@ void tlex_sauvegarde(FILE *f) {
         fprintf(f, "\t%d|%d|%d|%s\n", i, TLEX[i].taille, TLEX[i].suivant, TLEX[i].lexeme);
     }
 }
+
+/*
+ * Recuperation d'un lexeme dans la table lexicographique
+ */
+char *tlex_recupere_lexeme(int index) {
+    /* cas d'erreur */
+    if (index >= TLEX_TMAX) {
+        fprintf(stderr, "Erreur - Index %d de la table lexicographique inatteignable.\n", index);
+        return "";
+    }
+
+    return TLEX[index].lexeme;
+}

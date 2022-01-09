@@ -1,5 +1,11 @@
 PROG
     var x : int;
+    var y : int;
+    var z : int;
+    var w : int;
 DEBUT
     x := 2;
+    y := 4;
+    z := x + y;
+    w := x * 2 + z;
 FIN

@@ -350,7 +350,7 @@ test_arithmetiques: PARENTHESE_OUVRANTE expression DOUBLE_EGAL expression PARENT
 resultat_retourne: {
         $$ = arbre_concat_pere_fils(
             arbre_creer_noeud_vide(A_RESULTAT_RET),
-            arbre_creer_arbre_vide(A_EXPR, 0, VALEUR_NULL)
+            arbre_creer_arbre_vide(A_EXPR_ARITH, 0, VALEUR_NULL)
         );
     }
     | expression {
@@ -419,6 +419,9 @@ tant_que: TANT_QUE expression_booleenne FAIRE liste_instructions {
 ;
 
 affectation: variable OPAFF expression {
+        if (! tdec_index_existe($1->valeur_1)) {
+            yyerror("Variable non declaree.\n");
+        }
 		$$ = arbre_concat_pere_fils(
 			arbre_creer_noeud_vide(A_AFFECT), 
 			arbre_concat_pere_frere(
@@ -483,44 +486,32 @@ expression_arithmetiques: expression_arithmetiques PLUS exp {
         int e1 = $1->valeur_1;
         int e2 = $3->valeur_1;
         $$ = arbre_concat_pere_fils(
-            arbre_creer_noeud(A_EXPR_ARITH, e1 + e2, VALEUR_NULL),
-            arbre_concat_pere_fils(
-                arbre_creer_noeud_vide(A_PLUS),
-                arbre_concat_pere_frere($1, $3)
-            )
+            arbre_creer_noeud_vide(A_PLUS),
+            arbre_concat_pere_frere($1, $3)
         );
 	}
 	| expression_arithmetiques MOINS exp {
         int e1 = $1->valeur_1;
         int e2 = $3->valeur_1;
         $$ = arbre_concat_pere_fils(
-            arbre_creer_noeud(A_EXPR_ARITH, e1 - e2, VALEUR_NULL),
-            arbre_concat_pere_fils(
-                arbre_creer_noeud_vide(A_MOINS),
-                arbre_concat_pere_frere($1, $3)
-            )
+            arbre_creer_noeud_vide(A_MOINS),
+            arbre_concat_pere_frere($1, $3)
         );
 	}
 	| expression_arithmetiques MULT exp {
         int e1 = $1->valeur_1;
         int e2 = $3->valeur_1;
         $$ = arbre_concat_pere_fils(
-            arbre_creer_noeud(A_EXPR_ARITH, e1 * e2, VALEUR_NULL),
-            arbre_concat_pere_fils(
-                arbre_creer_noeud_vide(A_MULT),
-                arbre_concat_pere_frere($1, $3)
-            )
+            arbre_creer_noeud_vide(A_MULT),
+            arbre_concat_pere_frere($1, $3)
         );
 	}
 	| expression_arithmetiques DIV exp {
         int e1 = $1->valeur_1;
         int e2 = $3->valeur_1;
         $$ = arbre_concat_pere_fils(
-            arbre_creer_noeud(A_EXPR_ARITH, e1 / e2, VALEUR_NULL),
-            arbre_concat_pere_fils(
-                arbre_creer_noeud_vide(A_DIV),
-                arbre_concat_pere_frere($1, $3)
-            )
+            arbre_creer_noeud_vide(A_DIV),
+            arbre_concat_pere_frere($1, $3)
         );
 	}
     | exp {
@@ -535,10 +526,10 @@ exp: variable {
 		$$ = $1;
 	}
 	| ENTIER {
-        $$ = arbre_creer_noeud(A_EXPR, yylval.t_entier, VALEUR_NULL);
+        $$ = arbre_creer_noeud(A_ENTIER, yylval.t_entier, VALEUR_NULL);
 	}
 	| REEL {
-		$$ = arbre_creer_noeud(A_EXPR, yylval.t_entier, VALEUR_NULL);
+		$$ = arbre_creer_noeud(A_REEL, yylval.t_entier, VALEUR_NULL);
 	}
     | PARENTHESE_OUVRANTE variable PARENTHESE_FERMANTE {
         $$ = $2;
@@ -605,10 +596,10 @@ booleen: variable {
         );
 	}
     | VRAI {
-        $$ = arbre_creer_noeud(A_EXPR, 1, VALEUR_NULL);
+        $$ = arbre_creer_noeud(A_EXPR_ARITH, 1, VALEUR_NULL);
     }
     | FAUX {
-        $$ = arbre_creer_noeud(A_EXPR, 0, VALEUR_NULL);
+        $$ = arbre_creer_noeud(A_EXPR_ARITH, 0, VALEUR_NULL);
     }
 ;
 

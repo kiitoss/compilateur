@@ -1,6 +1,7 @@
 #ifndef INTERPRETEUR_H
 #define INTERPRETEUR_H
 
+#include "pexec.h"
 #include "tables.h"
 
 extern int line;

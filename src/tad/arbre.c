@@ -80,8 +80,6 @@ static char *arbre_recupere_nature_str(int nature) {
 
         case A_RESULTAT_RET:
             return "retourne_res";
-        case A_EXPR:
-            return "expr";
         case A_ARG:
             return "arg";
         case A_VAR:
@@ -104,6 +102,10 @@ static char *arbre_recupere_nature_str(int nature) {
             return "lecture_tab";
         case A_ECRIT:
             return "ecrit";
+        case A_ENTIER:
+            return "entier";
+        case A_REEL:
+            return "reel";
         default:
             return "inconnu";
     }
@@ -237,4 +239,15 @@ void arbre_sauvegarde(FILE *f, arbre a, int niveau, int espace) {
 
     espace -= TAILLE_ESPACE;
     arbre_sauvegarde(f, a->frere_droit, niveau, espace);
+}
+
+/*
+ * Recupere la nature de l'arbre
+ */
+int arbre_recupere_nature(arbre a) {
+    if (arbre_est_vide(a)) {
+        return A_NONE;
+    } else {
+        return a->nature;
+    }
 }

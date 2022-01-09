@@ -13,7 +13,7 @@ tdec_entree TDEC[TDEC_TMAX];
 static char *tdec_recupere_nature_str(int nature) {
     switch (nature) {
         case -1:
-            return "-1";
+            return "NULL";
         case TYPE_B:
             return "TYPE_B";
         case TYPE_S:
@@ -209,4 +209,17 @@ void tdec_sauvegarde(FILE *f) {
         fprintf(f, "\t%d|%d|%d|%d|%d|%d\n", i, TDEC[i].nature, TDEC[i].suivant, TDEC[i].region, TDEC[i].description,
                 TDEC[i].execution);
     }
+}
+
+/*
+ * Recuperation de l'existance ou de la non-eistence d'une entree dans la table des declarations
+ */
+int tdec_index_existe(int index) {
+    /* cas d'erreur */
+    if (index > TDEC_TMAX) {
+        fprintf(stderr, "Erreur - Index %d de la table des declarations inatteignable.\n", index);
+        return 0;
+    }
+
+    return (TDEC[index].nature != VALEUR_NULL);
 }

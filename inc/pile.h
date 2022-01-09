@@ -1,5 +1,5 @@
-#ifndef PREG_H
-#define PREG_H
+#ifndef PILE_H
+#define PILE_H
 
 #ifndef VALEUR_NULL
 #define VALEUR_NULL -1

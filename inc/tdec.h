@@ -41,4 +41,7 @@ void tdec_affiche();
 /* Sauvegarde de la table des declarations */
 void tdec_sauvegarde(FILE *f);
 
+/* Recuperation de l'existance ou de la non-eistence d'une entree dans la table des declarations */
+int tdec_index_existe(int index);
+
 #endif

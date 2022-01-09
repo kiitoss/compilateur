@@ -33,4 +33,7 @@ int tlex_nouvelle_entree(char *lexeme);
 /* Sauvegarde de la table lexicographique */
 void tlex_sauvegarde(FILE *f);
 
+/* Recuperation d'un lexeme dans la table lexicographique */
+char *tlex_recupere_lexeme(int index);
+
 #endif

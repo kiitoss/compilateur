@@ -52,7 +52,6 @@
 #define A_SUP_EGAL     39
 #define A_INF_EGAL     40
 #define A_RESULTAT_RET 41
-#define A_EXPR         42
 #define A_ARG          43
 #define A_VAR          44
 #define A_APPEL        45
@@ -64,6 +63,8 @@
 #define A_OU           51
 #define A_LECTURE_TAB  52
 #define A_ECRIT        53
+#define A_ENTIER       54
+#define A_REEL         55
 
 /* Structure d'un arbre */
 typedef struct noeud {
@@ -103,4 +104,6 @@ void arbre_affiche(arbre a);
 /* Sauvegarde de l’arbre */
 void arbre_sauvegarde(FILE *f, arbre a, int niveau, int espace);
 
+/* Recupere la nature de l'arbre */
+int arbre_recupere_nature(arbre a);
 #endif

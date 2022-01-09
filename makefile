@@ -15,8 +15,8 @@ compilateur-clean: compilateur simple-clean
 #               INTERPRETEUR              #
 ###########################################
 
-interpreteur: interpreteur-lex interpreteur-yacc arbre.o pile.o $(tables) executeur.o
-	$(CC) lex.yy.c y.tab.c arbre.o pile.o $(tables) executeur.o -o interpreteur.exe
+interpreteur: interpreteur-lex interpreteur-yacc arbre.o pile.o pexec.o $(tables) executeur.o
+	$(CC) lex.yy.c y.tab.c arbre.o pile.o pexec.o $(tables) executeur.o -o interpreteur.exe
 
 interpreteur-lex: src/interpreteur/interpreteur.l
 	lex src/interpreteur/interpreteur.l
@@ -26,6 +26,9 @@ interpreteur-yacc: src/interpreteur/interpreteur.y
 
 executeur.o: src/interpreteur/executeur.c
 	$(CC) $(CFLAGS) src/interpreteur/executeur.c -c
+
+pexec.o: src/tad/pexec.c
+	$(CC) $(CFLAGS) src/tad/pexec.c -c
 
 
 

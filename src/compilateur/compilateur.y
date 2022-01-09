@@ -1,10 +1,7 @@
 %{
     #include "inc/compilateur.h"
     #include "inc/arbre.h"
-
-    #ifndef AFFICHER_TABLES
-	#define AFFICHER_TABLES 1
-    #endif
+    #include <unistd.h>
 
     extern FILE *yyin;
     extern FILE *yyout;
@@ -624,48 +621,66 @@ void yyerror(char *s) {
 }
 
 void usage(char *s) {
-    fprintf(stderr, "Usage: %s input [output]\n\tinput : fichier d'entree\n\toutput : fichier de sortie\n", s);
+    fprintf(stderr, "Usage: %s [options] input [output]\n\tinput : fichier d'entree\n\toutput : fichier de sortie\n\n\tOPTIONS:\n\t\t-v : Affiche les tables et les arbres\n\t\t-h : Affiche l'aide\n", s);
     exit(EXIT_FAILURE);
 }
 
 int main(int argc, char *argv[]) {
     FILE *yyout = NULL;
+    int opt;
+    int verbose = 0;
+    int nb_flags = 0;
+    while((opt = getopt(argc, argv, "vh")) != -1) {
+        switch(opt){
+            case 'v':
+                verbose = 1;
+                nb_flags++;
+                break;
+            case 'h':
+                usage(argv[0]);
+                break;
+            case '?':
+                usage(argv[0]);
+                break;
+        }
+    }
 
-    if (argc < 2 || argc > 3) {
+    if (argc < 2 + nb_flags || argc > 3 + nb_flags) {
         usage(argv[0]);
     }
 
-    yyin = fopen(argv[1], "r");
+    yyin = fopen(argv[1 + nb_flags], "r");
     if (yyin == NULL) {
-        fprintf(stderr, "Impossible d'ouvrir le fichier %s en lecture.\n", argv[1]);
+        fprintf(stderr, "Impossible d'ouvrir le fichier %s en lecture.\n", argv[1 + nb_flags]);
         return EXIT_FAILURE;
     }
     
-    if (argc == 3) {
-        yyout = fopen(argv[2],"w");
+    if (argc == 3 + nb_flags) {
+        yyout = fopen(argv[2 + nb_flags],"w");
 
         if (yyout == NULL) {
-            fprintf(stderr, "Impossible d'ouvrir le fichier %s en ecriture.\n", argv[2]);
+            fprintf(stderr, "Impossible d'ouvrir le fichier %s en ecriture.\n", argv[2 + nb_flags]);
             return EXIT_FAILURE;
         }
     }
 
-    
+    fprintf(stdout, "Debut de la compilation\n");
+
     init_compilation();
 
     yyparse();
 
-	if (AFFICHER_TABLES) {
+	if (verbose) {
         affiche_tables();
-    } else {
-        printf("Affichage des tables désactivé.\n");
     }
 
     fclose(yyin);
-    if (argc == 3) {
+    if (argc == 3 + nb_flags) {
         sauvegarde_tables(yyout);
         fclose(yyout);
     }
+
+    fprintf(stdout, "Compilation terminee\n");
 
 	return EXIT_SUCCESS;
 }

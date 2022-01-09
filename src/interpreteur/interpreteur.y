@@ -1,11 +1,8 @@
 %{
     #include <stdio.h>
     #include <stdlib.h>
+    #include <unistd.h>
 	#include "inc/interpreteur.h"
-
-    #ifndef AFFICHER_TABLES
-	#define AFFICHER_TABLES 1
-    #endif
 
     /* Nombre maximal de noeuds */
     #define MAX_NOEUDS 100
@@ -153,34 +150,55 @@ void yyerror(char *s) {
 }
 
 void usage(char *s) {
-    fprintf(stderr, "Usage: %s input\n\tinput : fichier d'entree\n", s);
+    fprintf(stderr, "Usage: %s [options] input\n\tinput : fichier d'entree\n\n\tOPTIONS:\n\t\t-v : Affiche les tables et les arbres\n\t\t-h : Affiche l'aide\n", s);
     exit(EXIT_FAILURE);
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
+    int opt;
+    int verbose = 0;
+    int nb_flags = 0;
+    while((opt = getopt(argc, argv, "vh")) != -1) {
+        switch(opt){
+            case 'v':
+                verbose = 1;
+                nb_flags++;
+                break;
+            case 'h':
+                usage(argv[0]);
+                break;
+            case '?':
+                usage(argv[0]);
+                break;
+        }
+    }
+
+    if (argc < 2 + nb_flags) {
         usage(argv[0]);
     }
 
-    yyin = fopen(argv[1], "r");
+
+    yyin = fopen(argv[1 + nb_flags], "r");
     if (yyin == NULL) {
-        fprintf(stderr, "Impossible d'ouvrir le fichier %s en lecture.\n", argv[1]);
+        fprintf(stderr, "Impossible d'ouvrir le fichier %s en lecture.\n", argv[1 + nb_flags]);
         return EXIT_FAILURE;
     }
+
+    fprintf(stdout, "Debut de l'interpretation\n");
 
     init_tables();
 
 	yyparse();
 
-    if (AFFICHER_TABLES) {
+    if (verbose) {
 		affiche_tables();
-	} else {
-		printf("Affichage des tables désactivé.\n");
 	}
 	
     execution();
 
     fclose(yyin);
+
+    fprintf(stdout, "Interpretation terminee\n");
 
     return EXIT_SUCCESS;
 }

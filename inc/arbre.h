@@ -65,6 +65,8 @@
 #define A_ECRIT        53
 #define A_ENTIER       54
 #define A_REEL         55
+#define A_VRAI         56
+#define A_FAUX         57
 
 /* Structure d'un arbre */
 typedef struct noeud {

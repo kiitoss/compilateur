@@ -28,6 +28,8 @@ int reg_parentes[100];
  */
 static void execute_region(int region);
 
+static int resout_expression_booleenne(arbre a);
+
 /*
  * Recuperation de la region de declaration d'une variable grace a son index lexicographique
  */
@@ -191,10 +193,60 @@ static cellule resout_expression(arbre a, int type_retour) {
             gauche = resout_expression(a->fils_gauche, type_retour);
             droite = resout_expression(a->fils_gauche->frere_droit, type_retour);
             return resout_operation(a, gauche, droite, type_retour);
+        case A_EXPR_BOOL:
+            c.booleen = resout_expression_booleenne(a);
+            return c;
         default:
             fprintf(stderr, "Cas expression arithmetique non gere\n");
             return c;
     }
+}
+
+/* */
+static int resout_test_arithmetique(arbre a) {
+    cellule gauche, droite;
+    gauche = resout_expression(a->fils_gauche->fils_gauche, 1);
+    droite = resout_expression(a->fils_gauche->fils_gauche->frere_droit, 1);
+    switch (a->fils_gauche->nature) {
+        case A_DOUBLE_EGAL:
+            return gauche.reel == droite.reel;
+        case A_SUP:
+            return gauche.reel > droite.reel;
+        case A_INF:
+            return gauche.reel < droite.reel;
+        case A_SUP_EGAL:
+            return gauche.reel >= droite.reel;
+        case A_INF_EGAL:
+            return gauche.reel <= droite.reel;
+        default:
+            fprintf(stderr, "Cas test arithmetique non gere\n");
+            return 0;
+    }
+}
+
+static int resout_expression_booleenne(arbre a) {
+    int gauche, droite;
+    switch (a->fils_gauche->nature) {
+        case A_TEST_ARITH:
+            return resout_test_arithmetique(a->fils_gauche);
+        case A_ET:
+            gauche = resout_expression_booleenne(a->fils_gauche->fils_gauche);
+            droite = resout_expression_booleenne(a->fils_gauche->fils_gauche->frere_droit);
+            return (gauche && droite);
+        case A_OU:
+            gauche = resout_expression_booleenne(a->fils_gauche->fils_gauche);
+            droite = resout_expression_booleenne(a->fils_gauche->fils_gauche->frere_droit);
+            return (gauche || droite);
+        case A_VRAI:
+            return 1;
+        case A_FAUX:
+            return 0;
+        default:
+            fprintf(stderr, "Cas expression booleenne non gere\n");
+            return 0;
+    }
+
+    return 0;
 }
 
 /*
@@ -214,6 +266,10 @@ static void parcours_arbre(arbre a) {
             pexec_empile_entier(PEXEC, 0, &taille_pexec);
         } else if (a->valeur_2 == 1) {
             pexec_empile_reel(PEXEC, 0, &taille_pexec);
+        } else if (a->valeur_2 == 2) {
+            pexec_empile_booleen(PEXEC, 0, &taille_pexec);
+        } else if (a->valeur_2 == 3) {
+            pexec_empile_caractere(PEXEC, 0, &taille_pexec);
         }
     }
     /* si c'est une declatation de procedure: met a jour la region parente */
@@ -277,6 +333,15 @@ static void parcours_arbre(arbre a) {
 
         /* mise a jour de la base courante pour revenir comme avant l'execution */
         BC = PEXEC[BC].entier;
+    }
+    /* si c'est une boucle tant que */
+    else if (nature == A_TANT_QUE) {
+        int expression_bool = resout_expression_booleenne(a->fils_gauche);
+        while (expression_bool == 1) {
+            parcours_arbre(a->fils_gauche->frere_droit);
+            expression_bool = resout_expression_booleenne(a->fils_gauche);
+        }
+        return;
     }
 
     /* execution recursive */

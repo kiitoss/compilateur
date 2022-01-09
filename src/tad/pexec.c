@@ -57,6 +57,24 @@ void pexec_empile_reel(pexec p, double nb, int *taille) {
     pexec_empile(p, c, taille);
 }
 
+/*
+ * Empilage d'une nouvelle valeur booleenne dans la pile
+ */
+void pexec_empile_booleen(pexec p, int bool, int *taille) {
+    cellule c = cellule_null();
+    c.booleen = bool;
+    pexec_empile(p, c, taille);
+}
+
+/*
+ * Empilage d'un nouveau caractere dans la pile
+ */
+void pexec_empile_caractere(pexec p, char carac, int *taille) {
+    cellule c   = cellule_null();
+    c.caractere = carac;
+    pexec_empile(p, c, taille);
+}
+
 // /*
 //  * Empilage d'un nouvel entier dans la pile
 //  */

@@ -1,8 +1,15 @@
 PROG
     var i : int;
+    var j : int;
+    var a : bool;
 DEBUT
-    tantque (i < 3) faire
+    j := 0;
+    i := 0;
+    a := vrai;
+    tantque ( ( a == vrai ) ou ( i < 2 )  ) faire
     DEBUT
         i := i + 1;
+        j := j + 1;
+        a := faux;
     FIN;
 FIN

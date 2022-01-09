@@ -15,7 +15,7 @@
 union cellule {
     int entier;
     float reel;
-    char booleen;
+    int booleen;
     char caractere;
 };
 
@@ -40,6 +40,12 @@ void pexec_empile_entier(pexec p, int nb, int *taille);
 
 /* Empilage d'une nouvelle valeur reel dans la pile */
 void pexec_empile_reel(pexec p, double nb, int *taille);
+
+/* Empilage d'une nouvelle valeur booleenne dans la pile */
+void pexec_empile_booleen(pexec p, int bool, int *taille);
+
+/* Empilage d'un nouveau caractere dans la pile */
+void pexec_empile_caractere(pexec p, char carac, int *taille);
 
 // /* Empilage d'un nouvel entier dans la pile */
 // void pexec_empile_int(pexec p, int i);

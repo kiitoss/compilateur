@@ -585,7 +585,10 @@ expression_booleenne: booleen {
         );
 	}
     | test_arithmetiques {
-        $$ = $1;
+        $$ = $$ = arbre_concat_pere_fils(
+            arbre_creer_noeud_vide(A_EXPR_BOOL),
+            $1
+        );
     }
 ;
 
@@ -599,10 +602,10 @@ booleen: variable {
         );
 	}
     | VRAI {
-        $$ = arbre_creer_noeud(A_EXPR_ARITH, 1, VALEUR_NULL);
+        $$ = arbre_creer_noeud_vide(A_VRAI);
     }
     | FAUX {
-        $$ = arbre_creer_noeud(A_EXPR_ARITH, 0, VALEUR_NULL);
+        $$ = arbre_creer_noeud_vide(A_FAUX);
     }
 ;
 

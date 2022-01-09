@@ -621,23 +621,28 @@ void yyerror(char *s) {
 }
 
 void usage(char *s) {
-    fprintf(stderr, "Usage: %s [options] input [output]\n\tinput : fichier d'entree\n\toutput : fichier de sortie\n\n\tOPTIONS:\n\t\t-v : Affiche les tables et les arbres\n\t\t-h : Affiche l'aide\n", s);
+    fprintf(stderr, "Usage: %s [options] input [output]\n\tinput : fichier d'entree\n\toutput : fichier de sortie\n\n\tOPTIONS:\n\t\t-v : Affiche les tables et les arbres\n\t\t-h : Affiche l'aide\n\t\t-r : Execute l'interpretation\n", s);
     exit(EXIT_FAILURE);
 }
 
 int main(int argc, char *argv[]) {
     FILE *yyout = NULL;
+    char *output_filename = "output.txt";
+    char *interpreteur_programme = "./interpreteur.exe";
     int opt;
     int verbose = 0;
-    int nb_flags = 0;
-    while((opt = getopt(argc, argv, "vh")) != -1) {
+    int run = 0;
+    int nb_arguments;
+    while((opt = getopt(argc, argv, "vhr")) != -1) {
         switch(opt){
             case 'v':
                 verbose = 1;
-                nb_flags++;
                 break;
             case 'h':
                 usage(argv[0]);
+                break;
+            case 'r':
+                run = 1;
                 break;
             case '?':
                 usage(argv[0]);
@@ -645,21 +650,24 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (argc < 2 + nb_flags || argc > 3 + nb_flags) {
+    nb_arguments = argc - optind;
+    if (nb_arguments < 1 || nb_arguments > 2) {
         usage(argv[0]);
     }
 
-    yyin = fopen(argv[1 + nb_flags], "r");
+    yyin = fopen(argv[optind], "r");
     if (yyin == NULL) {
-        fprintf(stderr, "Impossible d'ouvrir le fichier %s en lecture.\n", argv[1 + nb_flags]);
+        fprintf(stderr, "Impossible d'ouvrir le fichier %s en lecture.\n", argv[optind]);
         return EXIT_FAILURE;
     }
     
-    if (argc == 3 + nb_flags) {
-        yyout = fopen(argv[2 + nb_flags],"w");
-
+    if (nb_arguments == 2 || run == 1) {
+        if (nb_arguments == 2) {
+            output_filename = argv[optind + 1];
+        }
+        yyout = fopen(output_filename,"w");
         if (yyout == NULL) {
-            fprintf(stderr, "Impossible d'ouvrir le fichier %s en ecriture.\n", argv[2 + nb_flags]);
+            fprintf(stderr, "Impossible d'ouvrir le fichier %s en ecriture.\n", output_filename);
             return EXIT_FAILURE;
         }
     }
@@ -675,12 +683,22 @@ int main(int argc, char *argv[]) {
     }
 
     fclose(yyin);
-    if (argc == 3 + nb_flags) {
+    if (nb_arguments == 2 || run == 1) {
         sauvegarde_tables(yyout);
         fclose(yyout);
     }
 
     fprintf(stdout, "Compilation terminee\n");
+
+    if (run == 1) {
+        char *params[] = {interpreteur_programme, output_filename, NULL};
+        char *paramsVerbose[] = {interpreteur_programme, "-v", output_filename, NULL};
+        if (verbose) {
+            execv(interpreteur_programme, paramsVerbose);
+        } else {
+            execv(interpreteur_programme, params);
+        }
+    }
 
 	return EXIT_SUCCESS;
 }

@@ -40,4 +40,7 @@ void treg_affiche();
 /* Sauvegarde de la table des regions */
 void treg_sauvegarde(FILE *f);
 
+/* Recupere l'arbre d'une region */
+arbre treg_recupere_arbre_region(int index);
+
 #endif

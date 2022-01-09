@@ -124,3 +124,16 @@ void treg_sauvegarde(FILE *f) {
         fprintf(f, "\t#FIN_ARBRE_REGION\n");
     }
 }
+
+/*
+ * Recupere l'arbre d'une region
+ */
+arbre treg_recupere_arbre_region(int index) {
+    /* cas d'erreur */
+    if (index >= TREG_TMAX) {
+        fprintf(stderr, "Erreur - Recuperation de l'arbre de la region %d impossible.\n", index);
+        return NULL;
+    }
+
+    return TREG[index].arbre;
+}

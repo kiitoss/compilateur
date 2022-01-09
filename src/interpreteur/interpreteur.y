@@ -157,12 +157,11 @@ void usage(char *s) {
 int main(int argc, char *argv[]) {
     int opt;
     int verbose = 0;
-    int nb_flags = 0;
+    int nb_arguments;
     while((opt = getopt(argc, argv, "vh")) != -1) {
         switch(opt){
             case 'v':
                 verbose = 1;
-                nb_flags++;
                 break;
             case 'h':
                 usage(argv[0]);
@@ -172,15 +171,17 @@ int main(int argc, char *argv[]) {
                 break;
         }
     }
-
-    if (argc < 2 + nb_flags) {
+    
+    nb_arguments = argc - optind;
+    
+    if (nb_arguments < 1) {
         usage(argv[0]);
     }
 
 
-    yyin = fopen(argv[1 + nb_flags], "r");
+    yyin = fopen(argv[optind], "r");
     if (yyin == NULL) {
-        fprintf(stderr, "Impossible d'ouvrir le fichier %s en lecture.\n", argv[1 + nb_flags]);
+        fprintf(stderr, "Impossible d'ouvrir le fichier %s en lecture.\n", argv[optind]);
         return EXIT_FAILURE;
     }
 

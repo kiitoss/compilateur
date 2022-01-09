@@ -1,0 +1,5 @@
+PROG
+    var x : int;
+DEBUT
+    x := 2;
+FIN

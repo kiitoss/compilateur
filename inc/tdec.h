@@ -32,6 +32,9 @@ void tdec_maj_taille_exec(int index, int taille);
 /* Recuperation de la taille a l'execution d'une entree de la table des declarations */
 int tdec_recupere_taille_exec(int index);
 
+/* Recuperation de la region d'une entree de la table des declarations */
+int tdec_recupere_region(int index);
+
 /* Recuperation de l'index d'une entree dans la table des declarrations a partir de son index lexicographique */
 int tdec_trouve_index(int tlex_index, pile PREG);
 

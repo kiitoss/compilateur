@@ -22,19 +22,40 @@ cellule cellule_null() {
 //  */
 // int pexec_est_vide(pexec p) { return p[0].entier == 0; }
 
-// /*
-//  * Empilage d'une nouvelle valeur dans la pile
-//  */
-// void pexec_empile(pexec p, cellule c) {
-//     /* cas d'erreur */
-//     if (p[0].entier >= PEXEC_TMAX) {
-//         fprintf(stderr, "Erreur - La taille maximale de la pile d'execution est atteinte.\n");
-//         return;
-//     }
+/*
+ * Empilage d'une nouvelle valeur dans la pile
+ */
+void pexec_empile(pexec p, cellule c, int *taille) {
+    int index = *taille;
+    /* cas d'erreur */
+    if (index >= PEXEC_TMAX) {
+        fprintf(stderr, "Erreur - La taille maximale de la pile d'execution est atteinte.\n");
+        return;
+    }
 
-//     p[0].entier++;
-//     p[p[0].entier] = c;
-// }
+    p[index].entier++;
+    p[index] = c;
+
+    (*taille)++;
+}
+
+/*
+ * Empilage d'une nouvelle valeur entiere dans la pile
+ */
+void pexec_empile_entier(pexec p, int nb, int *taille) {
+    cellule c = cellule_null();
+    c.entier  = nb;
+    pexec_empile(p, c, taille);
+}
+
+/*
+ * Empilage d'une nouvelle valeur reel dans la pile
+ */
+void pexec_empile_reel(pexec p, double nb, int *taille) {
+    cellule c = cellule_null();
+    c.reel    = nb;
+    pexec_empile(p, c, taille);
+}
 
 // /*
 //  * Empilage d'un nouvel entier dans la pile

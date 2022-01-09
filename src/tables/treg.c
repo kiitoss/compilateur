@@ -137,3 +137,16 @@ arbre treg_recupere_arbre_region(int index) {
 
     return TREG[index].arbre;
 }
+
+/*
+ * Recupere le NIS d'une region
+ */
+int treg_recupere_nis_region(int index) {
+    /* cas d'erreur */
+    if (index >= TREG_TMAX) {
+        fprintf(stderr, "Erreur - Recuperation de l'arbre de la region %d impossible.\n", index);
+        return 0;
+    }
+
+    return TREG[index].nis;
+}

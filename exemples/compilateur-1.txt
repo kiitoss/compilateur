@@ -3,9 +3,15 @@ PROG
     var y : int;
     var z : float;
     var w : float;
+    procedure p()
+    DEBUT
+        x := 5;
+        z := 4;
+    FIN;
 DEBUT
     x := 2,5;
     y := 2;
     z := x + y;
     w := x / ( x + 1 );
+    p;
 FIN

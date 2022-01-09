@@ -43,4 +43,7 @@ void treg_sauvegarde(FILE *f);
 /* Recupere l'arbre d'une region */
 arbre treg_recupere_arbre_region(int index);
 
+/* Recupere le NIS d'une region */
+int treg_recupere_nis_region(int index);
+
 #endif

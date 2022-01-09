@@ -117,6 +117,19 @@ int tdec_recupere_taille_exec(int index) {
 }
 
 /*
+ * Recuperation de la region d'une entree de la table des declarations
+ */
+int tdec_recupere_region(int index) {
+    /* cas d'erreur */
+    if (index > TDEC_TMAX) {
+        fprintf(stderr, "Erreur - La taille maximale de la table des declarations est atteinte.\n");
+        return VALEUR_NULL;
+    }
+
+    return TDEC[index].region;
+}
+
+/*
  * Recuperation de l'index d'une entree dans la table des declarrations a partir de son index lexicographique
  */
 int tdec_trouve_index(int tlex_index, pile PREG) {

@@ -32,8 +32,14 @@ cellule cellule_null();
 // /* Retourne 1 si la pile est vide, 0 sinon */
 // int pexec_est_vide(pexec p);
 
-// /* Empilage d'une nouvelle valeur dans la pile */
-// void pexec_empile(pexec p, cellule c);
+/* Empilage d'une nouvelle valeur dans la pile */
+void pexec_empile(pexec p, cellule c, int *taille);
+
+/* Empilage d'une nouvelle valeur entiere dans la pile */
+void pexec_empile_entier(pexec p, int nb, int *taille);
+
+/* Empilage d'une nouvelle valeur reel dans la pile */
+void pexec_empile_reel(pexec p, double nb, int *taille);
 
 // /* Empilage d'un nouvel entier dans la pile */
 // void pexec_empile_int(pexec p, int i);

@@ -25,26 +25,6 @@ int BC_regions[100];
  */
 int reg_parentes[100];
 
-static void pexec_insere_args(arbre a) {
-    if (arbre_est_vide(a)) {
-        fprintf(stderr, "Erreur - Arbre vide, arguments attendus\n");
-        exit(EXIT_FAILURE);
-    }
-    if (a->nature != A_LISTE_ARGS) {
-        fprintf(stderr, "Erreur - Nature != liste arguments, arguments attendus\n");
-        exit(EXIT_FAILURE);
-    }
-
-    /* WORK IN PROGRESS */
-    // for (arbre param = a->fils_gauche; !arbre_est_vide(param) && param->nature == A_ARG; param = param->frere_droit)
-    // {
-    //     cellule resultat = resout_expression(param->fils_gauche, 1);
-    //     pexec_empile(PEXEC, resultat, &taille_pexec);
-    //     printf("EMPILE %f========\n", resultat.reel);
-    // }
-    /* WORK IN PROGRESS */
-}
-
 /*
  * Recuperation de la region de declaration d'une variable grace a son index lexicographique
  */
@@ -70,6 +50,28 @@ int pexec_index_variable(int tlex_index, int deplacement_exec) {
     }
 
     return PEXEC[BC + nis_utilise - nis_declare].entier + deplacement_exec;
+}
+
+static void controle_validite_params(arbre a) {
+    pile params;
+    pile_init(params);
+
+    int tlex_index_param;
+
+    if (arbre_est_vide(a) || a->nature != A_LISTE_PARAM) {
+        fprintf(stderr, "Erreur - Liste de parametres attendus\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (arbre param = a->fils_gauche; !arbre_est_vide(param) && param->nature == A_PARAM; param = param->frere_droit) {
+        tlex_index_param = (int) param->valeur_1;
+        if (pile_est_dedans(params, tlex_index_param)) {
+            fprintf(stderr, "Erreur - Deux arguments possedent le meme identificateur\n");
+            exit(EXIT_FAILURE);
+        } else {
+            pile_empile(params, tlex_index_param);
+        }
+    }
 }
 
 /*
@@ -125,7 +127,6 @@ static void parcours_arbre(arbre a) {
     }
     /* si c'est un appel de procedure: execution de l'arbre de la procedure */
     else if (nature == A_APPEL) {
-        pexec_insere_args(a->fils_gauche->frere_droit);
         resout_appel(a);
         return;
     }
@@ -143,6 +144,10 @@ static void parcours_arbre(arbre a) {
 
         /* mise a jour dans la pile d'execution */
         PEXEC[base_courante + treg_recupere_nis_region(region) + 1] = resultat;
+    }
+    /* si c'st une liste de parametres (declaration fonction/procedure) */
+    else if (nature == A_LISTE_PARAM) {
+        controle_validite_params(a);
     }
     /* si c'est une boucle tant que */
     else if (nature == A_TANT_QUE) {

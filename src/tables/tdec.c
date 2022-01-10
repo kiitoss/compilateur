@@ -151,6 +151,7 @@ static int tdec_trouve(int tlex_index, pile PREG, int type) {
     while (!pile_est_vide(PREG)) {
         /* recuperation de la region dans la pile */
         region = pile_depile(PREG);
+
         /* sauvegarde de la region dans la pile temporaire */
         pile_empile(pile_tmp, region);
         /* reinitialisation de l'index pour la recherche */
@@ -160,7 +161,7 @@ static int tdec_trouve(int tlex_index, pile PREG, int type) {
         while (TDEC[index].suivant != VALEUR_NULL) {
             nature = TDEC[index].nature;
 
-            /* si l'entree correspond: quitte la boucle*/
+            /* si l'entree correspond: quitte la boucle */
             if (TDEC[index].region == region) {
                 if ((type == FONC && (nature == FONC || nature == PROC)) ||
                     (type != FONC && (nature == TYPE_B || nature == TYPE_S || nature == TYPE_T || nature == VAR))) {
@@ -173,11 +174,19 @@ static int tdec_trouve(int tlex_index, pile PREG, int type) {
         }
 
         /*
-         * si le champ suivant de la derniere entree de TDEC visitee == VALEUR NULL
+         * si le champ suivant de la derniere entree de TDEC visitee != VALEUR NULL
          * c'est qu'une correspondance a ete trouvee: quitte la boucle
          */
         if (TDEC[index].suivant != VALEUR_NULL) {
             break;
+        }
+        /* sinon il reste la derniere iteration */
+        else if (TDEC[index].region == region) {
+            nature = TDEC[index].nature;
+            if ((type == FONC && (nature == FONC || nature == PROC)) ||
+                (type != FONC && (nature == TYPE_B || nature == TYPE_S || nature == TYPE_T || nature == VAR))) {
+                break;
+            }
         }
     }
 
@@ -185,6 +194,8 @@ static int tdec_trouve(int tlex_index, pile PREG, int type) {
     while (!pile_est_vide(pile_tmp)) {
         pile_empile(PREG, pile_depile(pile_tmp));
     }
+
+    printf("type: %d==tlex: %d, region: %d == result: %d\n", type, tlex_index, pile_tete_de_pile(PREG), index);
 
     return index;
 }

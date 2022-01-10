@@ -30,4 +30,7 @@ int pile_tete_de_pile(pile p);
 /* Recuperation de la taille de la pile */
 int pile_recupere_taille(pile p);
 
+/* Detection de la presence ou non d'une valeur dans la pile */
+int pile_est_dedans(pile p, int num);
+
 #endif

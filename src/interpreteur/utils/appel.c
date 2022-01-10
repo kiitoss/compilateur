@@ -42,28 +42,6 @@ static void controle_validite_nb_args(int tlex_index, int tdec_index, int nb_arg
 }
 
 /*
- * Depile les arguments de la pile d'execution vers une pile temporaire
- */
-static void depile_args(int nb_args) {
-    /* WORK IN PROGRESS */
-    // for (int i = 0; i < nb_args; i++) {
-    //     pexec_empile(pexec_temp, pexec_depile(PEXEC, &taille_pexec), &taille_pexec_temp);
-    // }
-    /* WORK IN PROGRESS */
-}
-
-/*
- * Empile les arguments de la pile temporaire vers la pile d'execution
- */
-static void empile_args(int nb_args) {
-    /* WORK IN PROGRESS */
-    // for (int i = 0; i < nb_params; i++) {
-    //     pexec_empile(PEXEC, pexec_depile(pexec_temp, &taille_pexec_temp), &taille_pexec);
-    // }
-    /* WORK IN PROGRESS */
-}
-
-/*
  * Empile le chainage dynamique et statique de la fonction/procedure
  */
 static void empile_chainages(int BC_appelant, int region) {
@@ -81,6 +59,25 @@ static void empile_chainages(int BC_appelant, int region) {
     }
 }
 
+/* Empile la liste des arguments utilises pour l'appel de la fonction/procedure */
+static void pexec_empile_args(arbre a, int trep_index_premier_arg) {
+    int num_arg = 0;
+    int trep_index_arg, trep_index_type_arg;
+
+    if (arbre_est_vide(a) || a->nature != A_LISTE_ARGS) {
+        fprintf(stderr, "Erreur - Liste d'arguments attendus\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (arbre arg = a->fils_gauche; !arbre_est_vide(arg) && arg->nature == A_ARG; arg = arg->frere_droit) {
+        trep_index_arg      = trep_index_premier_arg + (num_arg * 2);
+        trep_index_type_arg = trep_index_arg + 1;
+        cellule resultat    = resout_expression(arg->fils_gauche, trep_recupere_valeur(trep_index_type_arg));
+        pexec_empile(PEXEC, resultat, &taille_pexec);
+        num_arg++;
+    }
+}
+
 /*
  * Resolution d'un appel de fonction ou de procedure
  */
@@ -88,10 +85,14 @@ void resout_appel(arbre a) {
     /* recuperation de la base courante de l'appelant */
     int BC_appelant = BC;
 
-    /* recuperation de l'index lexical de la procedure */
+    /* recuperation de l'index lexical de la fonction/procedure */
     int tlex_index = (int) a->fils_gauche->valeur_1;
-    /* deduction de l'index de la procedure et de sa region dans la table des declarations */
+    /* deduction de l'index de la fonction/procedure dans la table des declarations */
     int tdec_index = tdec_trouve_index_fonction_procedure(tlex_index, PREG);
+    /* deduction de l'index de la fonction/procedure dans la table des representations */
+    int trep_index             = tdec_recupere_description(tdec_index);
+    int trep_index_premier_arg = (tdec_recupere_nature(tdec_index) == FONC) ? trep_index + 2 : trep_index + 1;
+
     /* recuperation du numero de region de la fonction/procedure*/
     int region = tdec_recupere_taille_exec(tdec_index);
 
@@ -101,8 +102,6 @@ void resout_appel(arbre a) {
     /* mise a jour de la base courante */
     BC = taille_pexec;
 
-    depile_args(nb_args);
-
     empile_chainages(BC_appelant, region);
 
     if (tdec_recupere_nature(tdec_index) == FONC) {
@@ -111,7 +110,7 @@ void resout_appel(arbre a) {
         pexec_empile_entier(PEXEC, 0, &taille_pexec);
     }
 
-    empile_args(nb_args);
+    pexec_empile_args(a->fils_gauche->frere_droit, trep_index_premier_arg);
 
     /* execution de la region */
     execute_region(region);

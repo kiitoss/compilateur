@@ -51,6 +51,28 @@ int pile_tete_de_pile(pile p) {
 }
 
 /*
+ * Detection de la presence ou non d'une valeur dans la pile
+ */
+int pile_est_dedans(pile p, int num) {
+    int est_dedans = 0;
+    int val;
+    pile ptemp;
+    pile_init(ptemp);
+
+    while (!est_dedans && !pile_est_vide(p)) {
+        val = pile_depile(p);
+        pile_empile(ptemp, val);
+        est_dedans = (val == num);
+    }
+
+    while (!pile_est_vide(ptemp)) {
+        pile_empile(p, pile_depile(ptemp));
+    }
+
+    return est_dedans;
+}
+
+/*
  * Recuperation de la taille de la pile
  */
 int pile_recupere_taille(pile p) { return p[0]; }

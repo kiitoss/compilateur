@@ -1,12 +1,13 @@
 PROG
     var i : int;
     var j : int;
-    procedure p()
+    fonction p() retourne int
     var y : int;
     DEBUT
     y := 7;
+    retourne 5;
     FIN;
 DEBUT
     i := 1;
-    p();
+    i := p();
 FIN

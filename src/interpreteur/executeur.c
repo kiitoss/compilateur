@@ -175,7 +175,12 @@ static void parcours_arbre(arbre a) {
     }
     /* si c'est une ecriture sur la sortie standard */
     else if (nature == A_ECRIT) {
-        resout_ecrit(a);
+        resout_ecriture(a);
+        return;
+    }
+    /* si c'est une lecture sur la sortie standard */
+    else if (nature == A_LIRE) {
+        resout_lecture(a);
         return;
     }
     /* */

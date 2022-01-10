@@ -43,9 +43,9 @@
 %type <t_arbre> liste_champs un_champ
 %type <t_arbre> variable nom_type type_simple
 %type <t_arbre> appel expression expression_arithmetiques expression_booleenne resultat_retourne booleen test_arithmetiques exp lecture_tableau
-%type <t_arbre> ecrit lire
+%type <t_arbre> ecrit lire liste_variables liste_var ecrit_args
 
-%type <t_nombre> idf
+%type <t_nombre> idf texte
 
 %%
 programme:
@@ -278,11 +278,11 @@ instruction: condition {
 	| affectation { 
         $$ = $1;
     }
-	| appel {
-        $$ = $1;
-    }
     | ecrit {
         $$ =$1;
+    }
+	| appel {
+        $$ = $1;
     }
     | lire {
         $$ =$1;
@@ -292,19 +292,48 @@ instruction: condition {
 	}
 ;
 
-ecrit: ECRIT PARENTHESE_OUVRANTE TEXTE PARENTHESE_FERMANTE {
+texte: TEXTE {
+        $$ = yylval.t_nombre;
+    }
+ecrit: ECRIT PARENTHESE_OUVRANTE texte ecrit_args PARENTHESE_FERMANTE {
         $$ = arbre_concat_pere_fils(
             arbre_creer_noeud_vide(A_ECRIT),
-            arbre_creer_noeud(A_TEXTE, yylval.t_nombre, VALEUR_NULL)
+            arbre_concat_pere_frere(
+                arbre_creer_noeud(A_TEXTE, $3, VALEUR_NULL),
+                $4
+            )
         );
     }
 ;
 
-lire: LIRE liste_parametres{
+ecrit_args: {
+        $$ = arbre_creer_noeud_vide(A_LISTE_ARGS);
+    } 
+    | VIRGULE liste_args {
+        $$ = arbre_concat_pere_fils(
+            arbre_creer_noeud_vide(A_LISTE_ARGS),
+            $2
+        );
+    }
+
+lire: LIRE liste_variables {
         $$ = arbre_concat_pere_fils(
             arbre_creer_noeud_vide(A_LIRE),
             $2
         );
+    }
+;
+
+liste_variables: PARENTHESE_OUVRANTE liste_var PARENTHESE_FERMANTE {
+        $$ = arbre_concat_pere_fils(arbre_creer_noeud_vide(A_LISTE_VAR), $2);
+    }
+;
+
+liste_var: variable {
+        $$ = $1;
+    }
+    | liste_var POINT_VIRGULE variable {
+        $$ = arbre_concat_pere_frere($1, $3);
     }
 ;
 

@@ -49,6 +49,9 @@ cellule resout_expression(arbre a, int type_retour);
 void execute_region(int region);
 
 /* Resolution d'un affichage sur la sortie standard */
-void resout_ecrit(arbre a);
+void resout_ecriture(arbre a);
+
+/* Resolution d'une lecture sur l'entree standard */
+void resout_lecture(arbre a);
 
 #endif

@@ -3,7 +3,7 @@ CFLAGS = -W -Wall -pedantic -std=c99 -O3
 
 tables = thash.o tlex.o tdec.o trep.o treg.o tables.o
 utils-compilateur = variable.o structure.o tableau.o fonc_proc.o utils.o
-utils-interpreteur = appel.o expression-booleenne.o expression.o operation.o variable-interpreteur.o ecrit.o
+utils-interpreteur = appel.o expression-booleenne.o expression.o operation.o variable-interpreteur.o ecriture.o lecture.o
 
 all: interpreteur compilateur simple-clean
 
@@ -46,10 +46,11 @@ operation.o: src/interpreteur/utils/operation.c
 variable-interpreteur.o: src/interpreteur/utils/variable-interpreteur.c
 	$(CC) $(CFLAGS) src/interpreteur/utils/variable-interpreteur.c -c
 
-ecrit.o: src/interpreteur/utils/ecrit.c
-	$(CC) $(CFLAGS) src/interpreteur/utils/ecrit.c -c
+ecriture.o: src/interpreteur/utils/ecriture.c
+	$(CC) $(CFLAGS) src/interpreteur/utils/ecriture.c -c
 
-
+lecture.o: src/interpreteur/utils/lecture.c
+	$(CC) $(CFLAGS) src/interpreteur/utils/lecture.c -c
 
 ###########################################
 #               COMPILATEUR               #

@@ -69,6 +69,7 @@
 #define A_FAUX         57
 #define A_TEXTE        58
 #define A_LIRE         59
+#define A_LISTE_VAR    60
 
 /* Structure d'un arbre */
 typedef struct noeud {

@@ -114,6 +114,8 @@ static char *arbre_recupere_nature_str(int nature) {
             return "texte";
         case A_LIRE:
             return "lire";
+        case A_LISTE_VAR:
+            return "liste var";
         default:
             return "inconnu";
     }

@@ -84,18 +84,20 @@ void pexec_empile_caractere(pexec p, char carac, int *taille) {
 //     pexec_empile(p, c);
 // }
 
-// /*
-//  * Depilage d'une valeur dans la pile
-//  */
-// cellule pexec_depile(pexec p) {
-//     /* cas d'erreur */
-//     if (p[0].entier == 0) {
-//         fprintf(stderr, "Erreur - La pile d'execution est vide.\n");
-//         return cellule_null();
-//     }
+/*
+ * Depilage d'une valeur dans la pile
+ */
+cellule pexec_depile(pexec p, int *taille) {
+    int index = *taille;
+    /* cas d'erreur */
+    if (index == 0) {
+        fprintf(stderr, "Erreur - La pile d'execution est vide.\n");
+        return cellule_null();
+    }
 
-//     return p[p[0].entier--];
-// }
+    (*taille)--;
+    return p[(*taille)];
+}
 
 // /*
 //  * Recuperation de la valeur en tete de pile

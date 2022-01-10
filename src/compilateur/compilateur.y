@@ -262,13 +262,10 @@ liste_param: un_param {
 	}
 ;
 
-un_param: IDF DEUX_POINTS type_simple {
+un_param: idf DEUX_POINTS type_simple {
         int tlex_index_type = $3->valeur_1;
-        nouveau_parametre(yylval.t_nombre, tlex_index_type);
-        $$ = arbre_concat_pere_fils(
-			arbre_creer_noeud_vide(A_PARAM),
-			arbre_concat_pere_frere(arbre_creer_noeud(A_IDF, yylval.t_nombre, VALEUR_NULL), arbre_creer_noeud(A_TYPE, tlex_index_type, VALEUR_NULL))
-		);
+        nouveau_parametre($1, tlex_index_type);
+        $$ = arbre_creer_noeud(A_PARAM, $1, tlex_index_type);
     }
 ;
 
@@ -441,25 +438,25 @@ variable: IDF {
     }
 ;
 
-appel: IDF liste_arguments {
-        if (! tdec_index_existe(yylval.t_nombre)) {
+appel: idf liste_arguments {
+        if (! tdec_index_existe($1)) {
             yyerror("Procedure ou fonction non declaree.\n");
         }
         $$ = arbre_concat_pere_fils(
 			arbre_creer_noeud_vide(A_APPEL),
             arbre_concat_pere_frere(
-                arbre_creer_noeud(A_IDF, yylval.t_nombre, VALEUR_NULL),
+                arbre_creer_noeud(A_IDF, $1, VALEUR_NULL),
                 $2
             )
 		);
     }
 ;
 
-lecture_tableau: IDF CROCHET_OUVRANT lecture_dimensions CROCHET_FERMANT {
+lecture_tableau: idf CROCHET_OUVRANT lecture_dimensions CROCHET_FERMANT {
     $$ = arbre_concat_pere_fils(
 			arbre_creer_noeud_vide(A_LECTURE_TAB),
             arbre_concat_pere_frere(
-                arbre_creer_noeud(A_IDF, yylval.t_nombre, VALEUR_NULL),
+                arbre_creer_noeud(A_IDF, $1, VALEUR_NULL),
                 $3
 		    )
 		);

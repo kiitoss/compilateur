@@ -50,8 +50,8 @@ void pexec_empile_caractere(pexec p, char carac, int *taille);
 // /* Empilage d'un nouvel entier dans la pile */
 // void pexec_empile_int(pexec p, int i);
 
-// /* Depilage d'une valeur dans la pile */
-// cellule pexec_depile(pexec p);
+/* Depilage d'une valeur dans la pile */
+cellule pexec_depile(pexec p, int *taille);
 
 // /* Recuperation de la valeur en tete de pile */
 // cellule pexec_tete_de_pile(pexec p);

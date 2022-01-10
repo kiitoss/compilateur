@@ -1,17 +1,12 @@
 PROG
+    var i : int;
     var j : int;
-    fonction m() retourne int
-    var x : int;
-    DEBUT
-        x := 2;
-        retourne 4;
-    FIN;
     procedure p()
     var y : int;
     DEBUT
     y := 7;
     FIN;
 DEBUT
-    j := m();
+    i := 1;
     p();
 FIN

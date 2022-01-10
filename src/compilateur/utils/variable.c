@@ -23,8 +23,6 @@ void nouvelle_variable(int tlex_index, int tlex_index_type) {
 
     /* insertion de la variable dans TDEC */
     tdec_nouvelle_entree(tlex_index, VAR, region, tdec_index_type, taille_region);
-    printf("TAILLE REG: %d\n", taille_region);
-    treg_affiche();
 
     /* mise a jour de la taille de la region dans TREG */
     treg_maj_taille(region, taille_region + taille_exec);

@@ -34,6 +34,28 @@ static int resout_expression_booleenne(arbre a);
 
 static void resout_appel(arbre a);
 
+static int recupere_nb_parametres(arbre a) {
+    int params = 0;
+    if (arbre_est_vide(a)) {
+        fprintf(stderr, "Erreur - Liste de parametres attendue, arbre vide trouve\n");
+        exit(EXIT_FAILURE);
+    }
+    if (arbre_recupere_nature(a) != A_LISTE_ARGS) {
+        fprintf(stderr, "Erreur - Liste de parametres attendue\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (arbre_est_vide(a->fils_gauche)) {
+        return 0;
+    } else {
+        for (arbre param = a->fils_gauche; !arbre_est_vide(param) && param->nature == A_ARG;
+             param       = param->frere_droit) {
+            params++;
+        }
+        return params;
+    }
+}
+
 /*
  * Recuperation de la region de declaration d'une variable grace a son index lexicographique
  */
@@ -55,7 +77,6 @@ static int pexec_index_variable(int tlex_index, int deplacement_exec) {
     if (pile_tete_de_pile(PREG) == 0) {
         return deplacement_exec;
     } else if (nis_declare == nis_utilise) {
-        printf("result: %d (%d)\n", BC + deplacement_exec, BC);
         return BC + deplacement_exec;
     }
 
@@ -205,7 +226,6 @@ static cellule resout_expression(arbre a, int type_retour) {
             c.booleen = resout_expression_booleenne(a);
             return c;
         case A_APPEL:
-            printf("resout_expression\n");
             resout_appel(a);
             tlex_index    = a->fils_gauche->valeur_1;
             tdec_index    = tdec_trouve_index(tlex_index, PREG);
@@ -272,13 +292,34 @@ static void resout_appel(arbre a) {
 
     /* mise a jour de la base courante */
     BC = taille_pexec;
-    printf("decl BC: %d\n", BC);
 
     /* recuperation de l'index lexical de la procedure */
     int tlex_index = (int) a->fils_gauche->valeur_1;
 
     /* deduction de l'index de la procedure et de sa region dans la table des declarations */
     int tdec_index = tdec_trouve_index_fonction_procedure(tlex_index, PREG);
+
+    int nb_params = recupere_nb_parametres(a->fils_gauche->frere_droit);
+    int trep_nb_params;
+    if (tdec_recupere_nature(tdec_index) == FONC) {
+        trep_nb_params = trep_recupere_valeur(tdec_recupere_description(tdec_index) + 1);
+    } else {
+        trep_nb_params = trep_recupere_valeur(tdec_recupere_description(tdec_index));
+    }
+
+    if (trep_nb_params != nb_params) {
+        fprintf(stderr, "Erreur - Nombre de parametres invalides (%d au lieu de %d) (fonc_proc %d)\n", nb_params,
+                trep_nb_params, tlex_index);
+        exit(EXIT_FAILURE);
+    }
+
+    /* WORK IN PROGRESS */
+    // int taille_pexec_temp = 0;
+    // pexec pexec_temp;
+    // for (int i = 0; i < nb_params; i++) {
+    //     pexec_empile(pexec_temp, pexec_depile(PEXEC, &taille_pexec), &taille_pexec_temp);
+    // }
+    /* WORK IN PROGRESS */
 
     if (tdec_recupere_nature(tdec_index) == FONC) {
         pile_empile(PFONC, tlex_index);
@@ -299,11 +340,37 @@ static void resout_appel(arbre a) {
         reg_parent = reg_parentes[reg_parent];
     }
 
+    /* WORK IN PROGRESS */
+    // for (int i = 0; i < nb_params; i++) {
+    //     pexec_empile(PEXEC, pexec_depile(pexec_temp, &taille_pexec_temp), &taille_pexec);
+    // }
+    /* WORK IN PROGRESS */
+
     /* execution de la region */
     execute_region(region);
 
     /* mise a jour de la base courante pour revenir comme avant l'execution */
     BC = PEXEC[BC].entier;
+}
+
+static void pexec_insere_args(arbre a) {
+    if (arbre_est_vide(a)) {
+        fprintf(stderr, "Erreur - Arbre vide, arguments attendus\n");
+        exit(EXIT_FAILURE);
+    }
+    if (a->nature != A_LISTE_ARGS) {
+        fprintf(stderr, "Erreur - Nature != liste arguments, arguments attendus\n");
+        exit(EXIT_FAILURE);
+    }
+
+    /* WORK IN PROGRESS */
+    // for (arbre param = a->fils_gauche; !arbre_est_vide(param) && param->nature == A_ARG; param = param->frere_droit)
+    // {
+    //     cellule resultat = resout_expression(param->fils_gauche, 1);
+    //     pexec_empile(PEXEC, resultat, &taille_pexec);
+    //     printf("EMPILE %f========\n", resultat.reel);
+    // }
+    /* WORK IN PROGRESS */
 }
 
 /*
@@ -359,7 +426,7 @@ static void parcours_arbre(arbre a) {
     }
     /* si c'est un appel de procedure: execution de l'arbre de la procedure */
     else if (nature == A_APPEL) {
-        printf("parcours_arbre\n");
+        pexec_insere_args(a->fils_gauche->frere_droit);
         resout_appel(a);
         return;
     }
@@ -386,7 +453,9 @@ static void parcours_arbre(arbre a) {
             expression_bool = resout_expression_booleenne(a->fils_gauche);
         }
         return;
-    } else {
+    }
+    /* */
+    else {
         /* execution recursive */
         parcours_arbre(a->fils_gauche);
         parcours_arbre(a->frere_droit);

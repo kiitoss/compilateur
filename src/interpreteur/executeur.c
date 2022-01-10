@@ -158,6 +158,21 @@ static void parcours_arbre(arbre a) {
         }
         return;
     }
+    /* si c'est une condition*/
+    else if (nature == A_CONDITION) {
+        int expression_bool = resout_expression_booleenne(a->fils_gauche->fils_gauche);
+        if (expression_bool) {
+            parcours_arbre(a->fils_gauche->frere_droit);
+        } else {
+            parcours_arbre(a->fils_gauche->frere_droit->frere_droit);
+        }
+        return;
+    }
+    /* si c'est le resultat d'une condition */
+    else if (nature == A_ALORS) {
+        parcours_arbre(a->fils_gauche);
+        return;
+    }
     /* */
     else {
         /* execution recursive */

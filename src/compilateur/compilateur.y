@@ -402,6 +402,28 @@ condition: SI expression_booleenne
 			)
 		);
 	}
+    | SI expression_booleenne
+	ALORS liste_instructions {
+		$$ = arbre_concat_pere_fils(
+			arbre_creer_noeud_vide(A_CONDITION),
+			arbre_concat_pere_frere(
+				arbre_concat_pere_fils(
+					arbre_creer_noeud_vide(A_SI),
+					$2
+				),
+				arbre_concat_pere_frere(
+					arbre_concat_pere_fils(
+						arbre_creer_noeud_vide(A_ALORS),
+						$4
+					),
+					arbre_concat_pere_fils(
+						arbre_creer_noeud_vide(A_SINON),
+						arbre_creer_arbre_vide()
+					)
+				)
+			)
+		);
+	}
 ;
 
 tant_que: TANT_QUE expression_booleenne FAIRE liste_instructions {

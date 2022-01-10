@@ -195,8 +195,6 @@ static int tdec_trouve(int tlex_index, pile PREG, int type) {
         pile_empile(PREG, pile_depile(pile_tmp));
     }
 
-    printf("type: %d==tlex: %d, region: %d == result: %d\n", type, tlex_index, pile_tete_de_pile(PREG), index);
-
     return index;
 }
 

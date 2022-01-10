@@ -45,9 +45,10 @@ int resout_expression_booleenne(arbre a);
  */
 cellule resout_expression(arbre a, int type_retour);
 
-/*
- * Execution d'une region = interpretation
- */
+/* Execution d'une region = interpretation */
 void execute_region(int region);
+
+/* Resolution d'un affichage sur la sortie standard */
+void resout_ecrit(arbre a);
 
 #endif

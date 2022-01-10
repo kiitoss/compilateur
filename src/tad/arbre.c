@@ -110,6 +110,10 @@ static char *arbre_recupere_nature_str(int nature) {
             return "vrai";
         case A_FAUX:
             return "faux";
+        case A_TEXTE:
+            return "texte";
+        case A_LIRE:
+            return "lire";
         default:
             return "inconnu";
     }

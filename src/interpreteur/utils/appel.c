@@ -59,7 +59,9 @@ static void empile_chainages(int BC_appelant, int region) {
     }
 }
 
-/* Empile la liste des arguments utilises pour l'appel de la fonction/procedure */
+/*
+ * Empile la liste des arguments utilises pour l'appel de la fonction/procedure
+ */
 static void pexec_empile_args(arbre a, int trep_index_premier_arg) {
     int num_arg = 0;
     int trep_index_arg, trep_index_type_arg;

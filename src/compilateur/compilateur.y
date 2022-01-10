@@ -32,7 +32,7 @@
 %token DOUBLE_EGAL SUPERIEUR INFERIEUR SUP_EGAL INF_EGAL
 %token ET OU NON
 %token OPAFF
-%token ECRIT GUILLEMENT CARACTERE
+%token ECRIT LIRE TEXTE GUILLEMENT CARACTERE
 
 
 %type <t_arbre> corps liste_declarations liste_instructions suite_liste_inst
@@ -43,7 +43,7 @@
 %type <t_arbre> liste_champs un_champ
 %type <t_arbre> variable nom_type type_simple
 %type <t_arbre> appel expression expression_arithmetiques expression_booleenne resultat_retourne booleen test_arithmetiques exp lecture_tableau
-%type <t_arbre> ecrit
+%type <t_arbre> ecrit lire
 
 %type <t_nombre> idf
 
@@ -284,13 +284,27 @@ instruction: condition {
     | ecrit {
         $$ =$1;
     }
+    | lire {
+        $$ =$1;
+    }
 	| RETOURNE resultat_retourne {
 		$$ = $2;
 	}
 ;
 
-ecrit: ECRIT PARENTHESE_OUVRANTE GUILLEMENT IDF GUILLEMENT PARENTHESE_FERMANTE {
-        $$ = arbre_creer_noeud_vide(A_ECRIT);
+ecrit: ECRIT PARENTHESE_OUVRANTE TEXTE PARENTHESE_FERMANTE {
+        $$ = arbre_concat_pere_fils(
+            arbre_creer_noeud_vide(A_ECRIT),
+            arbre_creer_noeud(A_TEXTE, yylval.t_nombre, VALEUR_NULL)
+        );
+    }
+;
+
+lire: LIRE liste_parametres{
+        $$ = arbre_concat_pere_fils(
+            arbre_creer_noeud_vide(A_LIRE),
+            $2
+        );
     }
 ;
 

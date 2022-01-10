@@ -43,6 +43,7 @@ letter  [a-zA-Z]
 [+-]?{digit}+    { yylval.entier = atoi(yytext); return ENTIER; }
 [+-]?{digit}+"."{digit}+    { yylval.reel = atof(yytext); return REEL; }
 {letter}+({letter}|{digit}|"_")*	{ yylval.string = yytext; return LEXEME; }
+\"([^\\\"]|\\.)*\"  { yylval.string = yytext; return LEXEME; }
 
 	/* Cas d'erreur */
 . yyerror("Caractère invalide !");

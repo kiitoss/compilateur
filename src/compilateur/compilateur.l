@@ -66,6 +66,8 @@ letter  [a-zA-Z]
 "ecrit" { return ECRIT; }
 "\""    { return GUILLEMENT; }
 ".."    { return POINT_POINT; }
+"ecrit" { return ECRIT; }
+"lire"  { return LIRE; }
 
 "fonction"  { return FONCTION; }
 "procedure" { return PROCEDURE; }
@@ -75,6 +77,10 @@ letter  [a-zA-Z]
 "fstruct"   { return FSTRUCT; }
 "tableau"   { return TABLEAU; }
 
+
+
+    /* Déclaration d'une chaine de caractère */
+\"([^\\\"]|\\.)*\"  { yylval.t_nombre = tlex_nouvelle_entree(yytext); return TEXTE; }
 
 	/* Déclaration des opérateurs */
 \+  { return PLUS; }

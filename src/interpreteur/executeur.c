@@ -173,6 +173,11 @@ static void parcours_arbre(arbre a) {
         parcours_arbre(a->fils_gauche);
         return;
     }
+    /* si c'est une ecriture sur la sortie standard */
+    else if (nature == A_ECRIT) {
+        resout_ecrit(a);
+        return;
+    }
     /* */
     else {
         /* execution recursive */

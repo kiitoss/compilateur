@@ -8,6 +8,8 @@ int taille_pexec = 0;
 /* pile des regions */
 pile PREG;
 
+pile PFONC;
+
 /* base courante dans la pile d'execution */
 int BC = 0;
 
@@ -30,6 +32,8 @@ static void execute_region(int region);
 
 static int resout_expression_booleenne(arbre a);
 
+static void resout_appel(arbre a);
+
 /*
  * Recuperation de la region de declaration d'une variable grace a son index lexicographique
  */
@@ -50,6 +54,9 @@ static int pexec_index_variable(int tlex_index, int deplacement_exec) {
 
     if (pile_tete_de_pile(PREG) == 0) {
         return deplacement_exec;
+    } else if (nis_declare == nis_utilise) {
+        printf("result: %d (%d)\n", BC + deplacement_exec, BC);
+        return BC + deplacement_exec;
     }
 
     return PEXEC[BC + nis_utilise - nis_declare].entier + deplacement_exec;
@@ -80,7 +87,7 @@ static cellule resout_variable(arbre a, int type_retour) {
     /* deduction de l'index de la variable, du type de la variable et du deplacement a l'execution de la variable dans
      * la table des declarations */
     int tdec_index_variable      = tdec_trouve_index(tlex_index, PREG);
-    int tdec_index_type_variable = tdec_type_variable(tdec_index_variable);
+    int tdec_index_type_variable = tdec_recupere_description(tdec_index_variable);
     int deplacement_exec         = tdec_recupere_taille_exec(tdec_index_variable);
 
     /* recuperation de l'index de la variable dans la pile d'execution */
@@ -168,6 +175,8 @@ static cellule resout_expression(arbre a, int type_retour) {
     /* cellules representant les deux parties d'une operation */
     cellule gauche, droite;
 
+    int tlex_index, tdec_index, base_courante, region;
+
     /* ca d'erreur (normalement inatteignable) */
     if (arbre_est_vide(a)) {
         fprintf(stderr, "Erreur - Resolution d'expression arithmetique vide impossible\n");
@@ -184,7 +193,6 @@ static cellule resout_expression(arbre a, int type_retour) {
                 c.entier = (int) a->valeur_1;
             else if (type_retour == 1)
                 c.reel = a->valeur_1;
-
             return c;
         case A_PLUS:
         case A_MOINS:
@@ -195,6 +203,15 @@ static cellule resout_expression(arbre a, int type_retour) {
             return resout_operation(a, gauche, droite, type_retour);
         case A_EXPR_BOOL:
             c.booleen = resout_expression_booleenne(a);
+            return c;
+        case A_APPEL:
+            printf("resout_expression\n");
+            resout_appel(a);
+            tlex_index    = a->fils_gauche->valeur_1;
+            tdec_index    = tdec_trouve_index(tlex_index, PREG);
+            region        = tdec_recupere_taille_exec(tdec_index);
+            base_courante = BC_regions[region];
+            c             = PEXEC[base_courante + treg_recupere_nis_region(region) + 1];
             return c;
         default:
             fprintf(stderr, "Cas expression arithmetique non gere\n");
@@ -249,6 +266,46 @@ static int resout_expression_booleenne(arbre a) {
     return 0;
 }
 
+static void resout_appel(arbre a) {
+    /* recuperation de la base courante de l'appelant */
+    int BC_appelant = BC;
+
+    /* mise a jour de la base courante */
+    BC = taille_pexec;
+    printf("decl BC: %d\n", BC);
+
+    /* recuperation de l'index lexical de la procedure */
+    int tlex_index = (int) a->fils_gauche->valeur_1;
+
+    /* deduction de l'index de la procedure et de sa region dans la table des declarations */
+    int tdec_index = tdec_trouve_index_fonction_procedure(tlex_index, PREG);
+
+    if (tdec_recupere_nature(tdec_index) == FONC) {
+        pile_empile(PFONC, tlex_index);
+        /* empilage de la valeur de retour de la fonction */
+        pexec_empile_entier(PEXEC, 0, &taille_pexec);
+    }
+    int region = tdec_recupere_taille_exec(tdec_index);
+
+    /* empilage de la BC de l'appelant dans la pile d'execution (chainage) */
+    pexec_empile_entier(PEXEC, BC_appelant, &taille_pexec);
+
+    /* empilage la BC des parents dans la pile d'execution (chainage) */
+    int reg_parent, BC_region_parent;
+    reg_parent = reg_parentes[region];
+    for (int i = 0; i < treg_recupere_nis_region(region); i++) {
+        BC_region_parent = BC_regions[reg_parent];
+        pexec_empile_entier(PEXEC, BC_region_parent, &taille_pexec);
+        reg_parent = reg_parentes[reg_parent];
+    }
+
+    /* execution de la region */
+    execute_region(region);
+
+    /* mise a jour de la base courante pour revenir comme avant l'execution */
+    BC = PEXEC[BC].entier;
+}
+
 /*
  * Parcours de l'arbre de la region avec execution
  */
@@ -282,7 +339,6 @@ static void parcours_arbre(arbre a) {
         int region     = tdec_recupere_taille_exec(tdec_index);
 
         reg_parentes[region] = pile_tete_de_pile(PREG);
-        printf("region en cours: %d, nouvel region idf lue: %d\n", pile_tete_de_pile(PREG), region);
     }
     /* si c'est une affectation: maj dans la pile d'execution*/
     else if (nature == A_AFFECT) {
@@ -292,7 +348,7 @@ static void parcours_arbre(arbre a) {
         /* deduction de l'index de la variable, du type de la variable et du deplacement a l'execution de la variable
          * dans la table des declarations */
         int tdec_index               = tdec_trouve_index(tlex_index, PREG);
-        int tdec_index_type_variable = tdec_type_variable(tdec_index);
+        int tdec_index_type_variable = tdec_recupere_description(tdec_index);
         int deplacement_exec         = tdec_recupere_taille_exec(tdec_index);
 
         /* calcul du resultat de l'expression */
@@ -303,36 +359,24 @@ static void parcours_arbre(arbre a) {
     }
     /* si c'est un appel de procedure: execution de l'arbre de la procedure */
     else if (nature == A_APPEL) {
-        /* recuperation de la base courante de l'appelant */
-        int BC_appelant = BC;
+        printf("parcours_arbre\n");
+        resout_appel(a);
+        return;
+    }
+    /* si c'est un retour de fonction */
+    else if (nature == A_RETOURNE) {
+        int region        = pile_tete_de_pile(PREG);
+        int base_courante = BC_regions[region];
 
-        /* mise a jour de la base courante */
-        BC = taille_pexec;
+        int tlex_index      = pile_depile(PFONC);
+        int tdec_index      = tdec_trouve_index_fonction_procedure(tlex_index, PREG);
+        int tdec_index_type = trep_recupere_valeur(tdec_recupere_description(tdec_index) + 0);
 
-        /* recuperation de l'index lexical de la procedure */
-        int tlex_index = (int) a->fils_gauche->valeur_1;
+        /* calcul du resultat de retour */
+        cellule resultat = resout_expression(a->fils_gauche, tdec_index_type);
 
-        /* deduction de l'index de la procedure et de sa region dans la table des declarations */
-        int tdec_index = tdec_trouve_index(tlex_index, PREG);
-        int region     = tdec_recupere_taille_exec(tdec_index);
-
-        /* empilage de la BC de l'appelant dans la pile d'execution (chainage) */
-        pexec_empile_entier(PEXEC, BC_appelant, &taille_pexec);
-
-        /* empilage la BC des parents dans la pile d'execution (chainage) */
-        int reg_parent, BC_region_parent;
-        reg_parent = reg_parentes[region];
-        for (int i = 0; i < treg_recupere_nis_region(region); i++) {
-            BC_region_parent = BC_regions[reg_parent];
-            pexec_empile_entier(PEXEC, BC_region_parent, &taille_pexec);
-            reg_parent = reg_parentes[reg_parent];
-        }
-
-        /* execution de la region */
-        execute_region(region);
-
-        /* mise a jour de la base courante pour revenir comme avant l'execution */
-        BC = PEXEC[BC].entier;
+        /* mise a jour dans la pile d'execution */
+        PEXEC[base_courante + treg_recupere_nis_region(region) + 1] = resultat;
     }
     /* si c'est une boucle tant que */
     else if (nature == A_TANT_QUE) {
@@ -342,10 +386,14 @@ static void parcours_arbre(arbre a) {
             expression_bool = resout_expression_booleenne(a->fils_gauche);
         }
         return;
+    } else {
+        /* execution recursive */
+        parcours_arbre(a->fils_gauche);
+        parcours_arbre(a->frere_droit);
+        return;
     }
 
     /* execution recursive */
-    parcours_arbre(a->fils_gauche);
     parcours_arbre(a->frere_droit);
 }
 
@@ -355,6 +403,7 @@ static void parcours_arbre(arbre a) {
 static void execute_region(int region) {
     /* empilage de la nouvelle region dans la pile des regions */
     pile_empile(PREG, region);
+
     BC_regions[region] = BC;
 
     /* recuperation de l'arbre correspondant a la region */
@@ -379,6 +428,9 @@ static void execute_region(int region) {
 void execution() {
     /* initialisation de la pile des regions */
     pile_init(PREG);
+
+    /* initialisation de la pile des fonctions appelees */
+    pile_init(PFONC);
 
     reg_parentes[0] = 0;
 

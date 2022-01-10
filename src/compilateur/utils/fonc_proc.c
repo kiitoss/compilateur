@@ -30,6 +30,14 @@ void debut_nouvelle_fonction_ou_procedure(int type, int tlex_index) {
     /* changement de region */
     nouvelle_region();
 
+    /*
+     * liberation d'un espace pour le stockage de la variable de retour
+     * note: on laisse ici un espace de 1 disponible car on impose que le retour d'une fonction soit un type simple
+     */
+    if (type == FONC) {
+        treg_maj_taille(pile_tete_de_pile(PREG), treg_recupere_taille(pile_tete_de_pile(PREG)) + 1);
+    }
+
     /* mise a jour du champ "execution" de la fonction ou de la procedure avec le numero de la region */
     tdec_maj_taille_exec(fonc_proc.tdec_index, pile_tete_de_pile(PREG));
 }

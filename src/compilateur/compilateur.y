@@ -288,10 +288,7 @@ instruction: condition {
         $$ =$1;
     }
 	| RETOURNE resultat_retourne {
-		$$ = arbre_concat_pere_fils(
-            arbre_creer_noeud_vide(A_RETOURNE),
-            $2
-        );
+		$$ = $2;
 	}
 ;
 
@@ -349,22 +346,19 @@ test_arithmetiques: PARENTHESE_OUVRANTE expression DOUBLE_EGAL expression PARENT
 
 resultat_retourne: {
         $$ = arbre_concat_pere_fils(
-            arbre_creer_noeud_vide(A_RESULTAT_RET),
+            arbre_creer_noeud_vide(A_RETOURNE),
             arbre_creer_arbre_vide(A_EXPR_ARITH, 0, VALEUR_NULL)
         );
     }
     | expression {
         $$ = arbre_concat_pere_fils(
-            arbre_creer_noeud_vide(A_RESULTAT_RET),
+            arbre_creer_noeud_vide(A_RETOURNE),
             $1
         );
     }
 ;
 
-liste_arguments: {
-		$$ = arbre_creer_noeud_vide(A_LISTE_ARGS);
-	}
-	| PARENTHESE_OUVRANTE liste_args PARENTHESE_FERMANTE {
+liste_arguments: PARENTHESE_OUVRANTE liste_args PARENTHESE_FERMANTE {
 		$$ = arbre_concat_pere_fils(arbre_creer_noeud_vide(A_LISTE_ARGS), $2);
 	}
 ;
@@ -377,7 +371,10 @@ liste_args: un_arg {
 	}
 ;
 
-un_arg: expression {
+un_arg: {
+        $$ = arbre_creer_arbre_vide();
+    }
+    | expression {
 		$$ = arbre_concat_pere_fils(
             arbre_creer_noeud_vide(A_ARG),
             $1
@@ -525,7 +522,10 @@ expression_arithmetiques: expression_arithmetiques PLUS exp {
     }
 ;
 
-exp: variable {
+exp: appel {
+		$$ = $1;
+	}
+    | variable {
 		$$ = $1;
 	}
 	| ENTIER {

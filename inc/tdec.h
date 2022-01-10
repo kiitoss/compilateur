@@ -35,8 +35,17 @@ int tdec_recupere_taille_exec(int index);
 /* Recuperation de la region d'une entree de la table des declarations */
 int tdec_recupere_region(int index);
 
-/* Recuperation de l'index d'une entree dans la table des declarrations a partir de son index lexicographique */
+/*
+ * Recuperation de l'index d'une entree dans la table des declarations a partir de son index lexicographique
+ * l'entree est de type structure, tableau ou variable
+ */
 int tdec_trouve_index(int tlex_index, pile PREG);
+
+/*
+ * Recuperation de l'index d'une entree dans la table des declarations a partir de son index lexicographique
+ * l'entree est de type fonction
+ */
+int tdec_trouve_index_fonction_procedure(int tlex_index, pile PREG);
 
 /* Affichage de la table des declarations */
 void tdec_affiche();
@@ -47,7 +56,10 @@ void tdec_sauvegarde(FILE *f);
 /* Recuperation de l'existance ou de la non-eistence d'une entree dans la table des declarations */
 int tdec_index_existe(int index);
 
-/* Recuperation de l'index du type de la variable dans la table des declarations */
-int tdec_type_variable(int index);
+/* Recuperation du champ description dans la table des declarations */
+int tdec_recupere_description(int index);
+
+/* Recuperation du champ nature dans la table des declarations */
+int tdec_recupere_nature(int index);
 
 #endif

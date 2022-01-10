@@ -1,15 +1,17 @@
 PROG
-    var i : int;
     var j : int;
-    var a : bool;
-DEBUT
-    j := 0;
-    i := 0;
-    a := vrai;
-    tantque ( ( a == vrai ) ou ( i < 2 )  ) faire
+    fonction m() retourne int
+    var x : int;
     DEBUT
-        i := i + 1;
-        j := j + 1;
-        a := faux;
+        x := 2;
+        retourne 4;
     FIN;
+    procedure p()
+    var y : int;
+    DEBUT
+    y := 7;
+    FIN;
+DEBUT
+    j := m();
+    p();
 FIN

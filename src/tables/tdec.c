@@ -130,9 +130,9 @@ int tdec_recupere_region(int index) {
 }
 
 /*
- * Recuperation de l'index d'une entree dans la table des declarrations a partir de son index lexicographique
+ * Recuperation de l'index d'une entree dans la table des declarations a partir de son index lexicographique
  */
-int tdec_trouve_index(int tlex_index, pile PREG) {
+static int tdec_trouve(int tlex_index, pile PREG, int type) {
     int nature, region;
     int index = tlex_index;
 
@@ -161,9 +161,11 @@ int tdec_trouve_index(int tlex_index, pile PREG) {
             nature = TDEC[index].nature;
 
             /* si l'entree correspond: quitte la boucle*/
-            if ((TDEC[index].region == region) &&
-                (nature == TYPE_B || nature == TYPE_S || nature == TYPE_T || nature == VAR)) {
-                break;
+            if (TDEC[index].region == region) {
+                if ((type == FONC && (nature == FONC || nature == PROC)) ||
+                    (type != FONC && (nature == TYPE_B || nature == TYPE_S || nature == TYPE_T || nature == VAR))) {
+                    break;
+                }
             }
 
             /* sinon, incremente l'index */
@@ -186,6 +188,18 @@ int tdec_trouve_index(int tlex_index, pile PREG) {
 
     return index;
 }
+
+/*
+ * Recuperation de l'index d'une entree dans la table des declarations a partir de son index lexicographique
+ * l'entree est de type structure, tableau ou variable
+ */
+int tdec_trouve_index(int tlex_index, pile PREG) { return tdec_trouve(tlex_index, PREG, VALEUR_NULL); }
+
+/*
+ * Recuperation de l'index d'une entree dans la table des declarations a partir de son index lexicographique
+ * l'entree est de type fonction
+ */
+int tdec_trouve_index_fonction_procedure(int tlex_index, pile PREG) { return tdec_trouve(tlex_index, PREG, FONC); }
 
 /*
  * Affichage de la table des declarations
@@ -238,9 +252,9 @@ int tdec_index_existe(int index) {
 }
 
 /*
- * Recuperation de l'index du type de la variable dans la table des declarations
+ * Recuperation du champ description dans la table des declarations
  */
-int tdec_type_variable(int index) {
+int tdec_recupere_description(int index) {
     /* cas d'erreur */
     if (index > TDEC_TMAX) {
         fprintf(stderr, "Erreur - Index %d de la table des declarations inatteignable.\n", index);
@@ -248,4 +262,17 @@ int tdec_type_variable(int index) {
     }
 
     return TDEC[index].description;
+}
+
+/*
+ * Recuperation du champ nature dans la table des declarations
+ */
+int tdec_recupere_nature(int index) {
+    /* cas d'erreur */
+    if (index > TDEC_TMAX) {
+        fprintf(stderr, "Erreur - Index %d de la table des declarations inatteignable.\n", index);
+        return 0;
+    }
+
+    return TDEC[index].nature;
 }

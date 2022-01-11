@@ -122,6 +122,40 @@ int pexec_index_tableau(arbre a) {
     return pexec_index_variable(tlex_index_idf, deplacement_exec) + deplacement_exec_interne;
 }
 
+/*
+ * Recuperation de l'index de la cellule concerne par un appel a une structure dans la pile d'execution
+ */
+int pexec_index_structure(arbre a) {
+    int tlex_index       = a->valeur_1;
+    int tlex_index_champ = a->valeur_2;
+
+    int tdec_index                = tdec_trouve_index(tlex_index, PREG);
+    int tdec_index_type_structure = tdec_recupere_description(tdec_index);
+    int trep_index_type_structure = tdec_recupere_description(tdec_index_type_structure);
+    int deplacement_exec          = tdec_recupere_taille_exec(tdec_index);
+
+    int nb_champs_structure   = trep_recupere_valeur(trep_index_type_structure);
+    int tdec_index_type_champ = -1, deplacement_exec_interne = -1;
+    int index_champ = 0;
+    while (index_champ < nb_champs_structure) {
+        if (trep_recupere_valeur(trep_index_type_structure + 1 + index_champ * 3) == tlex_index_champ) {
+            tdec_index_type_champ    = trep_recupere_valeur(trep_index_type_structure + 1 + index_champ * 3 + 1);
+            deplacement_exec_interne = trep_recupere_valeur(trep_index_type_structure + 1 + index_champ * 3 + 2);
+        }
+        index_champ++;
+    }
+
+    if (tdec_index_type_champ == -1 && deplacement_exec_interne == -1) {
+        fprintf(stderr, "Erreur - Champ introuvable\n");
+        exit(EXIT_FAILURE);
+    } else if (tdec_index_type_champ == -1 || deplacement_exec_interne == -1) {
+        fprintf(stderr, "Erreur - Lecture champ incomplete\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return pexec_index_variable(tlex_index, deplacement_exec) + deplacement_exec_interne;
+}
+
 static void controle_validite_params(arbre a) {
     pile params;
     pile_init(params);

@@ -495,8 +495,8 @@ variable: IDF {
         }
 		$$ = arbre_creer_noeud(A_VAR, yylval.t_nombre, VALEUR_NULL);
 	}
-	| variable POINT variable {
-        $$ = arbre_creer_noeud(A_VAR, $3->valeur_1, VALEUR_NULL);
+	| idf POINT idf {
+        $$ = arbre_creer_noeud(A_VAR_STRUCT, $1, $3);
 	}
     | lecture_tableau {
         $$ = $1;

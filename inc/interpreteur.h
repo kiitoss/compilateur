@@ -64,4 +64,7 @@ void resout_lecture(arbre a);
 /* Resolution d'une affectation */
 void resout_affectation(arbre a);
 
+/* Recuperation de l'index de la cellule concerne par un appel a une structure dans la pile d'execution */
+int pexec_index_structure(arbre a);
+
 #endif

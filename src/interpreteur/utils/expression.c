@@ -51,6 +51,8 @@ cellule resout_expression(arbre a, int type_retour) {
             return c;
         case A_LECTURE_TAB:
             return PEXEC[pexec_index_tableau(a)];
+        case A_VAR_STRUCT:
+            return PEXEC[pexec_index_structure(a)];
         default:
             fprintf(stderr, "Cas expression arithmetique non gere\n");
             return c;

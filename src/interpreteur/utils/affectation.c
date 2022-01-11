@@ -38,13 +38,45 @@ static void resout_affectation_tableau(arbre a) {
     PEXEC[pexec_index_tableau(a)] = resultat;
 }
 
+static void resout_affectation_structure(arbre a) {
+    int tlex_index       = a->valeur_1;
+    int tlex_index_champ = a->valeur_2;
+
+    int tdec_index                = tdec_trouve_index(tlex_index, PREG);
+    int tdec_index_type_structure = tdec_recupere_description(tdec_index);
+    int trep_index_type_structure = tdec_recupere_description(tdec_index_type_structure);
+
+    int nb_champs_structure   = trep_recupere_valeur(trep_index_type_structure);
+    int tdec_index_type_champ = -1;
+    int index_champ           = 0;
+    while (index_champ < nb_champs_structure) {
+        if (trep_recupere_valeur(trep_index_type_structure + 1 + index_champ * 3) == tlex_index_champ) {
+            tdec_index_type_champ = trep_recupere_valeur(trep_index_type_structure + 1 + index_champ * 3 + 1);
+        }
+        index_champ++;
+    }
+
+    if (tdec_index_type_champ == -1) {
+        fprintf(stderr, "Erreur - Type du champ non declare\n");
+        exit(EXIT_FAILURE);
+    }
+
+    /* calcul du resultat de l'expression */
+    cellule resultat = resout_expression(a->frere_droit, tdec_index_type_champ);
+
+    /* mise a jour dans la pile d'execution */
+    PEXEC[pexec_index_structure(a)] = resultat;
+}
+
 /*
  * Resolution d'une affectation
  */
 void resout_affectation(arbre a) {
-    resout_affectation_variable(a);
     if (a->nature == A_VAR) {
+        resout_affectation_variable(a);
     } else if (a->nature == A_LECTURE_TAB) {
         resout_affectation_tableau(a);
+    } else if (a->nature == A_VAR_STRUCT) {
+        resout_affectation_structure(a);
     }
 }

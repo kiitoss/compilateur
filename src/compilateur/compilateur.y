@@ -529,10 +529,19 @@ lecture_tableau: idf CROCHET_OUVRANT lecture_dimensions CROCHET_FERMANT {
 ;
 
 lecture_dimensions: expression {
-		$$ = $1;
+        $$ = arbre_concat_pere_fils(
+            arbre_creer_noeud_vide(A_DIM),
+            $1
+        );
 	}
 	| lecture_dimensions VIRGULE expression {
-		$$ = arbre_concat_pere_frere($1, $3);
+        $$ = arbre_concat_pere_frere(
+            $1,
+            arbre_concat_pere_fils(
+                arbre_creer_noeud_vide(A_DIM),
+                $3
+            )
+        );
 	}
 ;
 

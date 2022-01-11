@@ -49,6 +49,8 @@ cellule resout_expression(arbre a, int type_retour) {
             base_courante = BC_regions[region];
             c             = PEXEC[base_courante + treg_recupere_nis_region(region) + 1];
             return c;
+        case A_LECTURE_TAB:
+            return PEXEC[pexec_index_tableau(a)];
         default:
             fprintf(stderr, "Cas expression arithmetique non gere\n");
             return c;

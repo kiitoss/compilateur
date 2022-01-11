@@ -52,6 +52,76 @@ int pexec_index_variable(int tlex_index, int deplacement_exec) {
     return PEXEC[BC + nis_utilise - nis_declare].entier + deplacement_exec;
 }
 
+/*
+ * Recuperation de l'index de la cellule concerne par un appel a un tableau dans la pile d'execution
+ */
+int pexec_index_tableau(arbre a) {
+    int tlex_index_idf = (int) a->fils_gauche->valeur_1;
+
+    int tdec_index_idf                 = tdec_trouve_index(tlex_index_idf, PREG);
+    int deplacement_exec               = tdec_recupere_taille_exec(tdec_index_idf);
+    int tdec_index_type_tableau        = tdec_recupere_description(tdec_index_idf);
+    int trep_index_tableau             = tdec_recupere_description(tdec_index_type_tableau);
+    int tdec_index_type_entree_tableau = trep_recupere_valeur(trep_index_tableau);
+    int taille_exec_entree_tableau     = tdec_recupere_taille_exec(tdec_index_type_entree_tableau);
+    int trep_index_nb_dim              = trep_index_tableau + 1;
+    int nb_dim                         = trep_recupere_valeur(trep_index_nb_dim);
+    int index_dim                      = 0;
+
+    int trep_index_dim, min_dim, max_dim, valeur_dim;
+    pile pile_deplacements_exec;
+
+    pile_init(pile_deplacements_exec);
+
+    if (tdec_index_type_entree_tableau == -1) {
+        fprintf(stderr, "Erreur - Type des entrees du tableau non declare\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (arbre dim = a->fils_gauche->frere_droit; !arbre_est_vide(dim) && arbre_recupere_nature(dim) == A_DIM;
+         dim       = dim->frere_droit) {
+        trep_index_dim = trep_index_tableau + 2 + index_dim * 2;
+        min_dim        = trep_recupere_valeur(trep_index_dim);
+        max_dim        = trep_recupere_valeur(trep_index_dim + 1);
+
+        valeur_dim = resout_expression(dim->fils_gauche, 0).entier;
+
+        if (valeur_dim > max_dim) {
+            fprintf(stderr, "Erreur - Indice superieur a la borne maximal de la dimension du tableau\n");
+            exit(EXIT_FAILURE);
+        }
+
+        if (valeur_dim < min_dim) {
+            fprintf(stderr, "Erreur - Indice inferieur a la borne minimal de la dimension du tableau\n");
+            exit(EXIT_FAILURE);
+        }
+
+        valeur_dim -= min_dim;
+
+        pile_empile(pile_deplacements_exec, max_dim - min_dim + 1);
+        pile_empile(pile_deplacements_exec, valeur_dim);
+
+        index_dim++;
+    }
+
+    if (index_dim != nb_dim) {
+        fprintf(stderr, "Erreur - %d dimensions attendues, %d trouvees", nb_dim, index_dim);
+        exit(EXIT_FAILURE);
+    }
+
+    int qte                      = pile_depile(pile_deplacements_exec);
+    int taille                   = pile_depile(pile_deplacements_exec);
+    int deplacement_exec_interne = qte;
+    while (!pile_est_vide(pile_deplacements_exec)) {
+        qte = pile_depile(pile_deplacements_exec);
+        deplacement_exec_interne += (taille * qte);
+        taille = pile_depile(pile_deplacements_exec);
+    }
+
+    deplacement_exec *= taille_exec_entree_tableau;
+    return pexec_index_variable(tlex_index_idf, deplacement_exec) + deplacement_exec_interne;
+}
+
 static void controle_validite_params(arbre a) {
     pile params;
     pile_init(params);
@@ -95,6 +165,15 @@ static void parcours_arbre(arbre a) {
             pexec_empile_booleen(PEXEC, 0, &taille_pexec);
         } else if (a->valeur_2 == 3) {
             pexec_empile_caractere(PEXEC, 0, &taille_pexec);
+        } else {
+            int tlex_index      = a->valeur_1;
+            int tdec_index      = tdec_trouve_index(tlex_index, PREG);
+            int tlex_index_type = tdec_recupere_description(tdec_index);
+            int tdec_index_type = tdec_trouve_index(tlex_index_type, PREG);
+            int taille_exec     = tdec_recupere_taille_exec(tdec_index_type);
+            for (int i = 0; i < taille_exec; i++) {
+                pexec_empile_entier(PEXEC, 0, &taille_pexec);
+            }
         }
     }
     /* si c'est une declatation de procedure: met a jour la region parente */
@@ -110,20 +189,7 @@ static void parcours_arbre(arbre a) {
     }
     /* si c'est une affectation: maj dans la pile d'execution*/
     else if (nature == A_AFFECT) {
-        /* recuperation de l'index lexical de l'idf */
-        int tlex_index = (int) a->fils_gauche->valeur_1;
-
-        /* deduction de l'index de la variable, du type de la variable et du deplacement a l'execution de la variable
-         * dans la table des declarations */
-        int tdec_index               = tdec_trouve_index(tlex_index, PREG);
-        int tdec_index_type_variable = tdec_recupere_description(tdec_index);
-        int deplacement_exec         = tdec_recupere_taille_exec(tdec_index);
-
-        /* calcul du resultat de l'expression */
-        cellule resultat = resout_expression(a->fils_gauche->frere_droit, tdec_index_type_variable);
-
-        /* mise a jour dans la pile d'execution */
-        PEXEC[pexec_index_variable(tlex_index, deplacement_exec)] = resultat;
+        resout_affectation(a->fils_gauche);
     }
     /* si c'est un appel de procedure: execution de l'arbre de la procedure */
     else if (nature == A_APPEL) {

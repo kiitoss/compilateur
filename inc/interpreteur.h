@@ -18,7 +18,14 @@ extern int reg_parentes[100];
 /* Execution du programme apres recuperation des donnees */
 void execution();
 
+/*
+ * Recuperation de l'index d'une variable dans la pile d'execution
+ * a partir de son index lexicographique et de son deplacement a l'execution
+ */
 int pexec_index_variable(int tlex_index, int deplacement_exec);
+
+/* Recuperation de l'index de la cellule concerne par un appel a un tableau dans la pile d'execution */
+int pexec_index_tableau(arbre a);
 
 void resout_appel(arbre a);
 
@@ -53,5 +60,8 @@ void resout_ecriture(arbre a);
 
 /* Resolution d'une lecture sur l'entree standard */
 void resout_lecture(arbre a);
+
+/* Resolution d'une affectation */
+void resout_affectation(arbre a);
 
 #endif

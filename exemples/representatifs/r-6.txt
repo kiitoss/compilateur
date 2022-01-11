@@ -1,0 +1,6 @@
+PROG
+    type tab : tableau[0..2 , 196..197 , 0 .. 2] de int;
+    var a : tab;
+DEBUT
+    a[1 , 196 , 1 + 1] := 9;
+FIN

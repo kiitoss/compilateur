@@ -191,7 +191,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    fprintf(stdout, "Debut de l'interpretation\n");
+    fprintf(stdout, "Debut de l'interpretation\n\n");
 
     init_tables();
 
@@ -205,7 +205,7 @@ int main(int argc, char *argv[]) {
 
     fclose(yyin);
 
-    fprintf(stdout, "Interpretation terminee\n");
+    fprintf(stdout, "\n\nInterpretation terminee\n");
 
     return EXIT_SUCCESS;
 }

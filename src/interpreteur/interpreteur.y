@@ -10,6 +10,7 @@
     #define MAX_PROFONDEUR 10
 
     extern int line;
+    int DEBOGAGE = 0;
 
     extern FILE *yyin;
 	
@@ -152,7 +153,7 @@ void yyerror(char *s) {
 }
 
 void usage(char *s) {
-    fprintf(stderr, "Usage: %s [options] input\n\tinput : fichier d'entree\n\n\tOPTIONS:\n\t\t-v : Affiche les tables et les arbres\n\t\t-h : Affiche l'aide\n", s);
+    fprintf(stderr, "Usage: %s [options] input\n\tinput : fichier d'entree\n\n\tOPTIONS:\n\t\t-v : Affiche les tables et les arbres\n\t\t-d : Affiche des informations supplementaires de debogage\n\t\t-h : Affiche l'aide\n", s);
     exit(EXIT_FAILURE);
 }
 
@@ -160,10 +161,13 @@ int main(int argc, char *argv[]) {
     int opt;
     int verbose = 0;
     int nb_arguments;
-    while((opt = getopt(argc, argv, "vh")) != -1) {
+    while((opt = getopt(argc, argv, "vhd")) != -1) {
         switch(opt){
             case 'v':
                 verbose = 1;
+                break;
+            case 'd':
+                DEBOGAGE = 1;
                 break;
             case 'h':
                 usage(argv[0]);

@@ -307,7 +307,9 @@ void execute_region(int region) {
     /* recuperation de l'arbre correspondant a la region */
     arbre a = treg_recupere_arbre_region(region);
 
-    arbre_affiche(a);
+    if (DEBOGAGE) {
+        arbre_affiche(a);
+    }
 
     if (a->nature == A_DECL_PROC || a->nature == A_DECL_FONC) {
         a->nature = A_CORPS;
@@ -336,7 +338,9 @@ void execution() {
     execute_region(0);
 
     /* affichage de la pile d'execution */
-    fprintf(stdout, "\nAffichage de la pile d'execution:\n");
-    pexec_affiche(PEXEC, taille_pexec);
-    fprintf(stdout, "Fin de l'affichage de la pile d'execution\n\n");
+    if (DEBOGAGE) {
+        fprintf(stdout, "\nAffichage de la pile d'execution:\n");
+        pexec_affiche(PEXEC, taille_pexec);
+        fprintf(stdout, "Fin de l'affichage de la pile d'execution\n\n");
+    }
 }

@@ -100,7 +100,9 @@ letter  [a-zA-Z]
 	/* A modifier */
 {letter}+({letter}|{digit}|"_")*	{ yylval.t_nombre = tlex_nouvelle_entree(yytext); return IDF; }
 
-[a-zA-Z] { yylval.t_nombre = yytext[0] - 'a'; return CARACTERE; }
+"'"{letter}"'" { yylval.t_nombre = (double) (yytext[1] - 'a'); return CARACTERE;}
+
+{letter} { yylval.t_nombre = yytext[0] - 'a'; return CARACTERE; }
 	/* Cas d'erreur */
 .           			yyerror("Caractère invalide !");
 

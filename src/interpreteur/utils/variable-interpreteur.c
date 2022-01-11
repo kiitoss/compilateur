@@ -36,6 +36,8 @@ cellule resout_variable(arbre a, int type_retour) {
         c.entier = recupere_int_cellule(PEXEC[pexec_index], tdec_index_type_variable);
     } else if (type_retour == 1) {
         c.reel = recupere_double_cellule(PEXEC[pexec_index], tdec_index_type_variable);
+    } else if (type_retour == 3) {
+        c.caractere = recupere_double_cellule(PEXEC[pexec_index], tdec_index_type_variable);
     }
 
     return c;

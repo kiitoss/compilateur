@@ -6,6 +6,7 @@
 #include "tables.h"
 
 extern int line;
+extern int DEBOGAGE;
 
 extern int BC;
 extern pexec PEXEC;

@@ -605,6 +605,9 @@ exp: appel {
 	| REEL {
 		$$ = arbre_creer_noeud(A_REEL, yylval.t_nombre, VALEUR_NULL);
 	}
+    | CARACTERE {
+		$$ = arbre_creer_noeud(A_CARACTERE, yylval.t_nombre, VALEUR_NULL);
+	}
     | PARENTHESE_OUVRANTE expression_arithmetiques PARENTHESE_FERMANTE {
         $$ = $2;
     }
@@ -689,7 +692,7 @@ void yyerror(char *s) {
 }
 
 void usage(char *s) {
-    fprintf(stderr, "Usage: %s [options] input [output]\n\tinput : fichier d'entree\n\toutput : fichier de sortie\n\n\tOPTIONS:\n\t\t-v : Affiche les tables et les arbres\n\t\t-h : Affiche l'aide\n\t\t-r : Execute l'interpretation\n", s);
+    fprintf(stderr, "Usage: %s [options] input [output]\n\tinput : fichier d'entree\n\toutput : fichier de sortie\n\n\tOPTIONS:\n\t\t-v : Affiche les tables et les arbres\n\t\t-d : Affiche des informations supplementaires de debogage\n\t\t-h : Affiche l'aide\n\t\t-r : Execute l'interpretation\n", s);
     exit(EXIT_FAILURE);
 }
 
@@ -700,8 +703,9 @@ int main(int argc, char *argv[]) {
     int opt;
     int verbose = 0;
     int run = 0;
+    int debug = 0;
     int nb_arguments;
-    while((opt = getopt(argc, argv, "vhr")) != -1) {
+    while((opt = getopt(argc, argv, "vdhr")) != -1) {
         switch(opt){
             case 'v':
                 verbose = 1;
@@ -711,6 +715,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'r':
                 run = 1;
+                break;
+            case 'd':
+                debug = 1;
                 break;
             case '?':
                 usage(argv[0]);
@@ -759,11 +766,17 @@ int main(int argc, char *argv[]) {
     fprintf(stdout, "Compilation terminee\n");
 
     if (run == 1) {
-        char *params[] = {interpreteur_programme, output_filename, NULL};
-        char *paramsVerbose[] = {interpreteur_programme, "-v", output_filename, NULL};
-        if (verbose) {
-            execv(interpreteur_programme, paramsVerbose);
+        if (!verbose && !debug) {
+            char *params[] = {interpreteur_programme, output_filename, NULL};
+            execv(interpreteur_programme, params);
         } else {
+            char *args = "-vd";
+            if (!verbose) {
+                args = "-d";
+            } else if (!debug) {
+                args = "-v";
+            }
+            char *params[] = {interpreteur_programme, args, output_filename, NULL};
             execv(interpreteur_programme, params);
         }
     }

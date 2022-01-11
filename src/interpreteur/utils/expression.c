@@ -26,10 +26,15 @@ cellule resout_expression(arbre a, int type_retour) {
             return resout_variable(a, type_retour);
         case A_ENTIER:
         case A_REEL:
+        case A_CARACTERE:
             if (type_retour == 0)
                 c.entier = (int) a->valeur_1;
             else if (type_retour == 1)
                 c.reel = a->valeur_1;
+            else if (type_retour == 2)
+                c.booleen = (int) a->valeur_1;
+            else if (type_retour == 3)
+                c.caractere = a->valeur_1 + 'a';
             return c;
         case A_PLUS:
         case A_MOINS:

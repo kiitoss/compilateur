@@ -1,13 +1,7 @@
 PROG
-    type date :
-        struct
-            jour : int;
-            mois : int;
-            annee : float
-        fstruct;
-    var a : date;
+    var a : char;
     var b : int;
 DEBUT
-    a.jour := 2;
-    b := a.jour + 5;
+    a := 'c';
+    b := 'a'+'b';
 FIN

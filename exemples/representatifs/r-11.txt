@@ -1,0 +1,20 @@
+PROG
+    var a : int;
+    var b : int;
+
+    fonction fois_deux(a : int) retourne int
+    DEBUT
+        a := a * 2;
+        retourne a;
+    FIN;
+
+    fonction divise_par_deux(g : int) retourne int
+    DEBUT
+        g := g / 2;
+        retourne g;
+    FIN;
+DEBUT
+    a := 2;
+    ecrit("\d * 2 = \d\n", a, fois_deux(a));
+    ecrit("\d / 2 = \d\n", a, divise_par_deux(a));
+FIN

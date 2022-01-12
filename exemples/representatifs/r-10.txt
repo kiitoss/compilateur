@@ -7,10 +7,10 @@ DEBUT
 
     si ( a == 4 ) alors
     DEBUT
-        ecrit("alors\n");
+        ecrit("Vous avez choisis 4\n");
     FIN
     sinon DEBUT
-        ecrit("sinon\n");
+        ecrit("Vous n'avez pas choisit 4\n");
     FIN;
 
     ecrit("fin du programme\n");

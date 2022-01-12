@@ -3,7 +3,7 @@ PROG
     var b : int;
 DEBUT
     a := 2;
-    b := 2;
+    b := 3;
     si ( a == 2) alors
     DEBUT
     a := 3;

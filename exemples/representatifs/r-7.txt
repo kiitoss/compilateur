@@ -1,8 +1,9 @@
 PROG
-    type tab : tableau[0..2 , 0 .. 2] de int;
-    var a : tab;
-    var b : int;
+    var tab : int;
     procedure a()
+    type tab : tableau[0..2 , 0 .. 2] de int;
+    var c : tab;
+    var b : int;
     DEBUT
         b := a[1 , 1 + 1];
         ecrit ("REPONSE \d", b + 2);

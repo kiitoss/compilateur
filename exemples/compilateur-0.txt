@@ -18,7 +18,10 @@ PROG
     var i : float;
     var j : int;
     procedure a()
+        type personne : tableau[1 .. 10] de int;
         procedure b()
+        type equipe : tableau[1..3 ,  1..2] de int;
+        var p : personne;
         var T : int;
         DEBUT
         FIN;

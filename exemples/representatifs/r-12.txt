@@ -1,0 +1,33 @@
+PROG
+    type monTab : tableau[0..10] de int;
+    type maStruct : 
+        struct 
+            ch1 : t1; 
+            ch2 : int
+        fstruct;
+
+    type t3 : tableau[1..3] de maStruct;
+    var x : int; 
+    var a : bool;
+    var t : t3;
+    var y : int ;
+
+    fonction f(x : int) retourne int
+    DEBUT   
+        x := x * 2;
+        ecrit("fonction f valeur x = \d", x);
+    FIN; // end f
+    
+    fonction f2(x: int) retourne int 
+    DEBUT
+        ecrit("x  : \n");
+    FIN;
+    procedure p1(x : int) 
+    var z : int;      
+       DEBUT
+        ecrit("\nProcedure p1  valeur x = \d", x);
+       FIN;    
+DEBUT
+    y := 5;
+    y := f(y);
+FIN

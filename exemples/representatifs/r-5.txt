@@ -2,7 +2,7 @@ PROG
     var a : float;
     var b : float;
 DEBUT
-    a := 1,6;
+    a := 1;
     b := 1,2;
     ecrit ("Le resultat de \f + \f caste en entier est \d", a, b, a + b);
 FIN

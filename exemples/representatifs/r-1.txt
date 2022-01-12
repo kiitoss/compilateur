@@ -1,8 +1,9 @@
 PROG
-    procedure p(a: int ; a: float)
+    var b : bool;
+    procedure p(a: int)
     DEBUT
     a := a + 1;
     FIN;
 DEBUT
-    p(0 , 0);
+    p(b);
 FIN

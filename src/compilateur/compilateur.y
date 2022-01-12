@@ -32,7 +32,7 @@
 %token DOUBLE_EGAL SUPERIEUR INFERIEUR SUP_EGAL INF_EGAL
 %token ET OU NON
 %token OPAFF
-%token ECRIT LIRE TEXTE GUILLEMENT CARACTERE
+%token ECRIT LIRE TEXTE CARACTERE
 
 
 %type <t_arbre> corps liste_declarations liste_instructions suite_liste_inst
@@ -488,7 +488,6 @@ affectation: variable OPAFF expression {
 	}
 ;
 
-    // NOK !!!!!!!!!!!
 variable: IDF {
         if (! tdec_index_existe(yylval.t_nombre)) {
             yyerror("Variable non declaree.\n");

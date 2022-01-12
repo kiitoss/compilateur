@@ -89,6 +89,7 @@ void resout_appel(arbre a) {
 
     /* recuperation de l'index lexical de la fonction/procedure */
     int tlex_index = (int) a->fils_gauche->valeur_1;
+
     /* deduction de l'index de la fonction/procedure dans la table des declarations */
     int tdec_index = tdec_trouve_index_fonction_procedure(tlex_index, PREG);
     /* deduction de l'index de la fonction/procedure dans la table des representations */

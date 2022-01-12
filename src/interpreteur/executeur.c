@@ -266,6 +266,7 @@ static void parcours_arbre(arbre a) {
         } else {
             parcours_arbre(a->fils_gauche->frere_droit->frere_droit);
         }
+        parcours_arbre(a->frere_droit);
         return;
     }
     /* si c'est le resultat d'une condition */
@@ -276,12 +277,10 @@ static void parcours_arbre(arbre a) {
     /* si c'est une ecriture sur la sortie standard */
     else if (nature == A_ECRIT) {
         resout_ecriture(a);
-        return;
     }
     /* si c'est une lecture sur la sortie standard */
     else if (nature == A_LIRE) {
         resout_lecture(a);
-        return;
     }
     /* */
     else {

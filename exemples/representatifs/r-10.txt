@@ -1,0 +1,17 @@
+PROG
+    var a : float;
+DEBUT
+    ecrit("Indiquez la valeur de a souhaite: ");
+    lire(a);
+    ecrit("valeur de a: \f \n", a);
+
+    si ( a == 4 ) alors
+    DEBUT
+        ecrit("alors\n");
+    FIN
+    sinon DEBUT
+        ecrit("sinon\n");
+    FIN;
+
+    ecrit("fin du programme\n");
+FIN

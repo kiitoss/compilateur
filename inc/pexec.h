@@ -26,9 +26,6 @@ typedef cellule pexec[PEXEC_TMAX];
 /* Retourne une cellule vide */
 cellule cellule_null();
 
-// /* Initialisation de la pile */
-// void pexec_init(pexec p);
-
 // /* Retourne 1 si la pile est vide, 0 sinon */
 // int pexec_est_vide(pexec p);
 

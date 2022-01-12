@@ -38,6 +38,9 @@ static void resout_affectation_tableau(arbre a) {
     PEXEC[pexec_index_tableau(a)] = resultat;
 }
 
+/*
+ * Resolution d'une affectation dans une structure
+ */
 static void resout_affectation_structure(arbre a) {
     int tlex_index       = a->valeur_1;
     int tlex_index_champ = a->valeur_2;
@@ -49,13 +52,17 @@ static void resout_affectation_structure(arbre a) {
     int nb_champs_structure   = trep_recupere_valeur(trep_index_type_structure);
     int tdec_index_type_champ = -1;
     int index_champ           = 0;
+
+    /* recuperation de l'index du type du champ dans la table des declarations */
     while (index_champ < nb_champs_structure) {
         if (trep_recupere_valeur(trep_index_type_structure + 1 + index_champ * 3) == tlex_index_champ) {
             tdec_index_type_champ = trep_recupere_valeur(trep_index_type_structure + 1 + index_champ * 3 + 1);
+            break;
         }
         index_champ++;
     }
 
+    /* si le type est null */
     if (tdec_index_type_champ == -1) {
         fprintf(stderr, "Erreur - Type du champ non declare\n");
         exit(EXIT_FAILURE);

@@ -64,7 +64,6 @@ letter  [a-zA-Z]
 "bool"  { return TYPE_BOOLEEN; }
 "char"  { return TYPE_CARACTERE; }
 "ecrit" { return ECRIT; }
-"\""    { return GUILLEMENT; }
 ".."    { return POINT_POINT; }
 "ecrit" { return ECRIT; }
 "lire"  { return LIRE; }
@@ -97,7 +96,6 @@ letter  [a-zA-Z]
   /* Déclaration des nombres réels */
 {digit}+,{digit}*		{ yylval.t_nombre = atof(remplace_caractere(yytext, ',', '.')); return REEL; }
 
-	/* A modifier */
 {letter}+({letter}|{digit}|"_")*	{ yylval.t_nombre = tlex_nouvelle_entree(yytext); return IDF; }
 
 "'"{letter}"'" { yylval.t_nombre = (double) (yytext[1] - 'a'); return CARACTERE;}

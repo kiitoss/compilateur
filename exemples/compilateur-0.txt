@@ -11,7 +11,7 @@ PROG
             naissance : date;
             age : int
         fstruct;
-    type equipe : tableau[1..3, 1..2] de personne;
+    type equipe : tableau[1..3 , 1..2] de personne;
     var p : personne;
     var te : equipe;
     var b : bool;
@@ -20,55 +20,10 @@ PROG
     procedure a()
         procedure b()
         var T : int;
-
-        procedure c()
-        DEBUT
-        FIN;
-
-        procedure saisie()
-        var i : int;
-        DEBUT
-            i := 0;
-            j := 0;
-            tantque (i < 3) faire
-            DEBUT
-                i := i + 1;
-                tantque (j < 2) faire
-                DEBUT
-                    j := j + 1;
-                    ecrit("Numerodesaisie");
-                FIN;
-                T := j;
-            FIN;
-        FIN;
-
-
         DEBUT
         FIN;
     DEBUT
     FIN;
-
-    procedure e()
-        procedure f()
-            procedure g()
-            DEBUT
-                a;
-            FIN; // end g
-        DEBUT
-            g;
-        FIN; // end f
-        procedure h()
-        DEBUT
-            h;
-        FIN; // end h
-    DEBUT
-        h;
-    FIN; // end e
-    procedure i()
-        var T : int;
-    DEBUT
-        e;
-    FIN; // end i
 DEBUT
-    i;
+ a();
 FIN

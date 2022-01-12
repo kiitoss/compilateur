@@ -1,0 +1,13 @@
+PROG
+var entier : int;
+    fonction demande_entier() retourne int
+    var a : int;
+    DEBUT
+        ecrit("Saisissez un entier: ");
+        lire(a);
+        retourne a;
+    FIN;
+DEBUT
+    entier := demande_entier();
+    ecrit("Affichage de l'entier: \d", entier);
+FIN

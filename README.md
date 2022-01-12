@@ -71,13 +71,13 @@ DEBUT
 FIN
 ```
 
-### commande d'exécution
+#### commande d'exécution
 
 ```sh
 ./compilateur.exe -r ./exemples/representatifs/r-5.txt
 ```
 
-### resultat
+#### resultat
 
 ```
 Debut de la compilation
@@ -111,13 +111,13 @@ DEBUT
 FIN
 ```
 
-### commande d'exécution
+#### commande d'exécution
 
 ```sh
 ./compilateur.exe -r ./exemples/representatifs/r-14.txt
 ```
 
-### resultat
+#### resultat
 
 ```
 Debut de la compilation
